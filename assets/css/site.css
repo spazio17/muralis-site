@@ -27,6 +27,9 @@
   --radius: 14px;
   --measure: 68ch;
   --page: 1120px;
+  --hero-grid: rgba(76, 79, 105, .10);
+  --hero-glow-1: rgba(130, 38, 239, .10);
+  --hero-glow-2: rgba(30, 102, 245, .08);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -43,6 +46,9 @@
     --ok: #8ee88a;
     --warn: #ffdf8f;
     --bad: #ff6f91;
+    --hero-grid: rgba(205, 214, 244, .07);
+    --hero-glow-1: rgba(192, 140, 255, .16);
+    --hero-glow-2: rgba(122, 162, 255, .12);
   }
 }
 
@@ -62,6 +68,9 @@ html[data-theme="dark"] {
   --ok: #8ee88a;
   --warn: #ffdf8f;
   --bad: #ff6f91;
+  --hero-grid: rgba(205, 214, 244, .07);
+  --hero-glow-1: rgba(192, 140, 255, .16);
+  --hero-glow-2: rgba(122, 162, 255, .12);
 }
 
 * { box-sizing: border-box; }
@@ -140,9 +149,54 @@ a:hover { color: var(--accent); }
 }
 .themepick button[aria-pressed="true"] { background: var(--surface-alt); color: var(--text); }
 
-/* -------------------------------------------------------------------- hero */
+/* -------------------------------------------------------------------- hero
+ *
+ * The backdrop is drawn, not photographed: a square grid standing in for a
+ * tiled wall and a dashboard's tiles, lit by two soft accent glows. Pure
+ * gradients, so it costs no request, ships no binary, and recolours itself with
+ * the theme instead of needing a second file for dark mode. The mask fades it
+ * out before it reaches the text, which is what keeps it an accent rather than
+ * a pattern competing with the copy.
+ *
+ * To put a real photograph behind the hero later, add it as the first layer of
+ * the background shorthand below and drop the grid's two repeating gradients.
+ */
 
-.hero { padding: 4.5rem 0 3rem; }
+.hero { position: relative; overflow: hidden; padding: 6rem 0 3.5rem; }
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38rem 22rem at 10% -15%, var(--hero-glow-1), transparent 70%),
+    radial-gradient(32rem 20rem at 88% 5%, var(--hero-glow-2), transparent 70%),
+    repeating-linear-gradient(to right, var(--hero-grid) 0 1px, transparent 1px 4.5rem),
+    repeating-linear-gradient(to bottom, var(--hero-grid) 0 1px, transparent 1px 4.5rem);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 92%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 92%);
+}
+
+.hero > * { position: relative; }
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 1.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.facts li {
+  font-size: .8rem;
+  color: var(--subtext);
+  background: var(--mantle);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .32rem .8rem;
+  white-space: nowrap;
+}
+
 .hero .status {
   display: inline-flex;
   align-items: center;
@@ -177,7 +231,7 @@ a:hover { color: var(--accent); }
 
 /* ---------------------------------------------------------------- sections */
 
-section { padding: 3.25rem 0; border-top: 1px solid var(--border); }
+section { padding: 4rem 0; border-top: 1px solid var(--border); }
 section > .wrap > h2 {
   font-size: 1.5rem;
   margin: 0 0 .4rem;
