@@ -27,9 +27,9 @@
   --radius: 14px;
   --measure: 68ch;
   --page: 1120px;
-  --hero-grid: rgba(76, 79, 105, .10);
-  --hero-glow-1: rgba(130, 38, 239, .10);
-  --hero-glow-2: rgba(30, 102, 245, .08);
+  --hero-grid: rgba(76, 79, 105.10);
+  --hero-glow-1: rgba(130, 38, 239.10);
+  --hero-glow-2: rgba(30, 102, 245.08);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -46,9 +46,9 @@
     --ok: #8ee88a;
     --warn: #ffdf8f;
     --bad: #ff6f91;
-    --hero-grid: rgba(205, 214, 244, .07);
-    --hero-glow-1: rgba(192, 140, 255, .16);
-    --hero-glow-2: rgba(122, 162, 255, .12);
+    --hero-grid: rgba(205, 214, 244.07);
+    --hero-glow-1: rgba(192, 140, 255.16);
+    --hero-glow-2: rgba(122, 162, 255.12);
   }
 }
 
@@ -68,9 +68,9 @@ html[data-theme="dark"] {
   --ok: #8ee88a;
   --warn: #ffdf8f;
   --bad: #ff6f91;
-  --hero-grid: rgba(205, 214, 244, .07);
-  --hero-glow-1: rgba(192, 140, 255, .16);
-  --hero-glow-2: rgba(122, 162, 255, .12);
+  --hero-grid: rgba(205, 214, 244.07);
+  --hero-glow-1: rgba(192, 140, 255.16);
+  --hero-glow-2: rgba(122, 162, 255.12);
 }
 
 * { box-sizing: border-box; }
@@ -414,7 +414,7 @@ dialog.lightbox {
 dialog.lightbox::backdrop {
   /* Deliberately a literal: ::backdrop does not inherit custom properties in every
      engine, and a transparent backdrop is worse than a slightly-off one. */
-  background: rgba(10, 10, 16, .82);
+  background: rgba(10, 10, 16.82);
 }
 dialog.lightbox .sheet {
   background: var(--mantle);
@@ -458,7 +458,7 @@ dialog.lightbox .bar button:hover { border-color: var(--accent); color: var(--ac
 figure.shot.portrait .frame { aspect-ratio: 10 / 16; }
 
 /*
- * A capture whose own proportions are not 16:10 — the web admin reflows into columns, so its
+ * A capture whose own proportions are not 16:10, the web admin reflows into columns, so its
  * natural shape is nearly square. Letterbox it rather than cropping: the point of that shot is
  * that every setting is on one page, and `cover` would cut the columns off to prove the opposite.
  */
@@ -468,7 +468,7 @@ figure.shot.contain img { object-fit: contain; background: var(--mantle); }
 
 .spec { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .spec caption { text-align: left; color: var(--subtext); padding-bottom: .75rem; }
-.spec th, .spec td {
+.spec th.spec td {
   text-align: left;
   padding: .65rem .8rem;
   border-bottom: 1px solid var(--border);
@@ -476,10 +476,10 @@ figure.shot.contain img { object-fit: contain; background: var(--mantle); }
 }
 .spec th { width: 15rem; font-weight: 600; color: var(--text); }
 .spec td { color: var(--subtext); }
-.spec tr:last-child th, .spec tr:last-child td { border-bottom: 0; }
+.spec tr:last-child th.spec tr:last-child td { border-bottom: 0; }
 .table-scroll { overflow-x: auto; }
 
-code, .mono {
+code.mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: .88em;
   background: var(--surface);

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Terms — Muralis</title>
+<title>Muralis terms</title>
 <meta name="description" content="What you may do with Muralis, what it does to a device it is installed on, how to get back out of the kiosk, and what is not promised.">
 <link rel="canonical" href="https://muralis.spazio17.org/terms/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
@@ -27,6 +27,7 @@
       <a href="../">Overview</a>
       <a href="../privacy/">Privacy</a>
       <a href="../terms/">Terms</a>
+      <a href="../imprint/">Imprint</a>
     </nav>
     <div class="themepick" role="group" aria-label="Colour theme">
       <button type="button" data-theme="light" aria-pressed="false">Light</button>
@@ -45,98 +46,58 @@
 
   <div class="notice warn">
     <p>
-      <strong>Draft placeholder.</strong> This text has not been reviewed and must be replaced
-      before the app is distributed. The governing-law section below is not yet filled in. Muralis is
-      not published, so no version of it is in circulation under these terms.
+      <strong>Draft, awaiting legal review.</strong> The text below is complete: nothing is a
+      placeholder any more. It has not yet been read by a lawyer, which for Austrian consumer law
+      and EU distance selling is the step that matters, so treat it as a draft until this notice
+      goes. Muralis is not published, so no version of it is in circulation under it.
     </p>
   </div>
 
-  <p>
-    Draft terms for Muralis, a kiosk launcher for displaying a web dashboard on hardware you own.
-  </p>
-
+  <p>Draft terms for Muralis, a kiosk launcher for displaying a web dashboard on hardware you own.</p>
   <h2>What you may do</h2>
-  <p>
-    Install and run Muralis on devices you own or administer, for personal or commercial purposes.
-  </p>
-
+  <p>Install and run Muralis on as many devices as you like, whether you own them or administer them for somebody else, for private or commercial purposes. You do not need an account, you do not need to register, and this does not expire.</p>
+  <p>What you may not do is redistribute the app, sell it, or pass it off as your own work. Muralis is licensed to you, not sold to you, and the copyright stays with the developer.</p>
+  <h2>Muralis pro</h2>
+  <p>Everything above is free and stays free. Muralis Pro is a one time purchase that unlocks the remote control surfaces: MQTT, including Home Assistant discovery and telemetry, and the local web administration.</p>
+  <p>Pro belongs to the Google account that bought it, not to a device. Every panel signed in to that account is unlocked, with no limit on how many. It does not expire and there is nothing to renew. It cannot be transferred, resold, or shared with another account.</p>
+  <p>A panel that never buys Pro is not nagged, not watermarked, and not degraded. It simply does not have the remote surfaces.</p>
   <h2>What the app does to the device</h2>
-  <p>
-    Muralis is designed to take over a device. When granted device-owner status it will: become the
-    home application, hold the screen on a single task so other applications cannot be reached,
-    disable the notification shade and status bar, disable the lock screen, keep the display awake
-    while charging, and make the back gesture inert.
-  </p>
-  <p>
-    This is the intended behaviour of a kiosk, and you should understand it before provisioning a
-    device you rely on for anything else.
-  </p>
-
+  <p>Muralis is designed to take over a device. When granted device-owner status it will: become the home application, hold the screen on a single task so other applications cannot be reached, disable the notification shade and status bar, disable the lock screen, keep the display awake while charging, and make the back gesture inert.</p>
+  <p>This is the intended behaviour of a kiosk, and you should understand it before provisioning a device you rely on for anything else.</p>
   <h2>Getting back out</h2>
-  <p>
-    There is always an escape route, and it does not require a cable: a configurable series of corner
-    taps releases the kiosk and returns the system launcher. The default combinations are shown on
-    the configuration screen. Change them, and remember what you changed them to.
-  </p>
-
+  <p>There is always an escape route, and it does not require a cable: a configurable series of corner taps releases the kiosk and returns the system launcher. The default combinations are shown on the configuration screen. Change them, and remember what you changed them to.</p>
   <h2>Removing device-owner status</h2>
-  <p>
-    Device-owner status cannot be granted to an already-configured device, and removing it may
-    require a factory reset. Provision deliberately.
-  </p>
-
+  <p>Device-owner status cannot be granted to an already-configured device, and removing it may require a factory reset. Provision deliberately.</p>
   <h2>What is not promised</h2>
-  <p>
-    Muralis is provided as is, without warranty of any kind. It is not suitable for any purpose where
-    failure to display information could cause harm to people or property. Do not use it as the sole
-    interface to safety equipment, medical devices, alarms, or anything that must be operable in an
-    emergency.
-  </p>
-  <p>
-    The dashboard it displays is not part of Muralis. Its availability, correctness and security are
-    yours or its provider's responsibility.
-  </p>
-
+  <p>Muralis is provided as is, without warranty of any kind. It is not suitable for any purpose where failure to display information could cause harm to people or property. Do not use it as the sole interface to safety equipment, medical devices, alarms, or anything that must be operable in an emergency.</p>
+  <p>The dashboard it displays is not part of Muralis. Its availability, correctness and security are yours or its provider&#x27;s responsibility.</p>
   <h2>Remote control</h2>
-  <p>
-    The local web administration is authenticated by the password you set. MQTT is authenticated by
-    your broker, using whatever credentials it requires, which may be none: Muralis itself does not
-    authenticate individual commands, so anyone who can publish to your broker can control the panel.
-    Both surfaces are UNENCRYPTED, and there is no option to encrypt either. Your broker username and
-    password travel in clear text, so do not reuse a password you use anywhere else. Run these
-    surfaces only on a network you trust, and reach them over a VPN rather than exposing a port. If
-    you set a weak password, or expose these surfaces to the internet, anyone who reaches them can
-    change what the device displays and restart it.
-  </p>
-
+  <p>The local web administration is authenticated by the password you set, and by nothing else: there is no username, and there is no limit on how many times a wrong password may be tried. MQTT is authenticated by your broker, using whatever credentials it requires, which may be none: Muralis itself does not authenticate individual commands, so anyone who can publish to your broker can control the panel. Both surfaces are UNENCRYPTED, and there is no option to encrypt either. Your broker username and password travel in clear text, so do not reuse a password you use anywhere else. Run these surfaces only on a network you trust, and reach them over a VPN rather than exposing a port. If you set a weak password, or expose these surfaces to the internet, anyone who reaches them can change what the device displays and restart it.</p>
+  <h2>Buying, and getting your money back</h2>
+  <p>Muralis Pro is sold by Google, not by the developer. Google takes the payment, issues the receipt, handles the tax, and handles refunds under Google Play&#x27;s own refund policy and under whatever consumer law applies where you live. Ask Google, not the developer, about a payment or a refund. The developer never sees your payment details.</p>
   <h2>Liability</h2>
-  <p>
-    To the maximum extent permitted by law, the developer is not liable for any loss arising from use
-    of this software, including loss of data, loss of use, or any indirect or consequential loss.
-  </p>
-
+  <p>To the maximum extent permitted by law, the developer is not liable for any loss arising from use of this software, including loss of data, loss of use, or any indirect or consequential loss.</p>
+  <p>Nothing in these terms limits liability for death or personal injury, for intent, or for gross negligence, and nothing in them limits any liability that the law does not allow to be limited. Where a court finds part of this section unenforceable, the rest still stands.</p>
+  <h2>What these terms cannot take away</h2>
+  <p>If you are in the European Union, you keep the rights the law gives you whatever this document says. In particular you may make a backup copy, and you may decompile the app as far as is necessary to make it work with other software, whatever the section above says about not redistributing it. Your statutory rights as a consumer are unaffected.</p>
   <h2>Changes</h2>
-  <p>
-    These terms may change with new versions of the app. The version they apply to is shown on the
-    About screen.
-  </p>
-
+  <p>These terms may change with new versions of the app. The version they apply to is shown on the About screen.</p>
   <h2>Governing law</h2>
-  <div class="notice warn">
-    <p>
-      <strong>Not yet filled in.</strong> The applicable jurisdiction goes here before the app is
-      distributed.
-    </p>
-  </div>
+  <p>Austrian law applies, and the courts of Vienna, Austria have jurisdiction.</p>
+  <p>If you are a consumer, that cannot be used against you: you keep the protection of the law of the country you live in, and you may bring a claim in the courts there. A clause choosing one country&#x27;s courts does not override that.</p>
+  <h2>Contact</h2>
+  <p>Juri Calleri, Vienna, Austria. juricalleri@gmail.com.</p>
+  <p>A postal address is published on the imprint at muralis.spazio17.org. It is kept in that one place rather than repeated here, so that changing it does not need a new release of the app.</p>
 
 </main>
 
 <footer>
   <div class="wrap">
-    <span>Muralis — a <a href="https://spazio17.org/">spazio17</a> project.</span>
+    <span>Muralis, a <a href="https://spazio17.org/">spazio17</a> project.</span>
     <nav>
       <a href="../">Overview</a>
       <a href="../privacy/">Privacy policy</a>
+      <a href="../imprint/">Imprint</a>
       <a href="https://github.com/spazio17/muralis">Source</a>
     </nav>
   </div>
