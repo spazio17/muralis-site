@@ -964,11 +964,24 @@ figure.shot .frame::after {
  * the element's own overflow: hidden, and at 2px survives landing between device
  * pixels. Offset inwards so it reads as pigment on the frame rather than a
  * selection ring around it. */
-figure.shot .frame { transition: box-shadow .35s ease, transform .35s ease, outline-color .35s ease; }
+/* THE LIFT IS ON THE FIGURE, NOT ON THE FRAME, and that is the whole point.
+ *
+ * .frame owns a rounded overflow: hidden. Transforming the same element that
+ * owns the clip means the content is moved while the clip stays where it was,
+ * so the screenshot rides up past the top of its own box and gets shaved there,
+ * exactly as reported: a 4x4 square sliding up inside a 5x5 one, sides and
+ * bottom intact, top gone. Lifting the figure instead moves the frame, its clip
+ * and its content as one thing, and there is no longer a clip to disagree with.
+ *
+ * So: keep the transform and the overflow on different elements here. */
+figure.shot { transition: transform .3s ease; }
+figure.shot:hover,
+figure.shot:focus-within { transform: translateY(-3px); }
+
+figure.shot .frame { transition: box-shadow .35s ease, outline-color .35s ease; }
 figure.shot .frame { outline: 2px solid transparent; outline-offset: -2px; }
 figure.shot:hover .frame,
 figure.shot:focus-within .frame {
-  transform: translateY(-3px);
   outline-color: var(--accent);
   box-shadow: inset 0 0 0 1px var(--mat), 0 22px 40px -24px rgba(0, 0, 0, .7);
 }
