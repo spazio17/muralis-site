@@ -245,6 +245,70 @@ section > .wrap > .intro { color: var(--subtext); max-width: var(--measure); mar
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
 }
+/* ------------------------------------------------------------------ tiers
+ *
+ * Two adjacent cards, the way a shop puts them, because the only question a reader
+ * has here is what the paid one adds. The paid card is marked with an accent border
+ * rather than a bigger size or a "most popular" badge: there are two options, one of
+ * which is free forever, so there is nothing to nudge anyone towards.
+ */
+.tiers {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  align-items: start;
+}
+.tier {
+  background: var(--mantle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+.tier.paid { border-color: var(--accent); }
+.tier h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+.tier .price {
+  margin: .3rem 0 0;
+  color: var(--accent);
+  font-size: .95rem;
+  font-weight: 600;
+}
+.tier .price span { color: var(--subtext); font-weight: 400; }
+.tier > p.what {
+  margin: .9rem 0 0;
+  color: var(--subtext);
+  font-size: .93rem;
+}
+.tier ul {
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: .55rem;
+}
+.tier li {
+  font-size: .93rem;
+  padding-left: 1.35rem;
+  position: relative;
+  color: var(--text);
+}
+.tier li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .5em;
+  width: .45rem;
+  height: .45rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.tier.free li::before { background: var(--ok); }
+.tier li b { font-weight: 600; }
+
 /* For a section holding only one or two cards, so they don't stretch into slabs. */
 .cards.narrow { grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 26rem)); }
 

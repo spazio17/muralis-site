@@ -34,6 +34,7 @@
     <nav>
       <a href="#features">What it does</a>
       <a href="#look">Screens</a>
+      <a href="#pricing">Free &amp; Pro</a>
       <a href="#requirements">Requirements</a>
       <a href="#status">Availability</a>
     </nav>
@@ -153,6 +154,57 @@
     </div>
   </section>
 
+  <section id="pricing">
+    <div class="wrap">
+      <h2>Free, and Pro</h2>
+      <p class="intro">
+        The kiosk is the product, and the kiosk is free. Pro adds the remote-control surfaces for
+        people who want their panel wired into Home Assistant.
+      </p>
+      <div class="tiers">
+
+        <div class="tier free">
+          <h3>Muralis</h3>
+          <p class="price">Free <span>&mdash; and complete</span></p>
+          <p class="what">
+            Everything that makes a tablet a wall panel. Not a trial, not a cut-down edition.
+          </p>
+          <ul>
+            <li>Locked to one page, with the system UI out of reach</li>
+            <li>Recovers on its own: retries, timeouts, frozen-page detection, nightly rebuild</li>
+            <li>The recorded corner-tap way out</li>
+            <li>Optional stats overlay</li>
+            <li><b>No Google account needed</b>, on a de-Googled tablet or any other</li>
+            <li><b>No watermark, no expiry, no sign-in, nothing that phones home</b></li>
+          </ul>
+        </div>
+
+        <div class="tier paid">
+          <h3>Muralis Pro</h3>
+          <p class="price">&euro;6 once <span>&mdash; not a subscription</span></p>
+          <p class="what">
+            The remote surfaces. Worth it if you want the panel to be one more thing your house can
+            control; irrelevant if you want a dashboard on a wall.
+          </p>
+          <ul>
+            <li>MQTT: Home Assistant discovery, so entities appear without YAML</li>
+            <li>Telemetry &mdash; battery, memory, network, thermal, dashboard health</li>
+            <li>Commands over MQTT and HTTP: reload, restart, set URL, brightness, reboot</li>
+            <li>The built-in web admin</li>
+            <li><b>One purchase covers every panel on the same Google account</b></li>
+            <li>Buy once, then remove the account again if you prefer &mdash; it stays unlocked</li>
+          </ul>
+        </div>
+
+      </div>
+      <p class="intro" style="margin-top:1.5rem">
+        Nothing is on sale yet &mdash; the price and the split above are how it will work, not
+        something you can buy today. A panel that never buys Pro is never nagged and never stops
+        working.
+      </p>
+    </div>
+  </section>
+
   <section id="requirements">
     <div class="wrap">
       <h2>Requirements</h2>
@@ -174,6 +226,10 @@
             <tr>
               <th scope="row">Without it</th>
               <td>Still runs and recovers. System UI stays reachable, reboot unavailable.</td>
+            </tr>
+            <tr>
+              <th scope="row">Google account</th>
+              <td>Not needed. Only Pro's one-time purchase uses one, and only to buy it.</td>
             </tr>
             <tr>
               <th scope="row">Dashboard</th>
