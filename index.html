@@ -119,34 +119,30 @@
       <div class="shots">
 
         <figure class="shot">
-          <div class="frame"><img src="assets/img/screenshots/panel-in-place.png" alt="A Home Assistant dashboard filling the tablet under lock task, with no browser chrome"></div>
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: A Home Assistant dashboard filling the tablet under lock task, with no browser chrome"><img src="assets/img/screenshots/panel-in-place.png" alt="A Home Assistant dashboard filling the tablet under lock task, with no browser chrome"></button></div>
           <figcaption><b>In place.</b> One dashboard, nothing else reachable.</figcaption>
         </figure>
 
         <figure class="shot contain">
-          <div class="frame"><img src="assets/img/screenshots/web-admin.png" alt="The web admin in a desktop browser: every setting and a live status block"></div>
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The web admin in a desktop browser: every setting and a live status block"><img src="assets/img/screenshots/web-admin.png" alt="The web admin in a desktop browser: every setting and a live status block"></button></div>
           <figcaption><b>Web admin.</b> Every setting, without touching the panel.</figcaption>
         </figure>
 
         <figure class="shot">
-          <div class="frame"><img src="assets/img/screenshots/config-screen.png" alt="The on-device configuration screen, reached through the corner-tap sequence"></div>
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The on-device configuration screen, reached through the corner-tap sequence"><img src="assets/img/screenshots/config-screen.png" alt="The on-device configuration screen, reached through the corner-tap sequence"></button></div>
           <figcaption><b>On the device.</b> The same settings, in your hand.</figcaption>
         </figure>
 
         <figure class="shot">
-          <div class="frame"><img src="assets/img/screenshots/escape-recorder.png" alt="Recording a corner-tap combination, four taps in"></div>
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: Recording a corner-tap combination, four taps in"><img src="assets/img/screenshots/escape-recorder.png" alt="Recording a corner-tap combination, four taps in"></button></div>
           <figcaption><b>Escape recorder.</b> Tap out the combination you want.</figcaption>
         </figure>
 
         <figure class="shot">
-          <div class="frame"><img src="assets/img/screenshots/stats-overlay.png" alt="The optional stats overlay drawn over the top-right of the dashboard"></div>
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The optional stats overlay drawn over the top-right of the dashboard"><img src="assets/img/screenshots/stats-overlay.png" alt="The optional stats overlay drawn over the top-right of the dashboard"></button></div>
           <figcaption><b>Stats overlay.</b> Optional numbers on the glass.</figcaption>
         </figure>
 
-        <figure class="shot pending">
-          <div class="frame"><div class="placeholder"><strong>Home Assistant</strong>The device as discovery presents it</div></div>
-          <figcaption><b>In Home Assistant.</b> Discovered, not declared.</figcaption>
-        </figure>
 
       </div>
     </div>
@@ -215,6 +211,17 @@
   </div>
 </footer>
 
+<dialog class="lightbox" id="lightbox" aria-label="Screenshot">
+  <div class="sheet">
+    <img id="lightbox-img" src="" alt="">
+    <div class="bar">
+      <p id="lightbox-caption"></p>
+      <button type="button" id="lightbox-close">Close</button>
+    </div>
+  </div>
+</dialog>
+
 <script src="assets/js/theme.js"></script>
+<script src="assets/js/lightbox.js"></script>
 </body>
 </html>

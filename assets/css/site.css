@@ -280,8 +280,8 @@ section > .wrap > .intro { color: var(--subtext); max-width: var(--measure); mar
  */
 .shots {
   display: grid;
-  gap: 1.1rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+  gap: 1.4rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
 }
 figure.shot { margin: 0; }
 figure.shot .frame {
@@ -313,6 +313,82 @@ figure.shot figcaption {
   font-size: .85rem;
 }
 figure.shot figcaption b { color: var(--text); font-weight: 600; }
+
+/* ---------------------------------------------------------------- lightbox
+ *
+ * A <dialog> rather than a hand-rolled overlay: showModal() brings the focus trap,
+ * the Escape key and the inert background with it, none of which is worth
+ * reimplementing. The trigger is a real <button> so it is reachable by keyboard and
+ * announced as a control; a bare <img> with a click handler is neither.
+ */
+button.shot-open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: var(--radius);
+  overflow: hidden;
+  font: inherit;
+  color: inherit;
+}
+button.shot-open:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+dialog.lightbox {
+  padding: 0;
+  border: 0;
+  background: none;
+  max-width: 96vw;
+  max-height: 96vh;
+  width: min(96vw, 1600px);
+  color: var(--text);
+}
+dialog.lightbox::backdrop {
+  /* Deliberately a literal: ::backdrop does not inherit custom properties in every
+     engine, and a transparent backdrop is worse than a slightly-off one. */
+  background: rgba(10, 10, 16, .82);
+}
+dialog.lightbox .sheet {
+  background: var(--mantle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+dialog.lightbox img {
+  display: block;
+  width: 100%;
+  max-height: 84vh;
+  object-fit: contain;
+  background: var(--base);
+}
+dialog.lightbox .bar {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  padding: .7rem .9rem;
+  border-top: 1px solid var(--border);
+}
+dialog.lightbox .bar p {
+  margin: 0;
+  font-size: .88rem;
+  color: var(--subtext);
+  flex: 1;
+}
+dialog.lightbox .bar button {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 999px;
+  padding: .3rem .8rem;
+  font: inherit;
+  font-size: .82rem;
+  cursor: pointer;
+}
+dialog.lightbox .bar button:hover { border-color: var(--accent); color: var(--accent); }
 
 /* Portrait captures (the tablet's own screens) want a taller slot. */
 figure.shot.portrait .frame { aspect-ratio: 10 / 16; }
