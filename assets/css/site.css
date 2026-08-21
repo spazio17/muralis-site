@@ -317,6 +317,13 @@ figure.shot figcaption b { color: var(--text); font-weight: 600; }
 /* Portrait captures (the tablet's own screens) want a taller slot. */
 figure.shot.portrait .frame { aspect-ratio: 10 / 16; }
 
+/*
+ * A capture whose own proportions are not 16:10 — the web admin reflows into columns, so its
+ * natural shape is nearly square. Letterbox it rather than cropping: the point of that shot is
+ * that every setting is on one page, and `cover` would cut the columns off to prove the opposite.
+ */
+figure.shot.contain img { object-fit: contain; background: var(--mantle); }
+
 /* --------------------------------------------------------------- spec table */
 
 .spec { width: 100%; border-collapse: collapse; font-size: .92rem; }
