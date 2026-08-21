@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://muralis.spazio17.org/">
 <link rel="icon" href="assets/img/icon-512.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/icon-512.png">
-<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/site.css?v=3">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Muralis, hang it up and leave it">
 <meta property="og:description" content="Locks a tablet to one Home Assistant dashboard, recovers on its own, answers to MQTT and HTTP.">
@@ -48,6 +48,14 @@
 <main>
 
   <div class="hero">
+    <!-- Decoration only, and marked so: the passe-partout around the copy, and the
+         pass of spray that drifts over the wall twice a minute. The paint patches,
+         the tiled grid and the plaster grain are the hero's own ::before and
+         ::after, so they need no element. -->
+    <div class="mat" aria-hidden="true"></div>
+    <div class="tiles" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="spray" aria-hidden="true"></div>
     <div class="wrap">
       <span class="status"><span class="dot" aria-hidden="true"></span>In development</span>
       <h1>Hang it up,<br>and leave it.</h1>
@@ -67,45 +75,45 @@
 
   <section id="features">
     <div class="wrap">
-      <h2>Built to be left alone</h2>
-      <p class="intro">
+      <h2 class="stroke">Built to be left alone</h2>
+      <p class="intro stroke">
         Wall panels drift. A browser stops repainting, a blip leaves an error page, an update reboots
         into the stock launcher.
       </p>
       <div class="cards">
-        <div class="card">
+        <div class="card stroke">
           <h3>Locked to one page</h3>
           <p>Lock task, home app, no reachable system UI. Comes back by itself after a reboot.</p>
         </div>
-        <div class="card">
+        <div class="card stroke">
           <h3>Recovers unattended</h3>
           <p>Failed loads retry, hung loads time out, and a killed renderer is rebuilt without anyone noticing.</p>
         </div>
-        <div class="card">
+        <div class="card stroke">
           <h3>Catches a frozen page</h3>
           <p>Reloads a dashboard that was updating and stopped. A page that never changed is left alone.</p>
         </div>
-        <div class="card">
+        <div class="card stroke">
           <h3>Restarts itself nightly</h3>
           <p>A full restart in the small hours, and a dashboard rebuild whenever the device reports low memory.</p>
         </div>
-        <div class="card">
+        <div class="card stroke">
           <h3>One command set, two transports</h3>
           <p>MQTT and HTTP behave identically. A refused command always says why.</p>
         </div>
-        <div class="card">
+        <div class="card stroke">
           <h3>Home Assistant discovery</h3>
           <p>Entities appear without YAML. Offline is backed by the broker's Last Will, not a heartbeat.</p>
         </div>
-        <div class="card">
+        <div class="card stroke">
           <h3>Telemetry to automate on</h3>
           <p>Battery, memory, storage, network, CPU, thermal. Every 10 to 300 seconds.</p>
         </div>
-        <div class="card">
+        <div class="card stroke">
           <h3>A way out you choose</h3>
           <p>Three to twelve corner taps, recorded on the device. Nothing hardcoded in the binary.</p>
         </div>
-        <div class="card">
+        <div class="card stroke">
           <h3>Off until configured</h3>
           <p>No default credentials. Broker and admin secrets encrypted in the Android keystore.</p>
         </div>
@@ -115,36 +123,36 @@
 
   <section id="look">
     <div class="wrap">
-      <h2>Screens</h2>
-      <p class="intro">The tablet, the web admin, and the entities they produce.</p>
+      <h2 class="stroke">Screens</h2>
+      <p class="intro stroke">The tablet, the web admin, and the entities they produce.</p>
       <div class="shots">
 
-        <figure class="shot">
+        <figure class="shot stroke">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: A Home Assistant dashboard filling the tablet under lock task, with no browser chrome"><img src="assets/img/screenshots/panel-in-place.png" alt="A Home Assistant dashboard filling the tablet under lock task, with no browser chrome"></button></div>
           <figcaption><b>In place.</b> One dashboard, nothing else reachable.</figcaption>
         </figure>
 
-        <figure class="shot contain">
+        <figure class="shot contain stroke">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The web admin in a desktop browser: every setting and a live status block"><img src="assets/img/screenshots/web-admin.png" alt="The web admin in a desktop browser: every setting and a live status block"></button></div>
           <figcaption><b>Web admin.</b> Every setting, without touching the panel.</figcaption>
         </figure>
 
-        <figure class="shot">
+        <figure class="shot stroke">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The on-device configuration screen, reached through the corner-tap sequence"><img src="assets/img/screenshots/config-screen.png" alt="The on-device configuration screen, reached through the corner-tap sequence"></button></div>
           <figcaption><b>On the device.</b> The same settings, in your hand.</figcaption>
         </figure>
 
-        <figure class="shot">
+        <figure class="shot stroke">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: Recording a corner-tap combination, four taps in"><img src="assets/img/screenshots/escape-recorder.png" alt="Recording a corner-tap combination, four taps in"></button></div>
           <figcaption><b>Escape recorder.</b> Tap out the combination you want.</figcaption>
         </figure>
 
-        <figure class="shot">
+        <figure class="shot stroke">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The optional stats overlay drawn over the top-right of the dashboard"><img src="assets/img/screenshots/stats-overlay.png" alt="The optional stats overlay drawn over the top-right of the dashboard"></button></div>
           <figcaption><b>Stats overlay.</b> Optional numbers on the glass.</figcaption>
         </figure>
 
-        <figure class="shot contain">
+        <figure class="shot contain stroke">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The Muralis device page in Home Assistant: brightness controls, five command buttons and seven sensors, all created by MQTT discovery"><img src="assets/img/screenshots/home-assistant.png" alt="The Muralis device page in Home Assistant: brightness controls, five command buttons and seven sensors, all created by MQTT discovery"></button></div>
           <figcaption><b>In Home Assistant.</b> Discovered, not declared.</figcaption>
         </figure>
@@ -156,14 +164,14 @@
 
   <section id="pricing">
     <div class="wrap">
-      <h2>Free, and Pro</h2>
-      <p class="intro">
+      <h2 class="stroke">Free, and Pro</h2>
+      <p class="intro stroke">
         The kiosk is the product, and the kiosk is free. Pro adds the remote-control surfaces for
         people who want their panel wired into Home Assistant.
       </p>
       <div class="tiers">
 
-        <div class="tier free">
+        <div class="tier free stroke">
           <h3>Muralis</h3>
           <p class="price">Free <span>&mdash; and complete</span></p>
           <p class="what">
@@ -179,7 +187,7 @@
           </ul>
         </div>
 
-        <div class="tier paid">
+        <div class="tier paid stroke">
           <h3>Muralis Pro</h3>
           <p class="price">&euro;6 once <span>&mdash; not a subscription</span></p>
           <p class="what">
@@ -207,7 +215,7 @@
 
   <section id="requirements">
     <div class="wrap">
-      <h2>Requirements</h2>
+      <h2 class="stroke">Requirements</h2>
       <div class="table-scroll">
         <table class="spec">
           <tbody>
@@ -247,8 +255,8 @@
 
   <section id="status">
     <div class="wrap">
-      <h2>Availability</h2>
-      <p class="intro">Runs on real hardware daily. Not published yet, and nothing here to download.</p>
+      <h2 class="stroke">Availability</h2>
+      <p class="intro stroke">Runs on real hardware daily. Not published yet, and nothing here to download.</p>
       <div class="notice warn">
         <p>
           <strong>Pre-release.</strong> The download and provisioning QR arrive once the release
@@ -263,7 +271,7 @@
 
 <footer>
   <div class="wrap">
-    <span>Muralis, a <a href="https://spazio17.org/">spazio17</a> project.</span>
+    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project.</span>
     <nav>
       <a href="privacy/">Privacy policy</a>
       <a href="terms/">Terms</a>
@@ -283,7 +291,8 @@
   </div>
 </dialog>
 
-<script src="assets/js/theme.js"></script>
-<script src="assets/js/lightbox.js"></script>
+<script src="assets/js/theme.js?v=3"></script>
+<script src="assets/js/lightbox.js?v=3"></script>
+<script src="assets/js/motion.js?v=3"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 /*
- * spazio17 site styles, shared byte-for-byte between muralis-site and
- * spazio17.github.io. Pages cannot share an asset across repos, so this file is
- * copied; keep the copies identical so a fix lands in both.
+ * muralis.spazio17.org styles. This file used to be a byte-for-byte copy of
+ * spazio17.github.io's, and is deliberately no longer: the umbrella site went
+ * its own way on 2026-08-21. What must not change here is the palette.
  *
  * The custom properties below are copied verbatim from the app's own palette
  * (KioskTheme.java on the tablet, PAGE_CSS in HttpAdminServer.java for the web
@@ -9,6 +9,19 @@
  * towards saturation. Same names, same values, same light/dark mechanism, so
  * the site, the tablet UI and the web admin read as one product. If a colour
  * changes in the app, change it here too.
+ *
+ * What is new is the motion, and its vocabulary is the name. Murales is
+ * graffiti, so the page behaves like a painted wall: plaster grain, paint
+ * patches that drift, a passe-partout around the copy, screenshots hung as
+ * framed works, sections that get rollered on rather than faded in, and
+ * pigment where a ruled border used to be. The complements to the app's mauve
+ * come from the same two Catppuccin flavours, peach and teal, so nothing here
+ * introduces a colour the app does not already own.
+ *
+ * The movement is mostly slow enough to be noticed only on the second look.
+ * Twice a minute it is not: the wordmark slips out of register like a stencil
+ * pulled too early, and a pass of spray drifts over the wall. Quiet, then
+ * noise, then quiet.
  */
 :root {
   color-scheme: light dark;
@@ -28,8 +41,29 @@
   --measure: 68ch;
   --page: 1120px;
   --hero-grid: rgba(76, 79, 105, .10);
-  --hero-glow-1: rgba(130, 38, 239, .10);
-  --hero-glow-2: rgba(30, 102, 245, .08);
+  --mono: ui-monospace, SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, monospace;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  /* Paint patches on the wall, and the two Catppuccin flavours that complement
+     the app's mauve. Every stop ends at zero alpha on its own hue rather than
+     at `transparent`, which is rgba(0,0,0,0) and drags a dark cast through the
+     ramp. See the note on banding above the hero. */
+  /* Which palette colour is the page and which is a panel on it, rather than a
+     new colour. Latte's base is lighter than its mantle, Mocha's is darker, so
+     the page and the panels swap roles between themes and both get separation
+     out of the palette the app already owns. Light mode had base on mantle, a
+     two percent difference, which is why every card looked like a rumour. */
+  --page-bg: var(--mantle);
+  --panel-bg: var(--base);
+  --panel-shadow: 0 1px 2px rgba(76, 79, 105, .06), 0 10px 24px -18px rgba(76, 79, 105, .35);
+  --node: rgba(136, 57, 239, .30);
+  --wall-1: rgba(136, 57, 239, .17);
+  --wall-2: rgba(254, 100, 11, .14);
+  --wall-3: rgba(23, 146, 153, .12);
+  --comp: #fe640b;
+  --comp-2: #179299;
+  --mat: rgba(76, 79, 105, .20);
+  --grain-alpha: .05;
+  --page-grain-alpha: .045;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,8 +81,18 @@
     --warn: #ffdf8f;
     --bad: #ff6f91;
     --hero-grid: rgba(205, 214, 244, .07);
-    --hero-glow-1: rgba(192, 140, 255, .16);
-    --hero-glow-2: rgba(122, 162, 255, .12);
+    --page-bg: var(--base);
+    --panel-bg: var(--mantle);
+    --panel-shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 14px 30px -20px rgba(0, 0, 0, .6);
+    --node: rgba(203, 166, 247, .32);
+    --wall-1: rgba(203, 166, 247, .15);
+    --wall-2: rgba(250, 179, 135, .11);
+    --wall-3: rgba(148, 226, 213, .10);
+    --comp: #fab387;
+    --comp-2: #94e2d5;
+    --mat: rgba(205, 214, 244, .18);
+    --grain-alpha: .075;
+    --page-grain-alpha: .03;
   }
 }
 
@@ -69,11 +113,36 @@ html[data-theme="dark"] {
   --warn: #ffdf8f;
   --bad: #ff6f91;
   --hero-grid: rgba(205, 214, 244, .07);
-  --hero-glow-1: rgba(192, 140, 255, .16);
-  --hero-glow-2: rgba(122, 162, 255, .12);
+  --page-bg: var(--base);
+  --panel-bg: var(--mantle);
+  --panel-shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 14px 30px -20px rgba(0, 0, 0, .6);
+  --node: rgba(203, 166, 247, .32);
+  --wall-1: rgba(203, 166, 247, .15);
+  --wall-2: rgba(250, 179, 135, .11);
+  --wall-3: rgba(148, 226, 213, .10);
+  --comp: #fab387;
+  --comp-2: #94e2d5;
+  --mat: rgba(205, 214, 244, .18);
+  --grain-alpha: .075;
+  --page-grain-alpha: .03;
 }
 
 * { box-sizing: border-box; }
+
+/* Plaster under everything. Fixed rather than scrolling, because grain that
+   moves with the content reads as a pattern instead of a surface. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--grain);
+  background-size: 200px 200px;
+  opacity: var(--page-grain-alpha);
+  mix-blend-mode: overlay;
+}
+body > * { position: relative; z-index: 1; }
 
 body {
   margin: 0;
@@ -81,7 +150,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--base);
+  background: var(--page-bg);
   color: var(--text);
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
@@ -151,31 +220,173 @@ a:hover { color: var(--accent); }
 
 /* -------------------------------------------------------------------- hero
  *
- * The backdrop is drawn, not photographed: a square grid standing in for a
- * tiled wall and a dashboard's tiles, lit by two soft accent glows. Pure
- * gradients, so it costs no request, ships no binary, and recolours itself with
- * the theme instead of needing a second file for dark mode. The mask fades it
- * out before it reaches the text, which is what keeps it an accent rather than
- * a pattern competing with the copy.
+ * A painted wall. Back to front: three paint patches drifting, the ruled grid
+ * that stands in for a tiled wall and a dashboard's tiles, plaster grain over
+ * both, an occasional pass of spray, a passe-partout around the copy, then the
+ * copy. All gradients and transforms, so it costs no request and ships no
+ * binary; the grain is an inline SVG turbulence in a data URI, which is not a
+ * request either.
  *
- * To put a real photograph behind the hero later, add it as the first layer of
- * the background shorthand below and drop the grid's two repeating gradients.
+ * ON THE BANDING THIS REPLACED. The two glows here used to fade to
+ * `transparent`, over 38rem, from .10 alpha. Three things compounded: alpha is
+ * 8 bit, the ramp was enormous so each step was 6 to 18 pixels wide, and the
+ * mask multiplied a second 8 bit ramp over the first. Measured on a headless
+ * render of the old hero: 24 flat plateaus across a 540px scan of the top right
+ * glow, each a concentric arc, which is what read as "the glow repeated poorly
+ * down the page". Reported 2026-08-21.
+ *
+ * Three parts to the fix, and all three matter: every stop now ends at zero
+ * alpha *on its own hue* rather than at `transparent`, which is rgba(0,0,0,0)
+ * and pulls the ramp towards black; the patches are smaller and steeper, so the
+ * steps land closer together than the eye resolves; and the grain doubles as a
+ * dither, breaking whatever contour survives. If a gradient ever bands here
+ * again, the grain opacity is the first dial to reach for.
  */
 
-.hero { position: relative; overflow: hidden; padding: 6rem 0 3.5rem; }
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 6.5rem 0 4rem;
+  isolation: isolate;
+}
 
+/* The base rule below gives every direct child position: relative, which the
+   decorative layers must escape to stack. */
+.hero > .spray,
+.hero > .grain,
+.hero > .tiles,
+.hero > .mat { position: absolute; pointer-events: none; }
+/* ::after is the element's last child, so the copy has to be lifted a step or
+   the grain lands on top of the headline. */
+.hero > .wrap { position: relative; z-index: 1; }
+
+/* Paint patches. Three, in mauve and its two complements, each drifting and
+   breathing on a different prime-ish period so the wall never repeats within a
+   reading. */
 .hero::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -15%;
+  z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(38rem 22rem at 10% -15%, var(--hero-glow-1), transparent 70%),
-    radial-gradient(32rem 20rem at 88% 5%, var(--hero-glow-2), transparent 70%),
+    radial-gradient(22rem 15rem at 14% 8%, var(--wall-1), rgba(136, 57, 239, 0) 68%),
+    radial-gradient(19rem 13rem at 82% 14%, var(--wall-2), rgba(254, 100, 11, 0) 68%),
+    radial-gradient(17rem 12rem at 52% 62%, var(--wall-3), rgba(23, 146, 153, 0) 70%);
+  animation: patches 47s ease-in-out infinite alternate;
+}
+
+/* The tiled wall, plus the plaster it is painted on. Grain first in the stack
+   so it sits over the ruled lines rather than under them. */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--node) 1.5px, transparent 1.7px),
     repeating-linear-gradient(to right, var(--hero-grid) 0 1px, transparent 1px 4.5rem),
     repeating-linear-gradient(to bottom, var(--hero-grid) 0 1px, transparent 1px 4.5rem);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 92%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 92%);
+  background-size: 4.5rem 4.5rem, auto, auto;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 94%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 94%);
+  animation: creep 60s linear infinite;
+}
+@keyframes creep {
+  to { background-position: 4.5rem 4.5rem, 4.5rem 0, 0 4.5rem; }
+}
+
+/* Tiles being painted. Six cell-aligned washes, each lit for about six seconds
+   of a fourteen second cycle and started at spread delays, so one to three of
+   them are glowing at any moment and the wall is never finished. Everything is
+   a multiple of 4.5rem, which is the lattice cell, so a wash always lands inside
+   the lines rather than across them. */
+/* Masked away from the left, where the copy is. A wash blooming directly behind
+   the headline reads as a highlighter accident rather than a painted tile, and
+   at 1440px the copy and the tile field otherwise overlap. */
+.hero > .tiles {
+  inset: 0;
+  z-index: 0;
+  -webkit-mask-image: linear-gradient(100deg, transparent 0 34%, #000 54%);
+  mask-image: linear-gradient(100deg, transparent 0 34%, #000 54%);
+}
+.hero > .tiles span {
+  position: absolute;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 3px;
+  opacity: 0;
+  filter: blur(3px);
+  background: var(--accent);
+  animation: bloom 14s ease-in-out infinite;
+}
+.hero > .tiles span:nth-child(1) { left: 9rem;    top: 4.5rem;  animation-delay: 0s; }
+.hero > .tiles span:nth-child(2) { left: 27rem;   top: 13.5rem; width: 9rem; background: var(--comp); animation-delay: 2.4s; }
+.hero > .tiles span:nth-child(3) { left: 45rem;   top: 4.5rem;  background: var(--comp-2); animation-delay: 4.8s; }
+.hero > .tiles span:nth-child(4) { left: 18rem;   top: 18rem;   animation-delay: 7.1s; }
+.hero > .tiles span:nth-child(5) { left: 54rem;   top: 9rem;    height: 9rem; background: var(--comp-2); animation-delay: 9.5s; }
+.hero > .tiles span:nth-child(6) { left: 36rem;   top: 22.5rem; background: var(--comp); animation-delay: 11.8s; }
+
+@keyframes bloom {
+  0%, 100% { opacity: 0; transform: scale(.94); }
+  10% { opacity: .30; transform: scale(1); }
+  30% { opacity: .26; }
+  42% { opacity: 0; transform: scale(1.02); }
+}
+
+/* Plaster grain, on its own layer because it needs its own alpha. Sharing
+   ::after with the ruled grid meant an opacity there would have faded the grid
+   with it, so the grain went out at full strength and the hero looked like
+   television static. Its second job is dithering the paint patches, which is
+   why it sits above them. */
+.hero > .grain {
+  inset: 0;
+  z-index: 0;
+  background-image: var(--grain);
+  background-size: 180px 180px;
+  opacity: var(--grain-alpha);
+  mix-blend-mode: overlay;
+}
+
+/* Passe-partout. Two lines inset from the hero edge, the way a mat sits inside
+   a frame, drawn only on the two axes that read as a frame at this width. */
+.hero > .mat {
+  inset: 2.5rem 1.5rem 2rem;
+  z-index: 0;
+  border: 1px solid var(--mat);
+  border-radius: 2px;
+}
+.hero > .mat::before {
+  content: "";
+  position: absolute;
+  inset: .45rem;
+  border: 1px solid var(--mat);
+  border-radius: 1px;
+  opacity: .55;
+}
+
+/* Spray. Grain at a coarser frequency, held invisible for most of a 26s cycle
+   and drifting across for about four seconds of it. This is the noise. */
+.hero > .spray {
+  inset: 0;
+  z-index: 0;
+  background-image: var(--grain);
+  background-size: 340px 340px;
+  mix-blend-mode: overlay;
+  opacity: 0;
+  animation: spray 26s ease-in-out infinite;
+}
+
+@keyframes patches {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(2.5%, -1.5%, 0) scale(1.05); }
+}
+@keyframes spray {
+  0%, 74% { opacity: 0; transform: translate3d(-6%, 2%, 0); }
+  82% { opacity: .13; }
+  90% { opacity: .08; }
+  100% { opacity: 0; transform: translate3d(6%, -2%, 0); }
 }
 
 .hero > * { position: relative; }
@@ -190,7 +401,7 @@ a:hover { color: var(--accent); }
 .facts li {
   font-size: .8rem;
   color: var(--subtext);
-  background: var(--mantle);
+  background: var(--panel-bg);
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: .32rem .8rem;
@@ -231,7 +442,31 @@ a:hover { color: var(--accent); }
 
 /* ---------------------------------------------------------------- sections */
 
-section { padding: 4rem 0; border-top: 1px solid var(--border); }
+section { position: relative; padding: 4.25rem 0; border-top: 0; }
+/* Pigment instead of a ruled border: mauve into blue into peach, smeared along
+   the join and drifting so the mix is never quite the same twice. */
+section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+      transparent,
+      var(--accent) 18%,
+      var(--accent-alt) 42%,
+      var(--comp-2) 62%,
+      var(--comp) 82%,
+      transparent);
+  background-size: 240% 100%;
+  opacity: .5;
+  animation: pigment 38s ease-in-out infinite alternate;
+}
+@keyframes pigment {
+  from { background-position: 0 0; }
+  to { background-position: 100% 0; }
+}
 section > .wrap > h2 {
   font-size: 1.5rem;
   margin: 0 0 .4rem;
@@ -259,7 +494,8 @@ section > .wrap > .intro { color: var(--subtext); max-width: var(--measure); mar
   align-items: start;
 }
 .tier {
-  background: var(--mantle);
+  background: var(--panel-bg);
+  box-shadow: var(--panel-shadow);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.4rem 1.5rem 1.5rem;
@@ -313,7 +549,8 @@ section > .wrap > .intro { color: var(--subtext); max-width: var(--measure); mar
 .cards.narrow { grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 26rem)); }
 
 .card {
-  background: var(--mantle);
+  background: var(--panel-bg);
+  box-shadow: var(--panel-shadow);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.1rem 1.15rem 1.2rem;
@@ -352,7 +589,7 @@ figure.shot .frame {
   aspect-ratio: 16 / 10;
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  background: var(--mantle);
+  background: var(--panel-bg);
   overflow: hidden;
   display: flex;
 }
@@ -417,7 +654,7 @@ dialog.lightbox::backdrop {
   background: rgba(10, 10, 16, .82);
 }
 dialog.lightbox .sheet {
-  background: var(--mantle);
+  background: var(--panel-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
@@ -538,6 +775,247 @@ footer nav { display: flex; flex-wrap: wrap; gap: 1rem; margin-left: auto; }
 footer a { color: var(--subtext); }
 footer a:hover { color: var(--accent); }
 
+/* =========================================================== the painted page
+ *
+ * Enhancement over a page that already works without any of it. Two rules hold
+ * for everything below: nothing may hide content when the scripting or the
+ * property is unavailable, and nothing may move for a reader who asked for less
+ * motion.
+ */
+
+/* The wordmark, and the one piece of real noise on the page. For 92% of the
+   cycle it is set solid in mauve. Then the stencil slips: the complements offset
+   a couple of pixels either side, the way a screen print pulled too early puts
+   the second colour off register, and it snaps back. */
+.hero h1 { position: relative; }
+.hero h1::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero h1 {
+  animation: misregister 31s steps(1, end) infinite;
+}
+@keyframes misregister {
+  0%, 91.5% { text-shadow: none; }
+  92% { text-shadow: -2px 0 var(--comp), 2px 0 var(--comp-2); }
+  93% { text-shadow: 3px 1px var(--comp-2), -3px -1px var(--comp); }
+  94% { text-shadow: -1px 0 var(--comp); }
+  95%, 100% { text-shadow: none; }
+}
+
+/* Fact pills as a paint palette: a dab of colour on each, cycling through the
+   app's mauve and its two complements. */
+.hero .facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  transition: border-color .3s ease, transform .3s ease, color .3s ease;
+}
+.hero .facts li::before {
+  content: "";
+  width: .55rem;
+  height: .55rem;
+  border-radius: 2px;
+  transform: rotate(-8deg);
+  background: var(--accent);
+}
+.hero .facts li:nth-child(3n+2)::before { background: var(--comp); }
+.hero .facts li:nth-child(3n+3)::before { background: var(--comp-2); }
+.hero .facts li:hover { transform: translateY(-2px) rotate(-.5deg); color: var(--text); }
+.hero .facts li:nth-child(3n+1):hover { border-color: var(--accent); }
+.hero .facts li:nth-child(3n+2):hover { border-color: var(--comp); }
+.hero .facts li:nth-child(3n+3):hover { border-color: var(--comp-2); }
+
+/* Masthead: a pigment rail appears under it once the page has scrolled, rather
+   than a frosted panel. motion.js sets the class. */
+.masthead { transition: box-shadow .3s ease; }
+.scrolled .masthead {
+  box-shadow: 0 1px 0 0 var(--accent), 0 10px 24px -18px rgba(0, 0, 0, .5);
+}
+
+/* Body copy links get a marker swipe instead of an underline slide: the band
+   grows from the left behind the text, in the warm complement. */
+.prose p a,
+section p a,
+.tier a {
+  position: relative;
+  text-decoration: none;
+  border-bottom: 1px solid var(--mat);
+}
+.prose p a::before,
+section p a::before,
+.tier a::before {
+  content: "";
+  position: absolute;
+  left: -.15em;
+  right: -.15em;
+  bottom: -.05em;
+  top: .55em;
+  z-index: -1;
+  background: var(--comp);
+  opacity: .28;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s cubic-bezier(.2, .7, .2, 1);
+}
+.prose p a:hover::before,
+section p a:hover::before,
+.tier a:hover::before { transform: scaleX(1); }
+
+/* Cards as paint chips: the top edge draws itself in on hover, and which
+   pigment it uses cycles across the grid so a row of nine is not one colour
+   nine times. */
+.card {
+  position: relative;
+  overflow: hidden;
+  transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .45s cubic-bezier(.2, .7, .2, 1);
+}
+.cards .card:nth-child(3n+2)::after { background: var(--comp); }
+.cards .card:nth-child(3n+3)::after { background: var(--comp-2); }
+.card:hover,
+.card:focus-within {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 16px 34px -20px rgba(0, 0, 0, .45);
+}
+.cards .card:nth-child(3n+2):hover { border-color: var(--comp); }
+.cards .card:nth-child(3n+3):hover { border-color: var(--comp-2); }
+.card:hover::after,
+.card:focus-within::after { transform: scaleX(1); }
+
+/* The paid tier, with wet paint along its top edge and a drip below it. */
+.tier.paid { position: relative; overflow: hidden; }
+.tier.paid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--comp-2) 60%, var(--comp));
+}
+.tier.paid::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 22%;
+  width: 3px;
+  height: 1.6rem;
+  border-radius: 0 0 3px 3px;
+  background: linear-gradient(to bottom, var(--accent), rgba(136, 57, 239, 0));
+  animation: drip 19s ease-in-out infinite;
+  transform-origin: top;
+}
+@keyframes drip {
+  0%, 70% { transform: scaleY(.35); opacity: .9; }
+  88% { transform: scaleY(1); opacity: .75; }
+  100% { transform: scaleY(.35); opacity: .9; }
+}
+
+/* Screenshots hung as framed works: a mat inside the frame, a gallery label
+   under it, and a light that comes up on hover. */
+figure.shot .frame {
+  position: relative;
+  padding: .55rem;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--mat), 0 14px 30px -22px rgba(0, 0, 0, .6);
+  transition: box-shadow .35s ease, transform .35s ease;
+}
+/* The gallery light. Inset by a pixel and radius-corrected, because an
+   absolutely positioned child resolves inset: 0 against the PADDING box, which
+   is exactly where an inset box-shadow paints. At inset: 0 this gradient sat on
+   top of the frame's own hover ring and wiped out its top edge, brightest at the
+   top centre where the light is strongest. Reported 2026-08-22. */
+figure.shot .frame::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(var(--radius) - 1px);
+  pointer-events: none;
+  background: radial-gradient(60% 45% at 50% 0%, rgba(255, 255, 255, .18), rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+/* The hover pigment is an OUTLINE, and that is the third attempt at this edge.
+ *
+ * First it was an inset box-shadow, which paints on the padding edge, exactly
+ * where the gallery light sat at inset: 0, so the light wiped the top of it.
+ * Then it was the border colour, which the light can no longer reach, but a 1px
+ * border on this element is still fragile: the frame carries aspect-ratio, so
+ * its height is usually fractional, and lifting it 3px puts that 1px edge on a
+ * half device pixel where it antialiases down to nothing. On the top edge, over
+ * a bright screenshot, "nothing" is what you see.
+ *
+ * An outline is painted above the element and its descendants, is not clipped by
+ * the element's own overflow: hidden, and at 2px survives landing between device
+ * pixels. Offset inwards so it reads as pigment on the frame rather than a
+ * selection ring around it. */
+figure.shot .frame { transition: box-shadow .35s ease, transform .35s ease, outline-color .35s ease; }
+figure.shot .frame { outline: 2px solid transparent; outline-offset: -2px; }
+figure.shot:hover .frame,
+figure.shot:focus-within .frame {
+  transform: translateY(-3px);
+  outline-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--mat), 0 22px 40px -24px rgba(0, 0, 0, .7);
+}
+figure.shot:hover .frame::after,
+figure.shot:focus-within .frame::after { opacity: 1; }
+figure.shot figcaption {
+  font-family: var(--mono);
+  font-size: .76rem;
+  letter-spacing: .01em;
+}
+figure.shot figcaption b {
+  display: block;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: .68rem;
+  color: var(--accent);
+  margin-bottom: .15rem;
+}
+
+/* Rollered on, not faded in: a clip-path travelling left to right with the
+   element sliding a few pixels behind it, which reads as a roller pass rather
+   than an opacity ramp.
+ *
+ * THE BASE STATE IS VISIBLE, and that is the whole point of this shape. The
+ * first version hid every block and waited for motion.js to reveal it, so one
+ * observer callback that never arrived took most of the page with it, which is
+ * exactly what happened on 2026-08-21. Here the clipped state exists only
+ * inside the keyframes, so it can only ever be reached by an element that is
+ * already being animated. No script, no observer, a thrown exception, an engine
+ * without IntersectionObserver: every one of those now means a page that simply
+ * does not animate. */
+.stroke.on {
+  animation: roller .85s cubic-bezier(.2, .7, .2, 1) both;
+}
+@keyframes roller {
+  from { clip-path: inset(0 100% 0 0); transform: translateY(10px); }
+  to { clip-path: inset(0 0 0 0); transform: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
+  /* The spray and the drip exist only to move, so they go entirely. The patches,
+     grain, mat and pigment all hold their first frame and still look painted. */
+  .hero > .spray,
+  .hero > .tiles,
+  .tier.paid::after { display: none; }
+  /* The grain is texture rather than movement, so it stays. */
+  .stroke.on { animation: none !important; }
 }
