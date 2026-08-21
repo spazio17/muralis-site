@@ -27,9 +27,9 @@
   --radius: 14px;
   --measure: 68ch;
   --page: 1120px;
-  --hero-grid: rgba(76, 79, 105.10);
-  --hero-glow-1: rgba(130, 38, 239.10);
-  --hero-glow-2: rgba(30, 102, 245.08);
+  --hero-grid: rgba(76, 79, 105, .10);
+  --hero-glow-1: rgba(130, 38, 239, .10);
+  --hero-glow-2: rgba(30, 102, 245, .08);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -46,9 +46,9 @@
     --ok: #8ee88a;
     --warn: #ffdf8f;
     --bad: #ff6f91;
-    --hero-grid: rgba(205, 214, 244.07);
-    --hero-glow-1: rgba(192, 140, 255.16);
-    --hero-glow-2: rgba(122, 162, 255.12);
+    --hero-grid: rgba(205, 214, 244, .07);
+    --hero-glow-1: rgba(192, 140, 255, .16);
+    --hero-glow-2: rgba(122, 162, 255, .12);
   }
 }
 
@@ -68,9 +68,9 @@ html[data-theme="dark"] {
   --ok: #8ee88a;
   --warn: #ffdf8f;
   --bad: #ff6f91;
-  --hero-grid: rgba(205, 214, 244.07);
-  --hero-glow-1: rgba(192, 140, 255.16);
-  --hero-glow-2: rgba(122, 162, 255.12);
+  --hero-grid: rgba(205, 214, 244, .07);
+  --hero-glow-1: rgba(192, 140, 255, .16);
+  --hero-glow-2: rgba(122, 162, 255, .12);
 }
 
 * { box-sizing: border-box; }
@@ -414,7 +414,7 @@ dialog.lightbox {
 dialog.lightbox::backdrop {
   /* Deliberately a literal: ::backdrop does not inherit custom properties in every
      engine, and a transparent backdrop is worse than a slightly-off one. */
-  background: rgba(10, 10, 16.82);
+  background: rgba(10, 10, 16, .82);
 }
 dialog.lightbox .sheet {
   background: var(--mantle);
