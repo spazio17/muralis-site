@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terms — Muralis</title>
+<meta name="description" content="What you may do with Muralis, what it does to a device it is installed on, how to get back out of the kiosk, and what is not promised.">
+<link rel="canonical" href="https://muralis.spazio17.org/terms/">
+<link rel="icon" href="../assets/img/icon-512.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script>
+  try {
+    var t = localStorage.getItem('muralis-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) { /* private mode: fall through to prefers-color-scheme */ }
+</script>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <img src="../assets/img/icon-512.png" alt="">
+      Muralis
+    </a>
+    <nav>
+      <a href="../">Overview</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="../terms/">Terms</a>
+    </nav>
+    <div class="themepick" role="group" aria-label="Colour theme">
+      <button type="button" data-theme="light" aria-pressed="false">Light</button>
+      <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap prose">
+
+  <h1>Terms</h1>
+  <p class="updated">
+    The same text the app itself shows on its About screen, published here so it is readable without
+    a device in front of you.
+  </p>
+
+  <div class="notice warn">
+    <p>
+      <strong>Draft placeholder.</strong> This text has not been reviewed and must be replaced
+      before the app is distributed. The governing-law section below is not yet filled in. Muralis is
+      not published, so no version of it is in circulation under these terms.
+    </p>
+  </div>
+
+  <p>
+    Draft terms for Muralis, a kiosk launcher for displaying a web dashboard on hardware you own.
+  </p>
+
+  <h2>What you may do</h2>
+  <p>
+    Install and run Muralis on devices you own or administer, for personal or commercial purposes.
+  </p>
+
+  <h2>What the app does to the device</h2>
+  <p>
+    Muralis is designed to take over a device. When granted device-owner status it will: become the
+    home application, hold the screen on a single task so other applications cannot be reached,
+    disable the notification shade and status bar, disable the lock screen, keep the display awake
+    while charging, and make the back gesture inert.
+  </p>
+  <p>
+    This is the intended behaviour of a kiosk, and you should understand it before provisioning a
+    device you rely on for anything else.
+  </p>
+
+  <h2>Getting back out</h2>
+  <p>
+    There is always an escape route, and it does not require a cable: a configurable series of corner
+    taps releases the kiosk and returns the system launcher. The default combinations are shown on
+    the configuration screen. Change them, and remember what you changed them to.
+  </p>
+
+  <h2>Removing device-owner status</h2>
+  <p>
+    Device-owner status cannot be granted to an already-configured device, and removing it may
+    require a factory reset. Provision deliberately.
+  </p>
+
+  <h2>What is not promised</h2>
+  <p>
+    Muralis is provided as is, without warranty of any kind. It is not suitable for any purpose where
+    failure to display information could cause harm to people or property. Do not use it as the sole
+    interface to safety equipment, medical devices, alarms, or anything that must be operable in an
+    emergency.
+  </p>
+  <p>
+    The dashboard it displays is not part of Muralis. Its availability, correctness and security are
+    yours or its provider's responsibility.
+  </p>
+
+  <h2>Remote control</h2>
+  <p>
+    The local web administration is authenticated by the password you set. MQTT is authenticated by
+    your broker, using whatever credentials it requires, which may be none: Muralis itself does not
+    authenticate individual commands, so anyone who can publish to your broker can control the panel.
+    Both surfaces are UNENCRYPTED, and there is no option to encrypt either. Your broker username and
+    password travel in clear text, so do not reuse a password you use anywhere else. Run these
+    surfaces only on a network you trust, and reach them over a VPN rather than exposing a port. If
+    you set a weak password, or expose these surfaces to the internet, anyone who reaches them can
+    change what the device displays and restart it.
+  </p>
+
+  <h2>Liability</h2>
+  <p>
+    To the maximum extent permitted by law, the developer is not liable for any loss arising from use
+    of this software, including loss of data, loss of use, or any indirect or consequential loss.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    These terms may change with new versions of the app. The version they apply to is shown on the
+    About screen.
+  </p>
+
+  <h2>Governing law</h2>
+  <div class="notice warn">
+    <p>
+      <strong>Not yet filled in.</strong> The applicable jurisdiction goes here before the app is
+      distributed.
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Muralis — a <a href="https://spazio17.org/">spazio17</a> project.</span>
+    <nav>
+      <a href="../">Overview</a>
+      <a href="../privacy/">Privacy policy</a>
+      <a href="https://github.com/spazio17/muralis">Source</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/js/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muralis — a self-recovering Android kiosk launcher for wall-mounted Home Assistant dashboards</title>
+<meta name="description" content="Muralis turns an Android tablet into a wall-mounted Home Assistant dashboard that recovers on its own and answers to MQTT and HTTP. An ordinary APK: no root, no custom ROM.">
+<link rel="canonical" href="https://muralis.spazio17.org/">
+<link rel="icon" href="assets/img/icon-512.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/icon-512.png">
+<link rel="stylesheet" href="assets/css/site.css">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Muralis — a self-recovering Android kiosk launcher">
+<meta property="og:description" content="Turns an Android tablet into a wall-mounted Home Assistant dashboard that recovers on its own and answers to MQTT and HTTP.">
+<meta property="og:url" content="https://muralis.spazio17.org/">
+<meta property="og:image" content="https://muralis.spazio17.org/assets/img/icon-512.png">
+<meta name="twitter:card" content="summary">
+<script>
+  /* Applied before first paint so an explicit choice never flashes the other palette. */
+  try {
+    var t = localStorage.getItem('muralis-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) { /* private mode: fall through to prefers-color-scheme */ }
+</script>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="./">
+      <img src="assets/img/icon-512.png" alt="">
+      Muralis
+    </a>
+    <nav>
+      <a href="#what">What it is</a>
+      <a href="#features">Features</a>
+      <a href="#look">Screens</a>
+      <a href="#requirements">Requirements</a>
+      <a href="#status">Availability</a>
+    </nav>
+    <div class="themepick" role="group" aria-label="Colour theme">
+      <button type="button" data-theme="light" aria-pressed="false">Light</button>
+      <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="hero wrap">
+    <span class="status"><span class="dot" aria-hidden="true"></span>In development — not yet released</span>
+    <h1>The panel on the wall<br>looks after itself.</h1>
+    <p class="lede">
+      Muralis turns an Android tablet into a wall-mounted Home Assistant dashboard: locked to
+      the one page you want, recovering on its own when that page goes stale or unreachable, and
+      answering to MQTT and HTTP so the panel is one more thing your house can control.
+    </p>
+    <p class="sub">
+      It installs as an ordinary APK on stock Android. No root, no custom ROM, no platform
+      signature — nothing to rebuild the next time the tablet takes an update.
+    </p>
+  </div>
+
+  <section id="what">
+    <div class="wrap">
+      <h2>What it is</h2>
+      <p class="intro">
+        A kiosk launcher, not a dashboard. You bring the dashboard — a Home Assistant view, or any
+        web page you like. Muralis is the thing that keeps a tablet showing it, month after month,
+        without anyone walking over to it.
+      </p>
+      <div class="cards">
+        <div class="card">
+          <span class="tag">The problem</span>
+          <h3>Wall panels drift</h3>
+          <p>
+            A browser left open for weeks stops repainting. A Wi-Fi blip leaves an error page. An
+            update reboots the tablet into its own launcher. Every one of those ends the same way:
+            a dead panel on the wall and someone fetching a chair.
+          </p>
+        </div>
+        <div class="card">
+          <span class="tag">The approach</span>
+          <h3>One clock owns recovery</h3>
+          <p>
+            A single supervising loop makes every retry and timeout decision. Page callbacks only
+            record what happened — they never trigger a reload themselves. That is deliberate:
+            overlapping timers firing reloads at each other is the failure this design exists to
+            avoid.
+          </p>
+        </div>
+        <div class="card">
+          <span class="tag">The result</span>
+          <h3>It comes back by itself</h3>
+          <p>
+            Failed loads retry on a bounded schedule. A hung load times out. The dashboard is
+            recycled nightly and under memory pressure. A page that has stopped changing for
+            fifteen minutes is reloaded. After a reboot the app is the home screen, so the panel
+            returns on its own.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <h2>What it does</h2>
+      <p class="intro">
+        Two remote surfaces over one command set, telemetry your automations can act on, and a way
+        back out that does not need a cable.
+      </p>
+      <div class="cards">
+        <div class="card">
+          <h3>MQTT and HTTP, one behaviour</h3>
+          <p>
+            Both surfaces call into the same command dispatcher, so
+            <code>kiosk.reload</code>, <code>set_url</code>, <code>display.brightness</code>,
+            <code>system.reboot</code> and the rest behave identically no matter which one they
+            arrived on.
+          </p>
+          <p>
+            A refused command is never silent. Bad arguments come back
+            <span class="mono">rejected</span>; a command this build does not implement comes back
+            <span class="mono">unsupported</span>. You can always tell a refusal from a dead panel.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Home Assistant, natively</h3>
+          <p>
+            MQTT discovery announces the panel and its controls, so entities appear without hand-written
+            YAML. Availability is backed by the broker's Last Will, which means the panel reads as
+            offline even when it lost power with nothing left running to say so.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Telemetry worth automating on</h3>
+          <p>
+            Battery, charge state and temperature; memory and swap; storage; network type, signal and
+            link speed; CPU load and thermal status; uptime; brightness; and the dashboard's own load
+            state and crash count.
+          </p>
+          <p>
+            Published on an interval you pick — 10, 30, 60 or 300 seconds — and early, ahead of that
+            interval, for the handful of fields that matter immediately.
+          </p>
+        </div>
+        <div class="card">
+          <h3>A built-in web admin</h3>
+          <p>
+            Every setting, plus a live status page, served from the tablet itself on your local
+            network. Useful precisely when the panel is misbehaving and you would rather not take it
+            off the wall.
+          </p>
+        </div>
+        <div class="card">
+          <h3>A recorded way out</h3>
+          <p>
+            The escape hatch is a series of corner taps you record yourself — three to twelve, across
+            the four corners of the screen, with separate combinations for "open settings" and "exit
+            to the launcher".
+          </p>
+          <p>
+            Recordable rather than fixed, because a gesture is worthless once someone has watched it
+            being used, and a hardcoded one is the same on every panel ever shipped.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Off until you turn it on</h3>
+          <p>
+            Neither remote surface ships a default credential and neither activates on its own. The
+            web admin binds no socket at all until an administration password of at least eight
+            characters exists. MQTT starts once a broker address is set.
+          </p>
+          <p>
+            Broker credentials and the admin password are stored as AES-GCM ciphertext under a key
+            that never leaves the Android keystore.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="look">
+    <div class="wrap">
+      <h2>Screens</h2>
+      <p class="intro">
+        The tablet UI, the web admin and this site all take their colours from the same Catppuccin
+        palette — Mocha in the dark, Latte in the light.
+      </p>
+      <div class="shots">
+
+        <figure class="shot pending">
+          <div class="frame">
+            <div class="placeholder">
+              <strong>Panel on the wall</strong>
+              A Home Assistant dashboard running under lock task
+            </div>
+          </div>
+          <figcaption><b>In place.</b> The whole point: one dashboard, no chrome, nothing else reachable.</figcaption>
+        </figure>
+
+        <figure class="shot pending">
+          <div class="frame">
+            <div class="placeholder">
+              <strong>Web admin</strong>
+              Settings and live status, in a browser on the same network
+            </div>
+          </div>
+          <figcaption><b>Web admin.</b> Every setting the tablet has, reachable without touching the panel.</figcaption>
+        </figure>
+
+        <figure class="shot pending">
+          <div class="frame">
+            <div class="placeholder">
+              <strong>Configuration screen</strong>
+              On-device settings, reached through the corner-tap sequence
+            </div>
+          </div>
+          <figcaption><b>On the device.</b> The same settings, for when you are standing in front of it.</figcaption>
+        </figure>
+
+        <figure class="shot pending">
+          <div class="frame">
+            <div class="placeholder">
+              <strong>Escape recorder</strong>
+              Recording a corner-tap combination
+            </div>
+          </div>
+          <figcaption><b>Escape recorder.</b> Tap out the combination you want; it is stored, not shipped.</figcaption>
+        </figure>
+
+        <figure class="shot pending">
+          <div class="frame">
+            <div class="placeholder">
+              <strong>Stats overlay</strong>
+              Live device figures drawn over the dashboard
+            </div>
+          </div>
+          <figcaption><b>Stats overlay.</b> Optional, for when you want the numbers on the glass.</figcaption>
+        </figure>
+
+        <figure class="shot pending">
+          <div class="frame">
+            <div class="placeholder">
+              <strong>Home Assistant entities</strong>
+              The device as MQTT discovery presents it
+            </div>
+          </div>
+          <figcaption><b>In Home Assistant.</b> Controls and sensors, discovered rather than declared.</figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="requirements">
+    <div class="wrap">
+      <h2>Requirements</h2>
+      <div class="table-scroll">
+        <table class="spec">
+          <caption>Muralis targets the public Android SDK only. Device-owner status is the ceiling of privilege it can reach, and it works without that too — visibly reduced, but working.</caption>
+          <tbody>
+            <tr>
+              <th scope="row">Android</th>
+              <td>8.0 (API 26) or newer. Stock Android is fine; a custom ROM is not needed.</td>
+            </tr>
+            <tr>
+              <th scope="row">Installation</th>
+              <td>An ordinary APK. No root, no platform signature, no privileged permissions.</td>
+            </tr>
+            <tr>
+              <th scope="row">Full kiosk behaviour</th>
+              <td>
+                Needs device-owner status, granted either over adb or by QR provisioning during
+                out-of-box setup. That unlocks becoming the home app, lock task, hiding the status
+                bar and notification shade, disabling the lock screen, and remote reboot.
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Without device owner</th>
+              <td>
+                Still runs, still recovers, still answers MQTT and HTTP. The system UI stays
+                reachable and reboot is unavailable — the app says so rather than pretending
+                otherwise.
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Dashboard</th>
+              <td>Any web page. A Home Assistant view is the intended case, and a LAN-only install works — Muralis never waits on a route to the internet.</td>
+            </tr>
+            <tr>
+              <th scope="row">MQTT broker</th>
+              <td>Optional. Any broker, with or without credentials. Connections are unencrypted, so run it on a network you trust.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="status">
+    <div class="wrap">
+      <h2>Availability</h2>
+      <p class="intro">
+        Muralis runs on real hardware today and is in daily use on the panel it was written for. It
+        is not published yet, and there is nothing here to download.
+      </p>
+      <div class="notice warn">
+        <p>
+          <strong>Pre-release.</strong> There is no signed release build and no store listing. When
+          there is, this page will carry the download and the provisioning QR, and not before — a QR
+          code pins the signing certificate of the exact APK it was made for, so publishing one early
+          would only fail verification on your tablet, late in setup, with a message that does not
+          explain why.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Muralis — a <a href="https://spazio17.org/">spazio17</a> project.</span>
+    <nav>
+      <a href="privacy/">Privacy policy</a>
+      <a href="terms/">Terms</a>
+      <a href="https://github.com/spazio17/muralis">Source</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="assets/js/theme.js"></script>
+</body>
+</html>
