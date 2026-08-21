@@ -78,11 +78,15 @@
         </div>
         <div class="card">
           <h3>Recovers unattended</h3>
-          <p>Failed loads retry, hung loads time out, the dashboard recycles nightly and under memory pressure.</p>
+          <p>Failed loads retry, hung loads time out, and the dashboard is rebuilt nightly before memory pressure forces it.</p>
         </div>
         <div class="card">
           <h3>Catches a frozen page</h3>
-          <p>Reloads a dashboard whose content has stopped changing for fifteen minutes.</p>
+          <p>Reloads a dashboard that was updating and stopped. A page that never changed is left alone.</p>
+        </div>
+        <div class="card">
+          <h3>Learns what normal costs</h3>
+          <p>No fixed memory limit. It learns this dashboard's footprint on this tablet and acts on growth.</p>
         </div>
         <div class="card">
           <h3>One command set, two transports</h3>
