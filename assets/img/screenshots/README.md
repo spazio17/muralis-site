@@ -1,7 +1,7 @@
 # Screenshots
 
-Five of the six gallery slots are filled. Captured from the real panel on 2026-08-21 — a Huawei
-MediaPad on Android 8.0 (API 26), 1920x1200, provisioned as device owner.
+All six gallery slots are filled. Captured from the real panel on 2026-08-21 — a Huawei MediaPad on
+Android 8.0 (API 26), 1920x1200, provisioned as device owner.
 
 | File | What it shows |
 | --- | --- |
@@ -10,10 +10,14 @@ MediaPad on Android 8.0 (API 26), 1920x1200, provisioned as device owner.
 | `config-screen.png` | The on-device configuration screen |
 | `escape-recorder.png` | The corner-tap recorder, four taps in |
 | `stats-overlay.png` | The stats overlay over the top-right of the dashboard |
+| `home-assistant.png` | The Muralis device page in Home Assistant, as MQTT discovery created it |
 
-Still wanted: the Home Assistant device page showing the MQTT-discovered entities. It needs a
-logged-in admin session, and the panel's own WebView is signed in as a non-admin user, so `/config`
-redirects to the default dashboard when the kiosk is pointed at it.
+The Home Assistant capture needed a logged-in admin session, which the panel's own WebView does not
+have — it is signed in as a non-admin, so pointing the kiosk at `/config` just redirects to the
+default dashboard. It was taken from a headless browser here instead, authenticated through Home
+Assistant's own login flow, so the panel's session was never disturbed. Its left sidebar is cropped
+away: that lists unrelated dashboards and the temporary account used to take it, and none of it is
+part of what the shot is about.
 
 ## Two rules these captures follow
 
