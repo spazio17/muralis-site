@@ -587,9 +587,7 @@ section > .wrap > .intro { color: var(--subtext); max-width: var(--measure); mar
 figure.shot { margin: 0; }
 figure.shot .frame {
   aspect-ratio: 16 / 10;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--panel-bg);
+  border-radius: 22px;
   overflow: hidden;
   display: flex;
 }
@@ -926,29 +924,79 @@ section p a:hover::before,
   100% { transform: scaleY(.35); opacity: .9; }
 }
 
-/* Screenshots hung as framed works: a mat inside the frame, a gallery label
-   under it, and a light that comes up on hover. */
+/* Screenshots shown as the hardware they were taken on: the device shots sit
+   inside a tablet bezel with a camera in the left edge, the two desktop shots
+   inside a small browser window. The screenshot then reads as a thing on a
+   wall or a desk rather than as an image in a box.
+
+   The bezel is deliberately the same near-black in both themes: a tablet does
+   not change colour with the website, and committing to it is what makes the
+   frame read as an object instead of a border. */
 figure.shot .frame {
+  --bezel: .7rem;
+  --bezel-cam: 1.15rem;
+  --screen-radius: 10px;
   position: relative;
-  padding: .55rem;
-  background: var(--surface);
-  box-shadow: inset 0 0 0 1px var(--mat), 0 14px 30px -22px rgba(0, 0, 0, .6);
-  transition: box-shadow .35s ease, transform .35s ease;
+  padding: var(--bezel) var(--bezel) var(--bezel) var(--bezel-cam);
+  background: linear-gradient(160deg, #262a38, #10121b 60%);
+  border: 1px solid rgba(255, 255, 255, .09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 24px 44px -26px rgba(0, 0, 0, .7);
+  transition: box-shadow .35s ease;
 }
-/* The gallery light. Inset by a pixel and radius-corrected, because an
-   absolutely positioned child resolves inset: 0 against the PADDING box, which
-   is exactly where an inset box-shadow paints. At inset: 0 this gradient sat on
-   top of the frame's own hover ring and wiped out its top edge, brightest at the
-   top centre where the light is strongest. Reported 2026-08-22. */
+/* The camera, centred in the wider left bezel, which is how the real panel
+   hangs in landscape. Drawn, not an image: a dot with a darker pupil. */
+figure.shot .frame::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: .42rem;
+  transform: translateY(-50%);
+  width: .3rem;
+  height: .3rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #707a99, #10121b 72%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .55);
+}
+/* The glass. A sheen that comes up on hover, angled like light across a screen.
+   Positioned on the padding box with the same insets as the padding itself
+   (via the shared custom properties), because an absolutely positioned child
+   resolves inset against the PADDING box: at inset 0 an earlier version of
+   this gradient painted over the frame's own hover edge. Reported 2026-08-22. */
 figure.shot .frame::after {
   content: "";
   position: absolute;
-  inset: 1px;
-  border-radius: calc(var(--radius) - 1px);
+  inset: var(--bezel) var(--bezel) var(--bezel) var(--bezel-cam);
+  border-radius: var(--screen-radius);
   pointer-events: none;
-  background: radial-gradient(60% 45% at 50% 0%, rgba(255, 255, 255, .18), rgba(255, 255, 255, 0) 70%);
+  background: linear-gradient(115deg, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, .05) 26%, rgba(255, 255, 255, 0) 44%);
   opacity: 0;
   transition: opacity .35s ease;
+}
+/* The screen itself: the button clips the screenshot to the glass. */
+figure.shot .shot-open { border-radius: var(--screen-radius); }
+
+/* The two desktop captures are not tablets and must not pretend to be: they get
+   a browser window instead, title bar, three window dots, theme-coloured chrome. */
+figure.shot.contain .frame {
+  --bezel: .55rem;
+  --bezel-cam: .55rem;
+  --screen-radius: 7px;
+  padding-top: 1.9rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 44px -26px rgba(0, 0, 0, .5);
+}
+figure.shot.contain .frame::before {
+  top: .68rem;
+  left: .8rem;
+  transform: none;
+  width: .5rem;
+  height: .5rem;
+  background: #e5484d;
+  box-shadow: .85rem 0 0 #e9a13b, 1.7rem 0 0 #46a758;
+}
+figure.shot.contain .frame::after {
+  inset: 1.9rem var(--bezel) var(--bezel) var(--bezel);
 }
 /* The hover pigment is an OUTLINE, and that is the third attempt at this edge.
  *
@@ -974,16 +1022,26 @@ figure.shot .frame::after {
  * and its content as one thing, and there is no longer a clip to disagree with.
  *
  * So: keep the transform and the overflow on different elements here. */
+/* Hung on the wall, not pasted to it: each device sits a fraction of a degree
+   off level, alternating down the grid, and levels itself as it lifts on hover.
+   Small enough to be felt rather than seen; delete these two lines to hang them
+   straight. */
 figure.shot { transition: transform .3s ease; }
+figure.shot:nth-child(odd) { transform: rotate(-.4deg); }
+figure.shot:nth-child(even) { transform: rotate(.35deg); }
 figure.shot:hover,
-figure.shot:focus-within { transform: translateY(-3px); }
+figure.shot:focus-within { transform: translateY(-3px) rotate(0deg); }
 
 figure.shot .frame { transition: box-shadow .35s ease, outline-color .35s ease; }
 figure.shot .frame { outline: 2px solid transparent; outline-offset: -2px; }
 figure.shot:hover .frame,
 figure.shot:focus-within .frame {
   outline-color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--mat), 0 22px 40px -24px rgba(0, 0, 0, .7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 32px 52px -26px rgba(0, 0, 0, .8);
+}
+figure.shot.contain:hover .frame,
+figure.shot.contain:focus-within .frame {
+  box-shadow: 0 32px 52px -26px rgba(0, 0, 0, .6);
 }
 figure.shot:hover .frame::after,
 figure.shot:focus-within .frame::after { opacity: 1; }

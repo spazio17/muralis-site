@@ -40,6 +40,16 @@
     var watcher = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
+        // Removed again once the pass has run, and that is load-bearing: the
+        // animation fills forwards, and a filled animation frame outranks any
+        // transition on the same properties, so a kept .on would pin transform
+        // to the keyframe's final value and silently kill the screenshots'
+        // resting tilt and hover lift. The last keyframe equals the base state,
+        // so removing the class changes nothing visible.
+        entry.target.addEventListener('animationend', function () {
+          entry.target.classList.remove('on');
+          entry.target.style.animationDelay = '';
+        }, { once: true });
         entry.target.classList.add('on');
         watcher.unobserve(entry.target);
       });
