@@ -1,0 +1,69 @@
+Draft terms for Muralis, a kiosk launcher for displaying a web dashboard on hardware you own.
+
+WHAT YOU MAY DO
+
+Install and run Muralis on as many devices as you like, whether you own them or administer them for somebody else, for private or commercial purposes. You do not need an account, you do not need to register, and this does not expire.
+
+What you may not do is redistribute the app, sell it, or pass it off as your own work. Muralis is licensed to you, not sold to you, and the copyright stays with the developer.
+
+MURALIS PRO
+
+Everything above is free and stays free. Muralis Pro is a one time purchase that unlocks the remote control surfaces: MQTT, including Home Assistant discovery and telemetry, and the local web administration.
+
+Pro belongs to the Google account that bought it, not to a device. Every panel signed in to that account is unlocked, with no limit on how many. It does not expire and there is nothing to renew. It cannot be transferred, resold, or shared with another account.
+
+A panel that never buys Pro is not nagged, not watermarked, and not degraded. It simply does not have the remote surfaces.
+
+WHAT THE APP DOES TO THE DEVICE
+
+Muralis is designed to take over a device. When granted device-owner status it will: become the home application, hold the screen on a single task so other applications cannot be reached, disable the notification shade and status bar, disable the lock screen, keep the display awake while charging, and make the back gesture inert.
+
+This is the intended behaviour of a kiosk, and you should understand it before provisioning a device you rely on for anything else.
+
+GETTING BACK OUT
+
+There is always an escape route, and it does not require a cable: a configurable series of corner taps releases the kiosk and returns the system launcher. The default combinations are shown on the configuration screen. Change them, and remember what you changed them to.
+
+REMOVING DEVICE-OWNER STATUS
+
+Device-owner status cannot be granted to an already-configured device, and removing it may require a factory reset. Provision deliberately.
+
+WHAT IS NOT PROMISED
+
+Muralis is provided as is, without warranty of any kind. It is not suitable for any purpose where failure to display information could cause harm to people or property. Do not use it as the sole interface to safety equipment, medical devices, alarms, or anything that must be operable in an emergency.
+
+The dashboard it displays is not part of Muralis. Its availability, correctness and security are yours or its provider's responsibility.
+
+REMOTE CONTROL
+
+The local web administration is authenticated by the password you set, and by nothing else: there is no username, and there is no limit on how many times a wrong password may be tried. MQTT is authenticated by your broker, using whatever credentials it requires, which may be none: Muralis itself does not authenticate individual commands, so anyone who can publish to your broker can control the panel. Both surfaces are UNENCRYPTED, and there is no option to encrypt either. Your broker username and password travel in clear text, so do not reuse a password you use anywhere else. Run these surfaces only on a network you trust, and reach them over a VPN rather than exposing a port. If you set a weak password, or expose these surfaces to the internet, anyone who reaches them can change what the device displays and restart it.
+
+BUYING, AND GETTING YOUR MONEY BACK
+
+Muralis Pro is sold by Google, not by the developer. Google takes the payment, issues the receipt, handles the tax, and handles refunds under Google Play's own refund policy and under whatever consumer law applies where you live. Ask Google, not the developer, about a payment or a refund. The developer never sees your payment details.
+
+LIABILITY
+
+To the maximum extent permitted by law, the developer is not liable for any loss arising from use of this software, including loss of data, loss of use, or any indirect or consequential loss.
+
+Nothing in these terms limits liability for death or personal injury, for intent, or for gross negligence, and nothing in them limits any liability that the law does not allow to be limited. Where a court finds part of this section unenforceable, the rest still stands.
+
+WHAT THESE TERMS CANNOT TAKE AWAY
+
+If you are in the European Union, you keep the rights the law gives you whatever this document says. In particular you may make a backup copy, and you may decompile the app as far as is necessary to make it work with other software, whatever the section above says about not redistributing it. Your statutory rights as a consumer are unaffected.
+
+CHANGES
+
+These terms may change with new versions of the app. The version they apply to is shown on the About screen.
+
+GOVERNING LAW
+
+Austrian law applies, and the courts of Vienna, Austria have jurisdiction.
+
+If you are a consumer, that cannot be used against you: you keep the protection of the law of the country you live in, and you may bring a claim in the courts there. A clause choosing one country's courts does not override that.
+
+CONTACT
+
+Juri Calleri, Vienna, Austria. spazio17@protonmail.com.
+
+A postal address is published on the imprint at muralis.spazio17.org. It is kept in that one place rather than repeated here, so that changing it does not need a new release of the app.
