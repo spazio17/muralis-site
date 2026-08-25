@@ -1,0 +1,24 @@
+# The legal pages are generated from legal/*.txt, the canonical privacy policy and
+# terms (single source of truth, decided 2026-08-25; the app carries verbatim copies in
+# res/raw, checked by the muralis release workflow). Two checks, deliberately different:
+# regenerating and requiring no diff catches a forgotten regeneration or a hand edit,
+# and check-legal.py strips the HTML back to text independently, so a generator bug
+# cannot certify its own output.
+name: legal-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Regenerate the legal pages and require no diff
+        run: |
+          python3 scripts/generate-legal.py
+          git diff --exit-code privacy/index.html terms/index.html
+      - name: Compare the pages to the canonical texts independently
+        run: python3 scripts/check-legal.py
