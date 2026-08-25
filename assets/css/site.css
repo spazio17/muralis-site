@@ -193,8 +193,22 @@ a:hover { color: var(--accent); }
 .brand:hover { color: var(--text); }
 .brand img { width: 28px; height: 28px; border-radius: 7px; display: block; }
 .masthead nav { display: flex; align-items: center; gap: 1.1rem; font-size: .9rem; }
-.masthead nav a { color: var(--subtext); text-decoration: none; }
+.masthead nav a { color: var(--subtext); text-decoration: none; white-space: nowrap; }
 .masthead nav a:hover { color: var(--accent); }
+
+/* Narrow screens: brand and theme pick share the first row, the nav wraps whole
+ * links on its own line below. Without this the flex row squeezed every link
+ * until its label broke mid-word ("What / it / does") and the theme pick fell
+ * to a stray third row. */
+@media (max-width: 760px) {
+  .masthead .wrap { row-gap: .2rem; padding-bottom: .6rem; }
+  .masthead nav {
+    order: 3;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    gap: .35rem .9rem;
+  }
+}
 
 /* The same pill-shaped segmented control the web admin uses for its theme pick. */
 .themepick {
