@@ -528,6 +528,15 @@ section > .wrap > .intro { color: var(--subtext); max-width: var(--measure); mar
   font-weight: 600;
 }
 .tier .price span { color: var(--subtext); font-weight: 400; }
+/* The asterisk's other half. Smaller and quieter than the price it qualifies: the total a buyer
+   pays is this base plus their own country's tax rate, so no single figure here would be right
+   for everyone, and Play shows them the real one before they pay. */
+.tier .taxnote {
+  margin: .35rem 0 0;
+  color: var(--subtext);
+  font-size: .78rem;
+  line-height: 1.45;
+}
 .tier > p.what {
   margin: .9rem 0 0;
   color: var(--subtext);
