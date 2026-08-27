@@ -804,10 +804,18 @@ footer a:hover { color: var(--accent); }
  * motion.
  */
 
-/* The wordmark, and the one piece of real noise on the page. For 92% of the
+/* The wordmark, and the one piece of real noise on the page. Nearly all of the
    cycle it is set solid in mauve. Then the stencil slips: the complements offset
    a couple of pixels either side, the way a screen print pulled too early puts
-   the second colour off register, and it snaps back. */
+   the second colour off register, and it snaps back.
+
+   Every 12 seconds, Juri's call 2026-08-27, where it used to be every 31. The
+   percentages below are worked backwards from that, so the slip itself is
+   unchanged: three offsets of about 0.31s each, 0.93s in all, exactly as at 31s.
+   Shortening the duration alone would have shrunk the slip to a flicker, because
+   keyframes are proportions of the duration rather than fixed times. To change
+   the rhythm again, set the duration and rescale: the slip occupies the last
+   7.8% of the cycle. */
 .hero h1 { position: relative; }
 .hero h1::after {
   content: "";
@@ -816,14 +824,14 @@ footer a:hover { color: var(--accent); }
   pointer-events: none;
 }
 .hero h1 {
-  animation: misregister 31s steps(1, end) infinite;
+  animation: misregister 12s steps(1, end) infinite;
 }
 @keyframes misregister {
-  0%, 91.5% { text-shadow: none; }
-  92% { text-shadow: -2px 0 var(--comp), 2px 0 var(--comp-2); }
+  0%, 90.4% { text-shadow: none; }
+  90.5% { text-shadow: -2px 0 var(--comp), 2px 0 var(--comp-2); }
   93% { text-shadow: 3px 1px var(--comp-2), -3px -1px var(--comp); }
-  94% { text-shadow: -1px 0 var(--comp); }
-  95%, 100% { text-shadow: none; }
+  95.6% { text-shadow: -1px 0 var(--comp); }
+  98.2%, 100% { text-shadow: none; }
 }
 
 /* Fact pills as a paint palette: a dab of colour on each, cycling through the
