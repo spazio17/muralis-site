@@ -527,7 +527,6 @@ section > .wrap > .intro { color: var(--subtext); max-width: var(--measure); mar
   font-size: .95rem;
   font-weight: 600;
 }
-.tier .price span { color: var(--subtext); font-weight: 400; }
 /* The asterisk's other half. Smaller and quieter than the price it qualifies: the total a buyer
    pays is this base plus their own country's tax rate, so no single figure here would be right
    for everyone, and Play shows them the real one before they pay. */
@@ -804,10 +803,22 @@ footer a:hover { color: var(--accent); }
  * motion.
  */
 
-/* The wordmark, and the one piece of real noise on the page. For 92% of the
+/* The wordmark, and the one piece of real noise on the page. Nearly all of the
    cycle it is set solid in mauve. Then the stencil slips: the complements offset
    a couple of pixels either side, the way a screen print pulled too early puts
-   the second colour off register, and it snaps back. */
+   the second colour off register, and it snaps back.
+
+   Every 7 and then every 9 seconds, Juri's call 2026-08-27, where it used to be
+   every 31. Two slips inside one 16s cycle rather than one inside a shorter
+   cycle, and deliberately at uneven positions, 6s and 15s: a single slip on a
+   fixed period starts to read as a clock, and a misprint is not on a schedule.
+   Both gaps stay inside the 5 to 10 seconds he asked for.
+
+   The slip itself is quicker than it was, three offsets of 0.25s rather than
+   0.31s, so it lands and is gone instead of being watched. Everything here is a
+   percentage of the duration rather than a time, which is why changing the
+   duration alone would rescale the slip too: 0.25s is 1.5625% of 16s, and each
+   slip is three of those steps plus the step that clears it. */
 .hero h1 { position: relative; }
 .hero h1::after {
   content: "";
@@ -816,14 +827,20 @@ footer a:hover { color: var(--accent); }
   pointer-events: none;
 }
 .hero h1 {
-  animation: misregister 31s steps(1, end) infinite;
+  animation: misregister 16s steps(1, end) infinite;
 }
 @keyframes misregister {
-  0%, 91.5% { text-shadow: none; }
-  92% { text-shadow: -2px 0 var(--comp), 2px 0 var(--comp-2); }
-  93% { text-shadow: 3px 1px var(--comp-2), -3px -1px var(--comp); }
-  94% { text-shadow: -1px 0 var(--comp); }
-  95%, 100% { text-shadow: none; }
+  /* first slip, 6.00s in */
+  0%, 37.4% { text-shadow: none; }
+  37.5% { text-shadow: -2px 0 var(--comp), 2px 0 var(--comp-2); }
+  39.06% { text-shadow: 3px 1px var(--comp-2), -3px -1px var(--comp); }
+  40.63% { text-shadow: -1px 0 var(--comp); }
+  42.19% { text-shadow: none; }
+  /* second slip, 15.00s in, so the gaps are 9s and then 7s */
+  93.75% { text-shadow: -2px 0 var(--comp-2), 2px 0 var(--comp); }
+  95.31% { text-shadow: -3px 1px var(--comp), 3px -1px var(--comp-2); }
+  96.88% { text-shadow: 1px 0 var(--comp-2); }
+  98.44%, 100% { text-shadow: none; }
 }
 
 /* Fact pills as a paint palette: a dab of colour on each, cycling through the
@@ -885,14 +902,36 @@ section p a::before,
 section p a:hover::before,
 .tier a:hover::before { transform: scaleX(1); }
 
-/* Cards as paint chips: the top edge draws itself in on hover, and which
-   pigment it uses cycles across the grid so a row of nine is not one colour
-   nine times. */
+/* Cards as paint chips. Which pigment a card uses cycles across the grid, so a
+   row of nine is not one colour nine times, and it is set once as --chip rather
+   than repeated per property: every rule below reads that one variable.
+
+   The colour is on the card at rest, not only under a pointer. Nine panels in
+   nothing but mantle and a grey hairline read as nine dark boxes until you touch
+   one, and on a phone there is no hover to touch them with. So at rest each card
+   carries a tinted border, a wash of its own pigment out of the top-left corner,
+   and a short stub of that pigment on the top edge. Pointer, keyboard focus and
+   tap then do what they did before, only more so: the stub draws itself the whole
+   way across, the border comes up to strength, and the shadow gains a coloured
+   half. Nothing here moves except the transitions that were already here.
+
+   The mixes use color-mix(), which is the only way to take a themed hex and give
+   it an alpha. Where it is unsupported the whole declaration is dropped and the
+   card falls back to the grey hairline it had before, which is the old design
+   rather than a broken one. */
 .card {
+  --chip: var(--accent);
   position: relative;
   overflow: hidden;
+  border-color: color-mix(in srgb, var(--chip) 34%, var(--border));
+  background-image:
+      radial-gradient(150% 130% at 0 0,
+                      color-mix(in srgb, var(--chip) 7%, transparent),
+                      transparent 62%);
   transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
 }
+.cards .card:nth-child(3n+2) { --chip: var(--comp); }
+.cards .card:nth-child(3n+3) { --chip: var(--comp-2); }
 .card::after {
   content: "";
   position: absolute;
@@ -900,23 +939,30 @@ section p a:hover::before,
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--accent);
-  transform: scaleX(0);
+  background: var(--chip);
+  transform: scaleX(.22);
   transform-origin: left;
   transition: transform .45s cubic-bezier(.2, .7, .2, 1);
 }
-.cards .card:nth-child(3n+2)::after { background: var(--comp); }
-.cards .card:nth-child(3n+3)::after { background: var(--comp-2); }
 .card:hover,
-.card:focus-within {
+.card:focus-within,
+.card:active {
   transform: translateY(-3px);
-  border-color: var(--accent);
-  box-shadow: 0 16px 34px -20px rgba(0, 0, 0, .45);
+  border-color: color-mix(in srgb, var(--chip) 72%, var(--border));
+  box-shadow: 0 16px 34px -20px rgba(0, 0, 0, .45),
+              0 14px 30px -20px color-mix(in srgb, var(--chip) 55%, transparent),
+              inset 0 22px 44px -34px color-mix(in srgb, var(--chip) 60%, transparent);
 }
-.cards .card:nth-child(3n+2):hover { border-color: var(--comp); }
-.cards .card:nth-child(3n+3):hover { border-color: var(--comp-2); }
 .card:hover::after,
-.card:focus-within::after { transform: scaleX(1); }
+.card:focus-within::after,
+.card:active::after { transform: scaleX(1); }
+
+/* No pointer, so the resting state is all most readers will ever see: the stub
+   is longer and the border a little stronger, and a tap still does the rest. */
+@media (hover: none) {
+  .card { border-color: color-mix(in srgb, var(--chip) 46%, var(--border)); }
+  .card::after { transform: scaleX(.4); }
+}
 
 /* The paid tier, with wet paint along its top edge and a drip below it. */
 .tier.paid { position: relative; overflow: hidden; }
@@ -955,6 +1001,34 @@ section p a:hover::before,
    The bezel is deliberately the same near-black in both themes: a tablet does
    not change colour with the website, and committing to it is what makes the
    frame read as an object instead of a border. */
+/* The bezel is near-black and so is the page in dark mode, so the frame had
+   nothing to stand on: at a glance the screenshot floated with no device around
+   it. It now sits inside a ring of the same pigment the cards carry, one pixel of
+   it plus a halo spread around all four sides, and both come up to strength on
+   hover along with the outline that was already there.
+
+   Note this is an OUTSET shadow, outside the border box. The failed attempts
+   recorded below were an *inset* shadow and a border colour, both of which live
+   on the padding edge where the gallery light sits. This cannot be wiped by that
+   light, because it is not in the same place.
+
+   Cycling three pigments across six figures ties the gallery to the card grid
+   above it. For one colour throughout, delete the two nth-child lines. */
+figure.shot {
+  --chip: var(--accent);
+  --rim: 0 0 0 1px color-mix(in srgb, var(--chip) 44%, transparent);
+  /* Two shadows, and the first is the one you see: a spread-out halo on all four
+     sides, where a single downward shadow only lit the bottom edge and read as a
+     hairline. The second keeps the device sitting on something. A custom property
+     may hold a comma-separated list, so both arrive through one var(). */
+  --rim-glow: 0 0 34px -6px color-mix(in srgb, var(--chip) 30%, transparent),
+              0 16px 40px -22px color-mix(in srgb, var(--chip) 42%, transparent);
+  --rim-lit: 0 0 0 1px color-mix(in srgb, var(--chip) 75%, transparent);
+  --rim-glow-lit: 0 0 42px -2px color-mix(in srgb, var(--chip) 45%, transparent),
+                  0 20px 46px -20px color-mix(in srgb, var(--chip) 60%, transparent);
+}
+.shots figure.shot:nth-child(3n+2) { --chip: var(--comp); }
+.shots figure.shot:nth-child(3n+3) { --chip: var(--comp-2); }
 figure.shot .frame {
   --bezel: .7rem;
   --bezel-cam: 1.15rem;
@@ -963,7 +1037,8 @@ figure.shot .frame {
   padding: var(--bezel) var(--bezel) var(--bezel) var(--bezel-cam);
   background: linear-gradient(160deg, #262a38, #10121b 60%);
   border: 1px solid rgba(255, 255, 255, .09);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 24px 44px -26px rgba(0, 0, 0, .7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 24px 44px -26px rgba(0, 0, 0, .7),
+              var(--rim), var(--rim-glow);
   transition: box-shadow .35s ease;
 }
 /* The camera, centred in the wider left bezel, which is how the real panel
@@ -1007,7 +1082,7 @@ figure.shot.contain .frame {
   padding-top: 1.9rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  box-shadow: 0 24px 44px -26px rgba(0, 0, 0, .5);
+  box-shadow: 0 24px 44px -26px rgba(0, 0, 0, .5), var(--rim), var(--rim-glow);
 }
 figure.shot.contain .frame::before {
   top: .68rem;
@@ -1059,12 +1134,13 @@ figure.shot .frame { transition: box-shadow .35s ease, outline-color .35s ease; 
 figure.shot .frame { outline: 2px solid transparent; outline-offset: -2px; }
 figure.shot:hover .frame,
 figure.shot:focus-within .frame {
-  outline-color: var(--accent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 32px 52px -26px rgba(0, 0, 0, .8);
+  outline-color: var(--chip);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 32px 52px -26px rgba(0, 0, 0, .8),
+              var(--rim-lit), var(--rim-glow-lit);
 }
 figure.shot.contain:hover .frame,
 figure.shot.contain:focus-within .frame {
-  box-shadow: 0 32px 52px -26px rgba(0, 0, 0, .6);
+  box-shadow: 0 32px 52px -26px rgba(0, 0, 0, .6), var(--rim-lit), var(--rim-glow-lit);
 }
 figure.shot:hover .frame::after,
 figure.shot:focus-within .frame::after { opacity: 1; }
