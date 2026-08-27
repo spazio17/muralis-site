@@ -957,9 +957,9 @@ section p a:hover::before,
    frame read as an object instead of a border. */
 /* The bezel is near-black and so is the page in dark mode, so the frame had
    nothing to stand on: at a glance the screenshot floated with no device around
-   it. It now sits inside a ring of the same pigment the cards carry, one pixel
-   of it plus a soft glow under it, and the ring comes up to strength on hover
-   along with the outline that was already there.
+   it. It now sits inside a ring of the same pigment the cards carry, one pixel of
+   it plus a halo spread around all four sides, and both come up to strength on
+   hover along with the outline that was already there.
 
    Note this is an OUTSET shadow, outside the border box. The failed attempts
    recorded below were an *inset* shadow and a border colour, both of which live
@@ -970,10 +970,16 @@ section p a:hover::before,
    above it. For one colour throughout, delete the two nth-child lines. */
 figure.shot {
   --chip: var(--accent);
-  --rim: 0 0 0 1px color-mix(in srgb, var(--chip) 30%, transparent);
-  --rim-glow: 0 14px 34px -24px color-mix(in srgb, var(--chip) 34%, transparent);
-  --rim-lit: 0 0 0 1px color-mix(in srgb, var(--chip) 60%, transparent);
-  --rim-glow-lit: 0 18px 42px -22px color-mix(in srgb, var(--chip) 55%, transparent);
+  --rim: 0 0 0 1px color-mix(in srgb, var(--chip) 44%, transparent);
+  /* Two shadows, and the first is the one you see: a spread-out halo on all four
+     sides, where a single downward shadow only lit the bottom edge and read as a
+     hairline. The second keeps the device sitting on something. A custom property
+     may hold a comma-separated list, so both arrive through one var(). */
+  --rim-glow: 0 0 34px -6px color-mix(in srgb, var(--chip) 30%, transparent),
+              0 16px 40px -22px color-mix(in srgb, var(--chip) 42%, transparent);
+  --rim-lit: 0 0 0 1px color-mix(in srgb, var(--chip) 75%, transparent);
+  --rim-glow-lit: 0 0 42px -2px color-mix(in srgb, var(--chip) 45%, transparent),
+                  0 20px 46px -20px color-mix(in srgb, var(--chip) 60%, transparent);
 }
 .shots figure.shot:nth-child(3n+2) { --chip: var(--comp); }
 .shots figure.shot:nth-child(3n+3) { --chip: var(--comp-2); }
