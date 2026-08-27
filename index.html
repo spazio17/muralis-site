@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://muralis.spazio17.org/">
 <link rel="icon" href="assets/img/icon-512.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/icon-512.png">
-<link rel="stylesheet" href="assets/css/site.css?v=6">
+<link rel="stylesheet" href="assets/css/site.css?v=7">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Muralis, hang it up and leave it">
 <meta property="og:description" content="Locks a tablet to one Home Assistant dashboard, recovers on its own, answers to MQTT and HTTP.">
@@ -76,10 +76,7 @@
   <section id="features">
     <div class="wrap">
       <h2 class="stroke">Built to be left alone</h2>
-      <p class="intro stroke">
-        Wall panels drift. A browser stops repainting, a blip leaves an error page, an update reboots
-        into the stock launcher.
-      </p>
+      <p class="intro stroke">Wall panels drift. A browser stops repainting, a blip leaves an error page, an update reboots into the stock launcher.</p>
       <div class="cards">
         <div class="card stroke">
           <h3>Locked to one page</h3>
@@ -98,14 +95,17 @@
           <p>A full restart in the small hours, and a dashboard rebuild whenever the device reports low memory.</p>
         </div>
         <div class="card stroke">
+          <p class="tag">Pro</p>
           <h3>One command set, two transports</h3>
           <p>MQTT and HTTP behave identically. A refused command always says why.</p>
         </div>
         <div class="card stroke">
+          <p class="tag">Pro</p>
           <h3>Home Assistant discovery</h3>
           <p>Entities appear without YAML. A panel that goes silent reads unavailable, never a stale online.</p>
         </div>
         <div class="card stroke">
+          <p class="tag">Pro</p>
           <h3>Telemetry to automate on</h3>
           <p>Battery, memory, storage, network, CPU, thermal, app version. Once a minute, sooner when something changes.</p>
         </div>
@@ -165,15 +165,12 @@
   <section id="pricing">
     <div class="wrap">
       <h2 class="stroke">Free, and Pro</h2>
-      <p class="intro stroke">
-        The kiosk is the product, and the kiosk is free. Pro adds the remote-control surfaces for
-        people who want their panel wired into Home Assistant.
-      </p>
+      <p class="intro stroke">A panel on a wall is meant to be left alone, and the kiosk does that for free. Pro is how you reach it anyway: a broker, an automation, or a browser, without walking up to it.</p>
       <div class="tiers">
 
         <div class="tier free stroke">
           <h3>Muralis</h3>
-          <p class="price">Free<span>, and complete</span></p>
+          <p class="price">Free</p>
           <p class="what">
             Everything that makes a tablet a wall panel. Not a trial, not a cut-down edition.
           </p>
@@ -181,7 +178,7 @@
             <li>Locked to one page, with the system UI out of reach</li>
             <li>Recovers on its own: retries, timeouts, frozen-page detection, a nightly restart</li>
             <li>The recorded corner-tap way out</li>
-            <li>Optional stats overlay</li>
+            <li>Optional stats overlay, drawn on the panel itself</li>
             <li><b>No Google account needed</b>, on a de-Googled tablet or any other</li>
             <li><b>No watermark, no expiry, no sign-in, nothing that phones home</b></li>
           </ul>
@@ -189,7 +186,7 @@
 
         <div class="tier paid stroke">
           <h3>Muralis Pro</h3>
-          <p class="price">&euro;4.99 once*<span>, not a subscription</span></p>
+          <p class="price">&euro;4.99 once*</p>
           <p class="taxnote">* Before tax.</p>
           <p class="what">
             The remote surfaces. Worth it if you want the panel to be one more thing your house can
@@ -197,7 +194,7 @@
           </p>
           <ul>
             <li>MQTT: Home Assistant discovery, so entities appear without YAML</li>
-            <li>Telemetry: battery, memory, network, thermal, dashboard health</li>
+            <li>Telemetry to your broker: battery, memory, network, thermal, dashboard health</li>
             <li>Commands over MQTT and HTTP: reload, restart, set URL, brightness, reboot</li>
             <li>The built-in web admin</li>
             <li><b>One purchase covers every panel on the same Google account</b></li>
@@ -237,7 +234,7 @@
             </tr>
             <tr>
               <th scope="row">Google account</th>
-              <td>Not needed. Only Pro's one-time purchase uses one, and only to buy it.</td>
+              <td>Not needed for the free app. Buying Pro needs one, and where Google Play is installed Muralis asks it at each start whether Pro was bought.</td>
             </tr>
             <tr>
               <th scope="row">Dashboard</th>
@@ -258,11 +255,7 @@
       <h2 class="stroke">Availability</h2>
       <p class="intro stroke">Runs on real hardware daily. Not published yet, and nothing here to download.</p>
       <div class="notice warn">
-        <p>
-          <strong>Pre-release.</strong> The download and provisioning QR arrive once the release
-          keystore is final. A QR pins one exact APK's certificate, so an early one would only fail
-          on your tablet.
-        </p>
+        <p><strong>Pre-release.</strong> The app is signed and running on real panels. The download and the provisioning QR arrive with the first public release: the QR pins the certificate the app is signed with, so it can be published once and then never changes.</p>
       </div>
     </div>
   </section>

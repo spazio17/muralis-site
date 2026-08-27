@@ -527,7 +527,6 @@ section > .wrap > .intro { color: var(--subtext); max-width: var(--measure); mar
   font-size: .95rem;
   font-weight: 600;
 }
-.tier .price span { color: var(--subtext); font-weight: 400; }
 /* The asterisk's other half. Smaller and quieter than the price it qualifies: the total a buyer
    pays is this base plus their own country's tax rate, so no single figure here would be right
    for everyone, and Play shows them the real one before they pay. */
