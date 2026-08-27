@@ -809,13 +809,17 @@ footer a:hover { color: var(--accent); }
    a couple of pixels either side, the way a screen print pulled too early puts
    the second colour off register, and it snaps back.
 
-   Every 12 seconds, Juri's call 2026-08-27, where it used to be every 31. The
-   percentages below are worked backwards from that, so the slip itself is
-   unchanged: three offsets of about 0.31s each, 0.93s in all, exactly as at 31s.
-   Shortening the duration alone would have shrunk the slip to a flicker, because
-   keyframes are proportions of the duration rather than fixed times. To change
-   the rhythm again, set the duration and rescale: the slip occupies the last
-   7.8% of the cycle. */
+   Every 7 and then every 9 seconds, Juri's call 2026-08-27, where it used to be
+   every 31. Two slips inside one 16s cycle rather than one inside a shorter
+   cycle, and deliberately at uneven positions, 6s and 15s: a single slip on a
+   fixed period starts to read as a clock, and a misprint is not on a schedule.
+   Both gaps stay inside the 5 to 10 seconds he asked for.
+
+   The slip itself is quicker than it was, three offsets of 0.25s rather than
+   0.31s, so it lands and is gone instead of being watched. Everything here is a
+   percentage of the duration rather than a time, which is why changing the
+   duration alone would rescale the slip too: 0.25s is 1.5625% of 16s, and each
+   slip is three of those steps plus the step that clears it. */
 .hero h1 { position: relative; }
 .hero h1::after {
   content: "";
@@ -824,14 +828,20 @@ footer a:hover { color: var(--accent); }
   pointer-events: none;
 }
 .hero h1 {
-  animation: misregister 12s steps(1, end) infinite;
+  animation: misregister 16s steps(1, end) infinite;
 }
 @keyframes misregister {
-  0%, 90.4% { text-shadow: none; }
-  90.5% { text-shadow: -2px 0 var(--comp), 2px 0 var(--comp-2); }
-  93% { text-shadow: 3px 1px var(--comp-2), -3px -1px var(--comp); }
-  95.6% { text-shadow: -1px 0 var(--comp); }
-  98.2%, 100% { text-shadow: none; }
+  /* first slip, 6.00s in */
+  0%, 37.4% { text-shadow: none; }
+  37.5% { text-shadow: -2px 0 var(--comp), 2px 0 var(--comp-2); }
+  39.06% { text-shadow: 3px 1px var(--comp-2), -3px -1px var(--comp); }
+  40.63% { text-shadow: -1px 0 var(--comp); }
+  42.19% { text-shadow: none; }
+  /* second slip, 15.00s in, so the gaps are 9s and then 7s */
+  93.75% { text-shadow: -2px 0 var(--comp-2), 2px 0 var(--comp); }
+  95.31% { text-shadow: -3px 1px var(--comp), 3px -1px var(--comp-2); }
+  96.88% { text-shadow: 1px 0 var(--comp-2); }
+  98.44%, 100% { text-shadow: none; }
 }
 
 /* Fact pills as a paint palette: a dab of colour on each, cycling through the
