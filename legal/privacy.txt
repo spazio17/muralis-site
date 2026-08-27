@@ -8,7 +8,7 @@ WHAT THE APP SENDS, AND WHERE
 
 Only to destinations you configure yourself, and only after you configure them. Neither surface does anything until you configure it: MQTT stays off until you enter a broker address, and the local web administration stays off until you set a password. Note that a broker address alone is enough to start publishing; a broker username and password are optional, because some brokers accept anonymous connections.
 
-• MQTT. If you enter a broker address, Muralis publishes a status snapshot to that broker on an interval you choose (10, 30, 60 or 300 seconds; 30 by default). It also publishes ahead of that interval when something worth knowing changes: your battery level, charging state, memory pressure or thermal status; any command it accepts; a dashboard reload, crash or recycle; and any change you make to its settings. That snapshot contains:
+• MQTT. If you enter a broker address, Muralis publishes a status snapshot to that broker every 60 seconds. It also publishes ahead of that interval when something worth knowing changes: your battery level, charging state, memory pressure or thermal status; any command it accepts; a dashboard reload, crash or recycle; and any change you make to its settings. That snapshot contains:
 
 - how long the device has been running
 - battery percentage, charge state, health, temperature, voltage, and the charge, current and energy counters the hardware exposes
@@ -19,8 +19,9 @@ Only to destinations you configure yourself, and only after you configure them. 
 - CPU load, the system load average, maximum CPU frequency, CPU and GPU temperatures, and the operating system's thermal status
 - the dashboard address currently loaded, when it last loaded, and any load error
 - how many times the dashboard view has crashed or been rebuilt, and how long ago
+- how many times the local web administration has locked an address out for repeated wrong passwords, how long ago the last lockout was, and the local network address those attempts came from. Note that this is the address of whatever device tried the passwords, not the panel's own; it is published so that you can act on a guessing attempt
 - the current screen brightness, whether the light sensor is setting it, and whether this device has one
-- the panel's own settings: its device identifier, the stats overlay switch, and the publish interval
+- the panel's own settings: its device identifier, the stats overlay switch, the portrait switch, and whether the local web administration is enabled
 
 Muralis publishes its status snapshot as a retained message, which means your broker keeps a copy of the most recent one and hands it to anything that subscribes later, including after the panel is switched off or removed.
 
@@ -37,6 +38,8 @@ Muralis also publishes an online/offline availability value, the result of any c
 WHAT THE APP STORES ON THE DEVICE
 
 Your dashboard address, a device identifier that Muralis generates itself, your display and behaviour preferences, and the corner-tap combinations you record. Your broker credentials and administration password are stored encrypted through the Android keystore. The dashboard view stores whatever cookies or sessions your dashboard sets, in the same way a browser would.
+
+To notice a dashboard that has frozen, Muralis regularly reads two numbers from the page it is showing: how much text it renders and how many elements it contains. The numbers are compared on the device to their previous values and are never stored beyond that comparison, and never transmitted.
 
 Muralis does not read your contacts, location, photos, files, messages, call history or microphone, and requests no permission that would allow it to.
 
