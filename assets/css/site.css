@@ -955,6 +955,28 @@ section p a:hover::before,
    The bezel is deliberately the same near-black in both themes: a tablet does
    not change colour with the website, and committing to it is what makes the
    frame read as an object instead of a border. */
+/* The bezel is near-black and so is the page in dark mode, so the frame had
+   nothing to stand on: at a glance the screenshot floated with no device around
+   it. It now sits inside a ring of the same pigment the cards carry, one pixel
+   of it plus a soft glow under it, and the ring comes up to strength on hover
+   along with the outline that was already there.
+
+   Note this is an OUTSET shadow, outside the border box. The failed attempts
+   recorded below were an *inset* shadow and a border colour, both of which live
+   on the padding edge where the gallery light sits. This cannot be wiped by that
+   light, because it is not in the same place.
+
+   Cycling three pigments across six figures ties the gallery to the card grid
+   above it. For one colour throughout, delete the two nth-child lines. */
+figure.shot {
+  --chip: var(--accent);
+  --rim: 0 0 0 1px color-mix(in srgb, var(--chip) 30%, transparent);
+  --rim-glow: 0 14px 34px -24px color-mix(in srgb, var(--chip) 34%, transparent);
+  --rim-lit: 0 0 0 1px color-mix(in srgb, var(--chip) 60%, transparent);
+  --rim-glow-lit: 0 18px 42px -22px color-mix(in srgb, var(--chip) 55%, transparent);
+}
+.shots figure.shot:nth-child(3n+2) { --chip: var(--comp); }
+.shots figure.shot:nth-child(3n+3) { --chip: var(--comp-2); }
 figure.shot .frame {
   --bezel: .7rem;
   --bezel-cam: 1.15rem;
@@ -963,7 +985,8 @@ figure.shot .frame {
   padding: var(--bezel) var(--bezel) var(--bezel) var(--bezel-cam);
   background: linear-gradient(160deg, #262a38, #10121b 60%);
   border: 1px solid rgba(255, 255, 255, .09);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 24px 44px -26px rgba(0, 0, 0, .7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 24px 44px -26px rgba(0, 0, 0, .7),
+              var(--rim), var(--rim-glow);
   transition: box-shadow .35s ease;
 }
 /* The camera, centred in the wider left bezel, which is how the real panel
@@ -1007,7 +1030,7 @@ figure.shot.contain .frame {
   padding-top: 1.9rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  box-shadow: 0 24px 44px -26px rgba(0, 0, 0, .5);
+  box-shadow: 0 24px 44px -26px rgba(0, 0, 0, .5), var(--rim), var(--rim-glow);
 }
 figure.shot.contain .frame::before {
   top: .68rem;
@@ -1059,12 +1082,13 @@ figure.shot .frame { transition: box-shadow .35s ease, outline-color .35s ease; 
 figure.shot .frame { outline: 2px solid transparent; outline-offset: -2px; }
 figure.shot:hover .frame,
 figure.shot:focus-within .frame {
-  outline-color: var(--accent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 32px 52px -26px rgba(0, 0, 0, .8);
+  outline-color: var(--chip);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 32px 52px -26px rgba(0, 0, 0, .8),
+              var(--rim-lit), var(--rim-glow-lit);
 }
 figure.shot.contain:hover .frame,
 figure.shot.contain:focus-within .frame {
-  box-shadow: 0 32px 52px -26px rgba(0, 0, 0, .6);
+  box-shadow: 0 32px 52px -26px rgba(0, 0, 0, .6), var(--rim-lit), var(--rim-glow-lit);
 }
 figure.shot:hover .frame::after,
 figure.shot:focus-within .frame::after { opacity: 1; }
