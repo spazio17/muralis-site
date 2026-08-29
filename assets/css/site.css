@@ -1179,6 +1179,165 @@ figure.shot figcaption b {
   to { clip-path: inset(0 0 0 0); transform: none; }
 }
 
+/* The recipes: blueprints as sheets flyposted on the wall.
+ *
+ * The rest of the page is a painted wall, so a code block that arrived as a
+ * neat rounded rectangle would be the one object on it that had never been
+ * touched by a hand. A pasted sheet is what a wall actually carries, so these
+ * are torn at the top and bottom and left slightly out of true, and the wall
+ * shows through the tear rather than behind a border.
+ *
+ * The tear is two masks rather than one. A single mask over the whole card
+ * would have to stretch to whatever height the code inside happens to be, and
+ * a tall recipe would tear twice as deeply as a short one. Two strips pinned
+ * to the top and bottom edges at a fixed height, with a plain gradient filling
+ * everything between them, tear the same amount on every sheet. Sides are left
+ * alone deliberately: the rect inside each strip is wider than its own viewBox,
+ * so displacement never reaches the left and right edges and the code keeps a
+ * straight column to sit in.
+ *
+ * The shadow is a drop-shadow filter on the wrapper rather than a box-shadow on
+ * the paper, because a mask clips everything the element paints, box-shadow
+ * included, and a filter follows the torn silhouette instead of the box. */
+.sheets {
+  display: grid;
+  gap: 2.4rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  align-items: start;
+}
+.sheet {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .10)) drop-shadow(0 14px 22px rgba(0, 0, 0, .16));
+}
+/* Barely off true. Enough that the two sheets are not parallel, not enough to
+   read as a gimmick or to cost a line of code its alignment. */
+.sheets > .sheet:nth-child(odd) { rotate: -.35deg; }
+.sheets > .sheet:nth-child(even) { rotate: .3deg; }
+
+.paper {
+  --tear: 26px;
+  /* Tuned by rendering four of these side by side rather than by taste alone: the
+     x frequency has to be high enough to survive being stretched to the card's
+     width, or the tear reads as a gentle wave rather than a torn edge. The stray
+     flecks the displacement throws past the edge are the point, since that is
+     what paper fibres do. */
+  --tear-top: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='26' preserveAspectRatio='none'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.09 0.9' numOctaves='4' seed='9' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='11' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='-40' y='9' width='380' height='40' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+  --tear-bottom: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='26' preserveAspectRatio='none'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.09 0.9' numOctaves='4' seed='23' result='n'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='n' scale='11' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='-40' y='-23' width='380' height='40' fill='%23fff' filter='url(%23t)'/%3E%3C/svg%3E");
+  position: relative;
+  background: var(--panel-bg);
+  padding: 1.6rem 1.3rem 1.7rem;
+  -webkit-mask-image: var(--tear-top), var(--tear-bottom), linear-gradient(#000, #000);
+  mask-image: var(--tear-top), var(--tear-bottom), linear-gradient(#000, #000);
+  -webkit-mask-size: 100% var(--tear), 100% var(--tear), 100% calc(100% - var(--tear) * 2);
+  mask-size: 100% var(--tear), 100% var(--tear), 100% calc(100% - var(--tear) * 2);
+  -webkit-mask-position: top left, bottom left, left var(--tear);
+  mask-position: top left, bottom left, left var(--tear);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+/* Grain as a faint overlay at the page's own --grain-alpha, the way every other
+   textured surface here does it. Blending it into the background instead put the
+   noise on at full strength and turned the paper grey. */
+.paper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--grain);
+  opacity: var(--grain-alpha);
+  pointer-events: none;
+}
+.paper > * { position: relative; }
+.sheet h3 {
+  margin: .1rem 0 .5rem;
+  font-size: 1.08rem;
+  font-weight: 650;
+  color: var(--text);
+}
+.sheet .what {
+  margin: 0 0 1rem;
+  color: var(--subtext);
+  font-size: .92rem;
+  line-height: 1.55;
+}
+.sheet .asks-label {
+  margin: 0 0 .3rem;
+  font-size: .74rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 650;
+}
+.sheet .asks {
+  margin: 0 0 1.1rem;
+  padding-left: 1.05rem;
+  color: var(--subtext);
+  font-size: .88rem;
+  line-height: 1.6;
+}
+.sheet .asks b { color: var(--text); font-weight: 600; }
+
+/* The code sits in the sheet the way a printed patch sits on paper: recessed,
+   its own column, and scrolling on its own axis so a long line cannot widen the
+   sheet and push the section off a phone. */
+.code-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--page-bg);
+  max-height: 21rem;
+  overflow-y: auto;
+}
+.code-scroll pre {
+  margin: 0;
+  padding: .85rem .95rem;
+}
+.code-scroll code {
+  font-family: var(--mono);
+  font-size: .76rem;
+  line-height: 1.55;
+  color: var(--subtext);
+  white-space: pre;
+}
+
+.sheet-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .55rem;
+  margin-top: 1.05rem;
+}
+.ha-add {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .5rem .85rem;
+  border-radius: 999px;
+  background: var(--accent-alt);
+  color: var(--base);
+  font-size: .87rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 0 0 color-mix(in srgb, var(--accent-alt) 70%, black 25%);
+  transition: transform .08s ease, box-shadow .08s ease;
+}
+.ha-add svg { width: 17px; height: 17px; fill: currentColor; }
+.ha-add:hover { text-decoration: none; }
+.ha-add:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 0 transparent;
+}
+.copy-yaml {
+  margin-top: 0;
+  padding: .5rem .85rem;
+  border-radius: 999px;
+  font-size: .87rem;
+}
+.sheet-actions .plain {
+  margin-left: auto;
+  font-size: .82rem;
+  color: var(--subtext);
+}
+.footnote { font-size: .88rem; margin-top: 1.9rem; }
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
   /* The spray and the drip exist only to move, so they go entirely. The patches,

@@ -1,0 +1,110 @@
+blueprint:
+  name: "Muralis: wake the panel on presence, blank it when the room empties"
+  description: >-
+    A wall panel that glows all night is a nightlight nobody asked for. This wakes the screen when
+    someone is there and blanks it again once the room has been empty for a while.
+
+
+    It presses the panel's own **Wake display** and **Display off** buttons, which Muralis creates
+    over MQTT discovery, so the tablet's backlight is what changes. Nothing is uninstalled and no
+    setting is written; the dashboard is still loaded and comes straight back.
+
+
+    Pick the buttons from the list rather than typing entity ids. Panels set up before the app was
+    renamed carry ids beginning `kiosk_`, newer ones `muralis_`, and the picker spares you having
+    to know which.
+  domain: automation
+  source_url: https://github.com/spazio17/muralis-blueprints/blob/main/screen-presence.yaml
+  input:
+    presence:
+      name: Presence sensor
+      description: The motion or occupancy sensor that sees the room the panel is in.
+      selector:
+        entity:
+          filter:
+            - domain: binary_sensor
+              device_class: occupancy
+            - domain: binary_sensor
+              device_class: motion
+            - domain: binary_sensor
+              device_class: presence
+    wake_button:
+      name: Wake display
+      description: The panel's "Wake display" button.
+      selector:
+        entity:
+          filter:
+            - domain: button
+    blank_button:
+      name: Display off
+      description: The panel's "Display off" button.
+      selector:
+        entity:
+          filter:
+            - domain: button
+    blank_after:
+      name: Blank after the room has been empty for
+      description: How long to wait before blanking. Long enough that sitting still does not
+        blank the screen in front of you.
+      default:
+        minutes: 2
+      selector:
+        duration:
+    quiet_entity:
+      name: Do not wake while this is on (optional)
+      description: >-
+        Something that is on when the panel should stay dark whatever the sensor sees: a sleep
+        mode helper, a schedule, or a bedroom occupancy sensor. Leave empty to always wake.
+      default: []
+      selector:
+        entity:
+          filter:
+            - domain: input_boolean
+            - domain: binary_sensor
+            - domain: schedule
+            - domain: switch
+
+# restart, because the "empty for long enough" trigger and a fresh arrival can land close
+# together and the newer one should win.
+mode: restart
+max_exceeded: silent
+
+variables:
+  quiet_entity: !input quiet_entity
+
+triggers:
+  - trigger: state
+    entity_id: !input presence
+    to: "on"
+    id: seen
+  - trigger: state
+    entity_id: !input presence
+    to: "off"
+    for: !input blank_after
+    id: empty
+
+conditions: []
+
+actions:
+  - choose:
+      - alias: Someone is there, and it is not a quiet time
+        conditions:
+          - condition: trigger
+            id: seen
+          # The optional input is an empty list when it was left blank, and Jinja's `or` stops
+          # before is_state ever sees one.
+          - condition: template
+            value_template: >-
+              {{ quiet_entity | length == 0 or not is_state(quiet_entity, 'on') }}
+        sequence:
+          - action: button.press
+            target:
+              entity_id: !input wake_button
+      - alias: The room has been empty long enough
+        conditions:
+          - condition: trigger
+            id: empty
+        sequence:
+          - action: button.press
+            target:
+              entity_id: !input blank_button

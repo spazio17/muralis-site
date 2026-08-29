@@ -1,0 +1,91 @@
+blueprint:
+  name: "Muralis: keep the panel's battery in a healthy band"
+  description: >-
+    A tablet left plugged in forever sits at 100 percent and warms up, and after a year or two the
+    battery swells and lifts the screen. This charges it only between two thresholds instead.
+
+
+    It watches the panel's battery level and switches the smart plug feeding its charger on when
+    the level falls below the floor, off when it rises above the ceiling. The panel keeps running
+    the whole time; only the charger is switched.
+
+
+    You need the charger on a switchable plug for this. If the tablet is wired to a fixed supply
+    there is nothing here to control.
+  domain: automation
+  source_url: https://github.com/spazio17/muralis-blueprints/blob/main/battery-band.yaml
+  input:
+    battery_sensor:
+      name: Panel battery level
+      description: The panel's own battery level sensor.
+      selector:
+        entity:
+          filter:
+            - domain: sensor
+              device_class: battery
+    charger_switch:
+      name: Charger plug
+      description: The switch that powers the panel's charger.
+      selector:
+        entity:
+          filter:
+            - domain: switch
+    low:
+      name: Start charging below
+      description: Lower is kinder to the cell but leaves less margin for a power cut.
+      default: 20
+      selector:
+        number:
+          min: 5
+          max: 60
+          step: 1
+          unit_of_measurement: "%"
+          mode: slider
+    high:
+      name: Stop charging above
+      description: A ceiling below 100 is most of the benefit. Raise it if the panel has to
+        survive long outages.
+      default: 80
+      selector:
+        number:
+          min: 40
+          max: 100
+          step: 1
+          unit_of_measurement: "%"
+          mode: slider
+
+mode: single
+max_exceeded: silent
+
+triggers:
+  - trigger: numeric_state
+    entity_id: !input battery_sensor
+    below: !input low
+    id: below_floor
+  - trigger: numeric_state
+    entity_id: !input battery_sensor
+    above: !input high
+    id: above_ceiling
+
+conditions: []
+
+actions:
+  # Which trigger fired is the whole decision, so the thresholds are named once and never
+  # restated as conditions that could drift away from them.
+  - choose:
+      - alias: Below the floor, so charge
+        conditions:
+          - condition: trigger
+            id: below_floor
+        sequence:
+          - action: switch.turn_on
+            target:
+              entity_id: !input charger_switch
+      - alias: Above the ceiling, so stop
+        conditions:
+          - condition: trigger
+            id: above_ceiling
+        sequence:
+          - action: switch.turn_off
+            target:
+              entity_id: !input charger_switch

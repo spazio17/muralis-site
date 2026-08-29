@@ -1,0 +1,43 @@
+# The recipe sheets show the blueprints from blueprints/, but Home Assistant imports them from
+# the spazio17/muralis-blueprints repository, because it accepts GitHub, gists and its own
+# forums and not an arbitrary website URL. So the site carries copies, and a copy is a thing
+# that drifts. This fails closed when it does: what the page shows and what the Add to Home
+# Assistant button hands over must be the same bytes.
+#
+# Same instinct as legal-check.yml, which guards the privacy policy and terms the same way.
+name: blueprint-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compare each local copy with the blueprint repository
+        run: |
+          set -euo pipefail
+          upstream=https://raw.githubusercontent.com/spazio17/muralis-blueprints/main
+          status=0
+          for file in blueprints/*.yaml; do
+            name=$(basename "$file")
+            if ! curl -fsSL "$upstream/$name" -o "/tmp/$name"; then
+              echo "::error file=$file::$name is not in the blueprint repository"
+              status=1
+              continue
+            fi
+            if diff -u "/tmp/$name" "$file"; then
+              echo "$name matches upstream"
+            else
+              echo "::error file=$file::$name has drifted from the blueprint repository"
+              status=1
+            fi
+          done
+          exit $status
+
+      - name: Every sheet must point at a blueprint that exists
+        run: python3 scripts/check-recipes.py
