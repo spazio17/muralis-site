@@ -873,8 +873,23 @@ footer a:hover { color: var(--accent); }
   box-shadow: 0 1px 0 0 var(--accent), 0 10px 24px -18px rgba(0, 0, 0, .5);
 }
 
-/* Body copy links get a marker swipe instead of an underline slide: the band
-   grows from the left behind the text, in the warm complement. */
+/* Body copy links get a stroke of pigment rather than an underline slide: a bar
+   in the warm complement, drawn from the left along the hairline the link
+   already carries.
+ *
+ * It was a translucent block behind the text, and in dark mode that was the one
+ * thing on the page that looked like a rendering fault. Peach at 28 percent over
+ * a near-black page is not a highlighter, it is a warm grey box: it computed to
+ * about rgb(91, 72, 71), landed across the bottom half of the glyphs with a hard
+ * rectangular edge, and read as a selection that had been left behind. It only
+ * ever worked in light mode, where the same 28 percent over a near-white page
+ * stays recognisably peach.
+ *
+ * A bar at full strength needs no alpha to survive either background, sits clear
+ * of the letters instead of behind them, and is the same gesture as everything
+ * else here: paint arriving from the left. It also no longer needs a negative
+ * z-index to stay off the text, and one fewer stacking context is one fewer
+ * thing to go wrong. */
 .prose p a,
 section p a,
 .tier a {
@@ -889,11 +904,9 @@ section p a::before,
   position: absolute;
   left: -.15em;
   right: -.15em;
-  bottom: -.05em;
-  top: .55em;
-  z-index: -1;
+  bottom: -1px;
+  height: 2px;
   background: var(--comp);
-  opacity: .28;
   transform: scaleX(0);
   transform-origin: left;
   transition: transform .3s cubic-bezier(.2, .7, .2, 1);
