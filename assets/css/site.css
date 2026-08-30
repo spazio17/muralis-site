@@ -877,43 +877,44 @@ footer a:hover { color: var(--accent); }
    in the warm complement, drawn from the left along the hairline the link
    already carries.
  *
- * It was a translucent block behind the text, and in dark mode that was the one
- * thing on the page that looked like a rendering fault. Peach at 28 percent over
- * a near-black page is not a highlighter, it is a warm grey box: it computed to
- * about rgb(91, 72, 71), landed across the bottom half of the glyphs with a hard
- * rectangular edge, and read as a selection that had been left behind. It only
- * ever worked in light mode, where the same 28 percent over a near-white page
- * stays recognisably peach.
+ * It is a background on the link itself, and that is the third attempt at this
+ * edge. The first two were an absolutely positioned ::before, which is fine
+ * until the link breaks across two lines, and then it is the bug Juri kept
+ * seeing: a small orange dash orphaned in the empty space below the text.
  *
- * A bar at full strength needs no alpha to survive either background, sits clear
- * of the letters instead of behind them, and is the same gesture as everything
- * else here: paint arriving from the left. It also no longer needs a negative
- * z-index to stay off the text, and one fewer stacking context is one fewer
- * thing to go wrong. */
+ * The reason is that an absolutely positioned child of a wrapped inline has no
+ * sensible box to live in. Its containing block is built from the first
+ * fragment's left edge and the last fragment's right edge, and when the link
+ * wraps, the last fragment starts back at the left margin, so that right edge is
+ * to the LEFT of that left edge. The box collapses to nothing, the -.15em insets
+ * on each side are all that is left of it, and those few pixels get painted at
+ * the bottom of a box spanning both lines. Hence a dash, below the text, near
+ * where the first line ended. Neither the colour nor the height was ever the
+ * problem: any pseudo-element positioned that way lands there.
+ *
+ * A background has no such trouble. box-decoration-break: clone gives every line
+ * fragment its own background box, so a link that wraps gets a stroke under each
+ * of its pieces, each starting at that piece's own left edge, which is what a
+ * hand would do. Nothing is positioned, nothing is absolute, and there is no
+ * stacking context left to keep the paint off the letters. */
 .prose p a,
 section p a,
 .tier a {
-  position: relative;
   text-decoration: none;
   border-bottom: 1px solid var(--mat);
+  background-image: linear-gradient(var(--comp), var(--comp));
+  background-repeat: no-repeat;
+  /* Against the bottom of the border box, so the paint covers the hairline
+     rather than sitting a pixel above it. */
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size .3s cubic-bezier(.2, .7, .2, 1);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
-.prose p a::before,
-section p a::before,
-.tier a::before {
-  content: "";
-  position: absolute;
-  left: -.15em;
-  right: -.15em;
-  bottom: -1px;
-  height: 2px;
-  background: var(--comp);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .3s cubic-bezier(.2, .7, .2, 1);
-}
-.prose p a:hover::before,
-section p a:hover::before,
-.tier a:hover::before { transform: scaleX(1); }
+.prose p a:hover,
+section p a:hover,
+.tier a:hover { background-size: 100% 2px; }
 
 /* Cards as paint chips. Which pigment a card uses cycles across the grid, so a
    row of nine is not one colour nine times, and it is set once as --chip rather
