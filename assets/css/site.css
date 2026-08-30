@@ -457,6 +457,15 @@ a:hover { color: var(--accent); }
 /* ---------------------------------------------------------------- sections */
 
 section { position: relative; padding: 4.25rem 0; border-top: 0; }
+/* The masthead is sticky, so a nav jump has to stop short of it or the section
+   heading lands underneath. The section's own 4.25rem of top padding absorbs
+   the 65px header on a wide screen with 3px to spare, which is luck, not
+   design; the moment the masthead wraps to two rows the heading is buried.
+   Measured: 65px wide, up to 83px mid, 104px once the nav wraps. The margins
+   below clear each of those with room, and overshooting only shows a sliver of
+   the section above, which is harmless. */
+section { scroll-margin-top: 1.5rem; }
+@media (max-width: 760px) { section { scroll-margin-top: 3rem; } }
 /* Pigment instead of a ruled border: mauve into blue into peach, smeared along
    the join and drifting so the mix is never quite the same twice. */
 section::before {
