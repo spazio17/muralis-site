@@ -457,6 +457,15 @@ a:hover { color: var(--accent); }
 /* ---------------------------------------------------------------- sections */
 
 section { position: relative; padding: 4.25rem 0; border-top: 0; }
+/* The masthead is sticky, so a nav jump has to stop short of it or the section
+   heading lands underneath. The section's own 4.25rem of top padding absorbs
+   the 65px header on a wide screen with 3px to spare, which is luck, not
+   design; the moment the masthead wraps to two rows the heading is buried.
+   Measured: 65px wide, up to 83px mid, 104px once the nav wraps. The margins
+   below clear each of those with room, and overshooting only shows a sliver of
+   the section above, which is harmless. */
+section { scroll-margin-top: 1.5rem; }
+@media (max-width: 760px) { section { scroll-margin-top: 3rem; } }
 /* Pigment instead of a ruled border: mauve into blue into peach, smeared along
    the join and drifting so the mix is never quite the same twice. */
 section::before {
@@ -873,34 +882,48 @@ footer a:hover { color: var(--accent); }
   box-shadow: 0 1px 0 0 var(--accent), 0 10px 24px -18px rgba(0, 0, 0, .5);
 }
 
-/* Body copy links get a marker swipe instead of an underline slide: the band
-   grows from the left behind the text, in the warm complement. */
+/* Body copy links get a stroke of pigment rather than an underline slide: a bar
+   in the warm complement, drawn from the left along the hairline the link
+   already carries.
+ *
+ * It is a background on the link itself, and that is the third attempt at this
+ * edge. The first two were an absolutely positioned ::before, which is fine
+ * until the link breaks across two lines, and then it is the bug Juri kept
+ * seeing: a small orange dash orphaned in the empty space below the text.
+ *
+ * The reason is that an absolutely positioned child of a wrapped inline has no
+ * sensible box to live in. Its containing block is built from the first
+ * fragment's left edge and the last fragment's right edge, and when the link
+ * wraps, the last fragment starts back at the left margin, so that right edge is
+ * to the LEFT of that left edge. The box collapses to nothing, the -.15em insets
+ * on each side are all that is left of it, and those few pixels get painted at
+ * the bottom of a box spanning both lines. Hence a dash, below the text, near
+ * where the first line ended. Neither the colour nor the height was ever the
+ * problem: any pseudo-element positioned that way lands there.
+ *
+ * A background has no such trouble. box-decoration-break: clone gives every line
+ * fragment its own background box, so a link that wraps gets a stroke under each
+ * of its pieces, each starting at that piece's own left edge, which is what a
+ * hand would do. Nothing is positioned, nothing is absolute, and there is no
+ * stacking context left to keep the paint off the letters. */
 .prose p a,
 section p a,
 .tier a {
-  position: relative;
   text-decoration: none;
   border-bottom: 1px solid var(--mat);
+  background-image: linear-gradient(var(--comp), var(--comp));
+  background-repeat: no-repeat;
+  /* Against the bottom of the border box, so the paint covers the hairline
+     rather than sitting a pixel above it. */
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size .3s cubic-bezier(.2, .7, .2, 1);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
-.prose p a::before,
-section p a::before,
-.tier a::before {
-  content: "";
-  position: absolute;
-  left: -.15em;
-  right: -.15em;
-  bottom: -.05em;
-  top: .55em;
-  z-index: -1;
-  background: var(--comp);
-  opacity: .28;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .3s cubic-bezier(.2, .7, .2, 1);
-}
-.prose p a:hover::before,
-section p a:hover::before,
-.tier a:hover::before { transform: scaleX(1); }
+.prose p a:hover,
+section p a:hover,
+.tier a:hover { background-size: 100% 2px; }
 
 /* Cards as paint chips. Which pigment a card uses cycles across the grid, so a
    row of nine is not one colour nine times, and it is set once as --chip rather
@@ -1177,6 +1200,169 @@ figure.shot figcaption b {
 @keyframes roller {
   from { clip-path: inset(0 100% 0 0); transform: translateY(10px); }
   to { clip-path: inset(0 0 0 0); transform: none; }
+}
+
+/* The recipes: blueprints as paint chips, and the blueprint itself in the
+   overlay the screenshots already open in.
+ *
+ * The section invents no vocabulary of its own. A recipe is a .card, the same
+ * chip the feature grid is made of, so the pigment stub, the tinted border and
+ * the lift arrive without being written a second time, and a recipe reads as
+ * one more thing on this wall rather than as a panel bolted onto it.
+ *
+ * The YAML is deliberately NOT inside the chip. A blueprint is seventy columns
+ * of text and a chip is about twenty rem wide, so printed in one nearly every
+ * line would scroll sideways, and on a phone every one of them would. It opens
+ * in the lightbox instead, where it has the width of the window. The chip keeps
+ * the height of its neighbour, and nothing on the page grows or jumps because a
+ * reader asked to see the code. */
+.recipes {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 1.25rem;
+}
+/* A column, so the actions can be pushed to the bottom of it: two recipes whose
+   descriptions differ by a line still line their buttons up with each other. */
+.recipes .card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.3rem 1.35rem 1.35rem;
+}
+/* Blockified by the flex column otherwise, which stretches it the width of the
+   card and puts a lot of empty underline-height beside three words. */
+.recipes .card .tag { align-self: flex-start; }
+.recipes .card h3 {
+  margin: 0 0 .5rem;
+  font-size: 1.08rem;
+}
+.recipes .what {
+  margin: 0 0 1rem;
+  line-height: 1.55;
+}
+.recipes .asks-label {
+  margin: 0 0 .3rem;
+  font-size: .74rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 650;
+}
+.recipes .asks {
+  margin: 0 0 1.1rem;
+  padding-left: 1.05rem;
+  color: var(--subtext);
+  font-size: .88rem;
+  line-height: 1.6;
+}
+.recipes .asks b { color: var(--text); font-weight: 600; }
+
+.recipe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .55rem;
+  margin-top: auto;
+  padding-top: 1.05rem;
+}
+/* The one loud control in the section, because it is the one that does the
+   thing the section exists for. Pressed, it travels down onto its own shadow. */
+.ha-add {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .5rem .85rem;
+  border-radius: 999px;
+  background: var(--accent-alt);
+  color: var(--base);
+  font-size: .87rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 0 0 color-mix(in srgb, var(--accent-alt) 70%, black 25%);
+  transition: transform .08s ease, box-shadow .08s ease;
+}
+.ha-add svg { width: 17px; height: 17px; fill: currentColor; }
+.ha-add:hover { text-decoration: none; }
+.ha-add:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 0 transparent;
+}
+/* Quieter, and styled rather than left to the browser: an unstyled button next
+   to a painted one is the only widget on the page still wearing the operating
+   system's clothes. Same pill as the lightbox bar's own controls. */
+.read-yaml,
+.copy-yaml {
+  padding: .5rem .85rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: .87rem;
+  cursor: pointer;
+}
+.read-yaml:hover,
+.copy-yaml:hover { border-color: var(--accent); color: var(--accent); }
+.recipe-actions .plain {
+  margin-left: auto;
+  font-size: .82rem;
+  color: var(--subtext);
+}
+/* Selector matched to the .intro rule this overrides, which is
+   section > .wrap > .intro and therefore wins over a bare .footnote: the margin
+   below was being dropped, and the note sat directly under the cards. */
+section > .wrap > .intro.footnote { font-size: .88rem; margin-top: 1.9rem; }
+
+/* The blueprint, in the same dialog the screenshots use. It is the same gesture,
+   so it is the same object, only carrying text instead of a capture: the sheet,
+   the bar and the backdrop are all inherited from dialog.lightbox above.
+ *
+ * Narrower than a screenshot on purpose. A blueprint is a column of text and a
+ * line of it stretched across a wide monitor is harder to read, not easier. */
+dialog.lightbox.blueprint { width: min(94vw, 860px); }
+dialog.lightbox.blueprint .code-scroll:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+dialog.lightbox.blueprint .code-scroll {
+  border: 0;
+  border-radius: 0;
+  max-height: min(74vh, 40rem);
+  background: var(--base);
+}
+/* Four things in the bar rather than the screenshot's two, so on a phone it
+   wraps instead of squeezing the copy button to nothing. */
+dialog.lightbox.blueprint .bar { flex-wrap: wrap; }
+/* In a card the code was a patch of texture and subtext was right for it. Here it
+   is the only thing on the screen and it is meant to be read, so it comes up to
+   the body colour and a size that survives a phone. */
+dialog.lightbox.blueprint .code-scroll code {
+  color: var(--text);
+  font-size: .8rem;
+}
+dialog.lightbox.blueprint .bar strong {
+  color: var(--text);
+  font-weight: 650;
+  font-size: .88rem;
+}
+/* The code panel. Its own scroll on both axes, so a long line moves the code and
+   nothing else: a blueprint must never be able to widen the page it sits on. */
+.code-scroll {
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--page-bg);
+  max-height: 21rem;
+  overscroll-behavior: contain;
+}
+.code-scroll pre {
+  margin: 0;
+  padding: .85rem .95rem;
+}
+.code-scroll code {
+  font-family: var(--mono);
+  font-size: .78rem;
+  line-height: 1.55;
+  color: var(--subtext);
+  white-space: pre;
 }
 
 @media (prefers-reduced-motion: reduce) {

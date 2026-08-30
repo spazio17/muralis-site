@@ -12,7 +12,12 @@ privacy/index.html    privacy policy, the public URL Play requires, in addition 
 terms/index.html      terms
 assets/css/site.css   all styles; the palette is copied from the app (see below)
 assets/js/theme.js    light/dark toggle wiring
+assets/js/motion.js   the roller pass that brings each block on, and the masthead rail
+assets/js/lightbox.js opens a screenshot full size
+assets/js/recipes.js  fills the blueprint overlay, and the copy button in it
 assets/img/           icon, screenshots
+blueprints/*.yaml     copies of the Home Assistant blueprints, shown by the recipes section
+scripts/              the checks CI runs: legal text, and the blueprint copies
 .nojekyll             serve the files as-is instead of running them through Jekyll
 ```
 
@@ -33,6 +38,26 @@ source; this repo is a publication of it. When that text changes, update these p
 Both pages currently carry a draft banner, and two sections are unfilled placeholders on purpose:
 the privacy policy's contact address and the terms' governing law. **Do not remove the draft banners
 until reviewed text replaces the draft in the app repo.**
+
+## Automation recipes are copies too
+
+The recipes section offers two Home Assistant blueprints. The files in `blueprints/` are **copies**,
+and the originals live in [`spazio17/muralis-blueprints`](https://github.com/spazio17/muralis-blueprints),
+a separate public repository.
+
+That split is forced, not a preference. Home Assistant imports a blueprint from GitHub, from a gist
+or from its own forums, and from nowhere else, so an Add to Home Assistant button cannot hand it a
+file served from this site. The button hands it the repository; the page shows the copy so a reader
+can see what they are about to import without leaving.
+
+A copy is a thing that drifts, so `.github/workflows/blueprint-check.yml` fails closed on two counts.
+It diffs every file in `blueprints/` against the same file upstream, and it runs
+`scripts/check-recipes.py`, which checks that every card names a blueprint that exists, that the
+import link and the On GitHub link beside it name that same blueprint, and that no blueprint in the
+repository has been published and then quietly forgotten. Same instinct as `legal-check.yml`.
+
+To add a recipe: commit the YAML upstream first, copy it into `blueprints/`, then add a card that
+names it in all three places. The check will tell you if you missed one.
 
 ## Screenshots
 
