@@ -35,9 +35,10 @@ or the site stops looking like the product.
 `app/src/main/res/raw/privacy_policy.txt` and `app/src/main/res/raw/terms.txt`. The app is the
 source; this repo is a publication of it. When that text changes, update these pages to match, Play requires the public copy and the in-app copy to say the same thing.
 
-Both pages currently carry a draft banner, and two sections are unfilled placeholders on purpose:
-the privacy policy's contact address and the terms' governing law. **Do not remove the draft banners
-until reviewed text replaces the draft in the app repo.**
+The privacy policy was finalized on 2026-08-31: reviewed line by line against the app's source,
+dated, and given a rights section; its draft banner is gone. The terms still carry theirs, and the
+governing-law section is still a placeholder on purpose. **Do not remove the terms' draft banner
+until reviewed text lands in `legal/terms.txt`.**
 
 ## Automation recipes are copies too
 

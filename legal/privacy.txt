@@ -1,72 +1,57 @@
-Muralis is a kiosk launcher that displays a web dashboard you choose, on a device you own.
+Muralis is a kiosk launcher that displays a web dashboard you choose, on a device you own. This policy says what the app does with data, in plain words, and is written against the EU General Data Protection Regulation, the GDPR.
 
-WHAT THE APP SENDS TO US
+WHAT THE APP SENDS TO THE DEVELOPER
 
-Nothing. Muralis has no analytics, no crash reporting, no advertising identifiers and no developer-controlled server. The developer receives no data from your device at any time.
+Nothing. Muralis has no analytics, no crash reporting, no advertising identifiers and no server of its own. The developer receives no data from your device, at any time, for any reason.
 
-WHAT THE APP SENDS, AND WHERE
+WHAT THE APP SENDS ELSEWHERE, AND WHERE
 
-Only to destinations you configure yourself, and only after you configure them. Neither surface does anything until you configure it: MQTT stays off until you enter a broker address, and the local web administration stays off until you set a password. Note that a broker address alone is enough to start publishing; a broker username and password are optional, because some brokers accept anonymous connections.
+Nothing, until you configure a destination yourself. Two optional features publish data, and both stay off until you set them up: MQTT stays off until you enter a broker address, and the local web administration stays off until you set a password.
 
-• MQTT. If you enter a broker address, Muralis publishes a status snapshot to that broker every 60 seconds. It also publishes ahead of that interval when something worth knowing changes: your battery level, charging state, memory pressure or thermal status; any command it accepts; a dashboard reload, crash or recycle; and any change you make to its settings. That snapshot contains:
+• MQTT. If you enter a broker address, Muralis publishes a status snapshot to that broker, about once a minute and sooner when something changes. It contains device status and diagnostics: battery, memory, storage, network state, the device's own address on your network, processor load and temperatures, screen state, the panel's settings including the device identifier it generates for itself, the app version, and the health of the dashboard: which page is loaded, whether it loaded, how often the view crashed or was rebuilt.
 
-- how long the device has been running
-- battery percentage, charge state, health, temperature, voltage, and the charge, current and energy counters the hardware exposes
-- memory and swap in use and available, how much memory Muralis itself is using, whether the system is low on memory, and the level at which it considers itself low
-- storage in use and available
-- whether the network is connected, whether the system considers it validated, whether it is metered, whether it is Wi-Fi or Ethernet, the Wi-Fi signal strength, link speed and radio frequency
-- the device IP address
-- CPU load, the system load average, maximum CPU frequency, CPU and GPU temperatures, and the operating system's thermal status
-- the dashboard address currently loaded, when it last loaded, and any load error
-- how many times the dashboard view has crashed or been rebuilt, and how long ago
-- how many times the local web administration has locked an address out for repeated wrong passwords, how long ago the last lockout was, and the local network address those attempts came from. Note that this is the address of whatever device tried the passwords, not the panel's own; it is published so that you can act on a guessing attempt
-- the current screen brightness, whether the light sensor is setting it, and whether this device has one
-- the panel's own settings: its device identifier, the stats overlay switch, the portrait switch, and whether the local web administration is enabled
+Three things in it deserve to be called out, because you might not expect them. The snapshot includes the address of the dashboard being shown, so if that address is itself something you would not want on your broker, do not enable MQTT. It includes the network address of any device that was locked out of the web administration for repeated wrong passwords, published so that you can act on a guessing attempt. And it is retained: your broker keeps the most recent copy and hands it to anything that subscribes later, even after the panel is switched off or removed, until you clear it on the broker.
 
-Muralis publishes its status snapshot as a retained message, which means your broker keeps a copy of the most recent one and hands it to anything that subscribes later, including after the panel is switched off or removed.
+The complete, current content of the snapshot is not a secret and cannot go stale in this document: it is visible to you at any time on your own broker, and in the web administration.
 
-The Wi-Fi network name is deliberately never read or transmitted. Reading it would require a location permission, which a wall-mounted panel should not need.
+• Local web administration. If you set an administration password, the panel serves the same status information, plus its settings, over your local network to anyone who supplies that password. This surface also shows things that are deliberately never sent to the broker: the corner-tap combinations that unlock the kiosk, and the panel's connection settings. The password is what protects the way out of the kiosk; treat it accordingly.
 
-The MQTT connection is not encrypted, and neither is the local web administration. Everything described above, and the credentials used to authenticate, travel in clear text over your network.
+Neither connection is encrypted. Everything described above, and the credentials used to authenticate, travel in clear text over your network, so use both features on networks you trust.
 
-Note that the list above includes the dashboard address. If the address of your dashboard is itself something you would not want on your broker, do not enable MQTT.
+The Wi-Fi network name is never read or transmitted. Reading it would require a location permission, which a wall panel should not need and the app does not request.
 
-Muralis also publishes an online/offline availability value, the result of any command it receives, and a Home Assistant discovery message describing the device: its identifier, the manufacturer and model reported by the hardware, and the Muralis version.
+WHO IS RESPONSIBLE FOR THAT DATA
 
-• Local web administration. If you set an administration password, Muralis listens on your local network and serves that snapshot, plus a settings page, to anyone who supplies that password. Over this surface the snapshot also carries the panel's administration details, which are deliberately never sent to the broker: the corner-tap combinations that unlock the kiosk, the port it listens on, and the broker address, port and username. Treat the administration password accordingly, since it is what protects the way out of the kiosk.
+You are. The broker and the network are yours: the developer is not a recipient of anything the app publishes and cannot read, correct or delete any of it. The developer processes personal data in exactly one case: if you write to the contact address below, he receives your address and what you wrote, uses them to answer you, and nothing else. For that mail the developer is what the GDPR calls the controller, and the legal basis is that you asked (Article 6(1)(b) and (f) of the GDPR).
 
 WHAT THE APP STORES ON THE DEVICE
 
-Your dashboard address, a device identifier that Muralis generates itself, your display and behaviour preferences, and the corner-tap combinations you record. Your broker credentials and administration password are stored encrypted through the Android keystore. The dashboard view stores whatever cookies or sessions your dashboard sets, in the same way a browser would.
-
-To notice a dashboard that has frozen, Muralis regularly reads two numbers from the page it is showing: how much text it renders and how many elements it contains. The numbers are compared on the device to their previous values and are never stored beyond that comparison, and never transmitted.
+Your settings, a device identifier Muralis generates itself, and the corner-tap combinations you record. Your broker credentials, the administration password and the Pro purchase record are stored encrypted through the Android keystore. The dashboard view stores whatever cookies and sessions your dashboard sets, in the same way a browser would. To notice a dashboard that has frozen, the app compares two size measurements of the page against their previous values, on the device; they are never stored beyond that comparison and never transmitted.
 
 Muralis does not read your contacts, location, photos, files, messages, call history or microphone, and requests no permission that would allow it to.
 
-WHAT LEAVES YOUR CONTROL
-
-Nothing, unless you point it somewhere you do not control. If you configure a broker on the public internet, or expose the local web administration beyond your own network, the data described above travels there. Both are off by default for that reason.
-
 DELETION
 
-Uninstalling the app, or clearing its data, removes everything it has stored, including the encrypted credentials.
+Uninstalling the app, or clearing its data, removes everything it has stored, including the encrypted credentials. The one copy outside its reach is the retained snapshot on your broker, which you clear there.
 
 IF YOU BUY MURALIS PRO
 
-The purchase is handled by Google Play. Google is the seller, takes the payment and issues the receipt. The developer never sees your card details, your name or your address, and receives no report of who bought anything.
+The purchase is handled by Google Play. Google is the seller, takes the payment and issues the receipt. The developer never sees your name, your address or your payment details, and receives no report of who bought anything.
 
-To know whether the remote-control features are unlocked, Muralis asks the Google Play app on your device what the signed-in account has bought. That is a question to another app on the same device, not a request Muralis sends anywhere; whether Google Play then talks to Google's own servers is Google's business and is covered by Google's privacy policy, not this one. On a device with no Google Play, or with no account signed in, the answer is "nothing", and Muralis asks no further.
-
-Muralis stores the answer: Google's signed record of the purchase, encrypted through the Android keystore in the same way as your other credentials. It is kept so that the panel stays unlocked with no network, and so that it stays unlocked if you later remove the Google account from the device.
-
-There is no Muralis server, before or after a purchase. Nothing about your purchase, your account or your panel reaches the developer, and there is nothing for the developer to log.
+To know whether the remote-control features are unlocked, Muralis asks the Google Play app on the same device what the signed-in account has bought, and stores Google's signed answer, encrypted like the other credentials, so the panel stays unlocked with no network and no account. Whether Google Play then talks to Google's own servers is Google's business, covered by Google's privacy policy rather than this one. On a device without Google Play there is no one to ask, and the app asks no further.
 
 CHILDREN
 
 Muralis is not directed at children and collects nothing about anyone.
+
+YOUR RIGHTS
+
+The GDPR gives you rights over personal data someone holds about you: access, correction, deletion, restriction, portability and objection. They run against whoever holds the data. For everything this app handles, that is you, on your own device and your own services, and the DELETION section above is how you exercise them there. The developer holds nothing beyond any mail you send him, which he answers and will delete on request. You also have the right to complain to a data protection authority; for the developer that is the Austrian one, dsb.gv.at.
 
 CONTACT
 
 Juri Calleri, Vienna, Austria. spazio17@protonmail.com.
 
 A postal address is published on the imprint at muralis.spazio17.org, as Austrian law requires of it. It is kept in that one place rather than repeated here, so that changing it does not need a new release of the app.
+
+This policy was last updated on 31 August 2026.
