@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://muralis.spazio17.org/">
 <link rel="icon" href="assets/img/icon-512.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/icon-512.png">
-<link rel="stylesheet" href="assets/css/site.css?v=11">
+<link rel="stylesheet" href="assets/css/site.css?v=24">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Muralis, hang it up and leave it">
 <meta property="og:description" content="Locks a tablet to one Home Assistant dashboard, recovers on its own, answers to MQTT and HTTP.">
@@ -33,6 +33,7 @@
     </a>
     <nav>
       <a href="#features">What it does</a>
+      <a href="#motion">In motion</a>
       <a href="#look">Screens</a>
       <a href="#recipes">Recipes</a>
       <a href="#pricing">Free &amp; Pro</a>
@@ -117,6 +118,65 @@
         <div class="card stroke">
           <h3>Off until configured</h3>
           <p>No default credentials. Broker and admin secrets encrypted in the Android keystore.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="motion">
+    <div class="wrap">
+      <h2 class="stroke">In motion</h2>
+      <p class="intro stroke">Four clips off a real panel, recorded over the cable. They loop, there is no sound, and nothing in them is a mock-up.</p>
+      <div class="clipdeck stroke">
+        <div class="clipdeck-list" role="tablist" aria-label="Choose a clip" aria-orientation="vertical">
+          <button type="button" role="tab" id="tab-self-healing" aria-controls="panel-self-healing" aria-selected="true" tabindex="0">
+            <b>Recovers unattended</b>
+            <span>A page that breaks comes back on its own.</span>
+          </button>
+          <button type="button" role="tab" id="tab-magic-taps" aria-controls="panel-magic-taps" aria-selected="false" tabindex="-1">
+            <b>A way out you choose</b>
+            <span>Corner taps you record yourself.</span>
+          </button>
+          <button type="button" role="tab" id="tab-http-command" aria-controls="panel-http-command" aria-selected="false" tabindex="-1">
+            <b>Answers to HTTP</b>
+            <span>One request moves the panel.</span>
+          </button>
+          <button type="button" role="tab" id="tab-mqtt-command" aria-controls="panel-mqtt-command" aria-selected="false" tabindex="-1">
+            <b>And to MQTT</b>
+            <span>The broker your house already runs.</span>
+          </button>
+        </div>
+        <div class="clipdeck-stage">
+        <div class="clip-panel" role="tabpanel" id="panel-self-healing" aria-labelledby="tab-self-healing" tabindex="0">
+          <figure class="clip">
+            <div class="frame"><video src="assets/video/self-healing.mp4" poster="assets/video/poster/self-healing.jpg" preload="none" muted loop playsinline width="1280" height="800"></video></div>
+          </figure>
+          <p class="clip-note">The dashboard fails and nobody touches the tablet. About ten seconds later the panel loads the configured page again by itself. The waiting runs at five times speed, and the badge counts the real seconds as they pass.</p>
+        </div>
+        <div class="clip-panel" role="tabpanel" id="panel-magic-taps" aria-labelledby="tab-magic-taps" tabindex="0">
+          <figure class="clip">
+            <div class="frame"><video src="assets/video/magic-taps.mp4" poster="assets/video/poster/magic-taps.jpg" preload="none" muted loop playsinline width="1280" height="800"></video></div>
+          </figure>
+          <p class="clip-note">Five taps in one corner opens the settings. You choose the corners on the device, and the page underneath carries on as if nothing happened.</p>
+        </div>
+        <div class="clip-panel" role="tabpanel" id="panel-http-command" aria-labelledby="tab-http-command">
+          <figure class="clip">
+            <div class="frame"><video src="assets/video/http-command.mp4" poster="assets/video/poster/http-command.jpg" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
+          </figure>
+          <p class="clip-note">A POST to the panel's own web admin and it changes page, with nobody near it. The reply under the command is the panel's own.</p>
+          <div class="code-scroll" tabindex="0" role="region" aria-label="The HTTP command, as a shell line"><pre><code>curl -u :your-admin-password -X POST http://192.0.2.42:8888/api/command \
+     -d cmnd=kiosk.open_url \
+     -d url=https://muralis.spazio17.org</code></pre></div>
+        </div>
+        <div class="clip-panel" role="tabpanel" id="panel-mqtt-command" aria-labelledby="tab-mqtt-command">
+          <figure class="clip">
+            <div class="frame"><video src="assets/video/mqtt-command.mp4" poster="assets/video/poster/mqtt-command.jpg" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
+          </figure>
+          <p class="clip-note">One message on the panel's command topic. It does as it is told and answers on its own result topic.</p>
+          <div class="code-scroll" tabindex="0" role="region" aria-label="The MQTT command, as a shell line"><pre><code>mosquitto_pub -h test.mosquitto.org \
+    -t kiosk/hallway-panel/command \
+    -m '{"command":"kiosk.open_url","args":{"url":"https://muralis.spazio17.org"}}'</code></pre></div>
+        </div>
         </div>
       </div>
     </div>
@@ -363,5 +423,6 @@
 <script src="assets/js/lightbox.js?v=4"></script>
 <script src="assets/js/motion.js?v=5"></script>
 <script src="assets/js/recipes.js?v=2"></script>
+<script src="assets/js/clips.js?v=7"></script>
 </body>
 </html>
