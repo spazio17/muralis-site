@@ -644,6 +644,132 @@ figure.shot figcaption {
 }
 figure.shot figcaption b { color: var(--text); font-weight: 600; }
 
+/* ------------------------------------------------------------------- clips
+ *
+ * "In motion" shows ONE clip at a time, chosen from a list beside it, because
+ * this section has to sit at about the height of every other section on the
+ * page. Four clips stacked, however they were arranged, made a section three
+ * times the length of the gallery, and four panels looping at once was tiring to
+ * look at whatever size they were.
+ *
+ * The stage keeps a fixed shape, taken from the tallest clip, so choosing a
+ * different one never moves the page under the pointer. The two clips that carry
+ * a command strip fill it; the two that are the panel alone sit letterboxed
+ * inside it, which is why the stage has its own dark ground.
+ */
+.clipdeck {
+  display: grid;
+  grid-template-columns: minmax(0, 19rem) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+.clipdeck-list {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  /* Both children of the deck carry this. A grid item's automatic minimum size is
+     its min-content, and these hold a 1280px video and a long <pre>, so without
+     it the item overflows its own track and takes the page's width with it. The
+     minmax(0, ...) on the track is only half of the pair. */
+  min-width: 0;
+}
+.clipdeck-stage { min-width: 0; }
+.clip-panel { min-width: 0; }
+.clipdeck-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--subtext);
+  cursor: pointer;
+  padding: .7rem .9rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  border-radius: 12px;
+  background: var(--panel-bg);
+  transition: border-color .25s ease, color .25s ease, background .25s ease;
+}
+.clipdeck-list button b {
+  display: block;
+  color: var(--text);
+  font-weight: 600;
+  font-size: .95rem;
+}
+.clipdeck-list button span {
+  display: block;
+  margin-top: .15rem;
+  font-size: .82rem;
+}
+.clipdeck-list button:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+.clipdeck-list button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.clipdeck-list button[aria-selected="true"] {
+  border-left-color: var(--chip, var(--accent));
+  background: var(--surface);
+  color: var(--text);
+}
+.clipdeck-list button:nth-child(3n+2) { --chip: var(--comp); }
+.clipdeck-list button:nth-child(3n+3) { --chip: var(--comp-2); }
+
+figure.clip { margin: 0; min-width: 0; }
+figure.clip .frame {
+  /* The taller clip's shape exactly, which is what makes the panel itself the
+     same size in every clip. Both command clips are 1280x1000 and fill this box;
+     the two panel-only clips are 1280x800, so they fit the width and sit
+     letterboxed, and 800/1000 of this box is precisely the height a 16:10 panel
+     takes at that width. A stage set to anything in between, which is what this
+     was, scales the two groups differently and the panel changes size on every
+     switch. */
+  aspect-ratio: 1280 / 1000;
+  border-radius: 18px;
+  overflow: hidden;
+  display: block;
+  background: #10121b;
+  border: 1px solid rgba(255, 255, 255, .09);
+  box-shadow: 0 24px 44px -26px rgba(0, 0, 0, .6), var(--rim), var(--rim-glow);
+}
+figure.clip video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.clip-note {
+  margin: .8rem 0 0;
+  max-width: 62ch;
+  color: var(--subtext);
+  font-size: .85rem;
+}
+.clipdeck-stage .code-scroll { margin-top: .7rem; }
+
+@media (max-width: 56rem) {
+  .clipdeck { grid-template-columns: minmax(0, 1fr); }
+  /* The chooser becomes a row that scrolls: a four-item vertical list above the
+     clip pushes the clip itself off a phone screen. */
+  .clipdeck-list {
+    flex-direction: row;
+    gap: .5rem;
+    overflow-x: auto;
+    /* Room for the focus ring: as a row this is a scroll container, which clips
+       its contents, and a 2px ring with a 2px offset reaches 4px past the
+       buttons. In the column layout nothing overflows and nothing clips. */
+    padding: 4px 4px .35rem;
+    scrollbar-width: thin;
+  }
+  .clipdeck-list button {
+    flex: 0 0 auto;
+    max-width: 14rem;
+    border-left-width: 1px;
+    border-bottom: 3px solid transparent;
+  }
+  .clipdeck-list button[aria-selected="true"] {
+    border-left-color: var(--border);
+    border-bottom-color: var(--chip, var(--accent));
+  }
+}
+
 /* ---------------------------------------------------------------- lightbox
  *
  * A <dialog> rather than a hand-rolled overlay: showModal() brings the focus trap,
@@ -1037,7 +1163,8 @@ section p a:hover,
 
    Cycling three pigments across six figures ties the gallery to the card grid
    above it. For one colour throughout, delete the two nth-child lines. */
-figure.shot {
+figure.shot,
+figure.clip {
   --chip: var(--accent);
   --rim: 0 0 0 1px color-mix(in srgb, var(--chip) 44%, transparent);
   /* Two shadows, and the first is the one you see: a spread-out halo on all four
