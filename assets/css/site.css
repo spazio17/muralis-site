@@ -142,7 +142,11 @@ body::before {
   opacity: var(--page-grain-alpha);
   mix-blend-mode: overlay;
 }
-body > * { position: relative; z-index: 1; }
+/* Not the dialogs. A modal <dialog> is fixed to the viewport by the UA stylesheet, an author
+   rule beats a UA rule whatever its specificity, and `relative` left the lightbox anchored near
+   the top of the DOCUMENT instead: opening a screenshot scrolled the page up to it, and closing
+   it left the reader there. Nothing in the top layer needs lifting above the grain anyway. */
+body > *:not(dialog) { position: relative; z-index: 1; }
 
 body {
   margin: 0;
