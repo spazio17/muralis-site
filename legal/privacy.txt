@@ -16,6 +16,8 @@ The complete, current content of the snapshot is not a secret and cannot go stal
 
 • Local web administration. If you set an administration password, the panel serves the same status information, plus its settings, over your local network to anyone who supplies that password. This surface also shows things that are deliberately never sent to the broker: the corner-tap combinations that unlock the kiosk, and the panel's connection settings. The password is what protects the way out of the kiosk; treat it accordingly.
 
+What it is all for. The snapshot exists so that your own dashboard can show the panel's state and control it, and the web administration exists so that you can change the panel's settings without walking to the wall. Nothing in either is used for analytics, advertising, profiling or any purpose beyond making the app work.
+
 Neither connection is encrypted. Everything described above, and the credentials used to authenticate, travel in clear text over your network, so use both features on networks you trust.
 
 The Wi-Fi network name is never read or transmitted. Reading it would require a location permission, which a wall panel should not need and the app does not request.
@@ -42,7 +44,7 @@ To know whether the remote-control features are unlocked, Muralis asks the Googl
 
 CHILDREN
 
-Muralis is not directed at children and collects nothing about anyone.
+Muralis is not directed at children. It has no accounts, no profiles, no messages and nothing anyone can post, and it asks for nothing about the person using it. What it can send is the state of the device, described above, and it goes to your broker and your network, never to the developer.
 
 YOUR RIGHTS
 
@@ -54,4 +56,4 @@ Juri Calleri, Vienna, Austria. spazio17@protonmail.com.
 
 A postal address is published on the imprint at muralis.spazio17.org, as Austrian law requires of it. It is kept in that one place rather than repeated here, so that changing it does not need a new release of the app.
 
-This policy was last updated on 31 August 2026.
+This policy was last updated on 2 September 2026.
