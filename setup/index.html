@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muralis device setup</title>
+<meta name="description" content="Turn the battery limits off for Muralis: why it is needed, why Muralis cannot do it itself, and the steps for each tablet maker.">
+<link rel="canonical" href="https://muralis.spazio17.org/setup/">
+<link rel="icon" href="../assets/img/icon-512.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/site.css?v=12">
+<script>
+  try {
+    var t = localStorage.getItem('muralis-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) { /* private mode: fall through to prefers-color-scheme */ }
+</script>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <img src="../assets/img/icon-512.png" alt="">
+      Muralis
+    </a>
+    <nav>
+      <a href="../">Overview</a>
+      <a href="../setup/">Setup</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="../terms/">Terms</a>
+      <a href="../imprint/">Imprint</a>
+    </nav>
+    <div class="themepick" role="group" aria-label="Colour theme">
+      <button type="button" data-theme="light" aria-pressed="false">Light</button>
+      <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap setup">
+
+  <h1 class="stroke">Turn the battery limits off</h1>
+  <p class="lede stroke">Two minutes, once, on the tablet. Muralis sets up everything else by itself.</p>
+
+  <div class="why">
+    <div class="whycard stroke">
+      <h2>Why you must</h2>
+      <p>On battery with the screen off, tablets stop background apps. Yours can wake showing the launcher instead of your dashboard.</p>
+    </div>
+    <div class="whycard stroke">
+      <h2>Why Muralis cannot</h2>
+      <p>Android puts this behind a dialog only you can accept. No app is allowed to grant it to itself.</p>
+    </div>
+  </div>
+
+  <div class="vendordeck stroke">
+    <div class="vendorpick" role="tablist" aria-label="Choose your tablet maker">
+      <button type="button" role="tab" id="tab-stock" aria-controls="panel-stock" aria-selected="true" tabindex="0">Any Android</button>
+      <button type="button" role="tab" id="tab-huawei" aria-controls="panel-huawei" aria-selected="false" tabindex="-1">Huawei, Honor</button>
+      <button type="button" role="tab" id="tab-xiaomi" aria-controls="panel-xiaomi" aria-selected="false" tabindex="-1">Xiaomi, Redmi, POCO</button>
+      <button type="button" role="tab" id="tab-samsung" aria-controls="panel-samsung" aria-selected="false" tabindex="-1">Samsung</button>
+      <button type="button" role="tab" id="tab-oppo" aria-controls="panel-oppo" aria-selected="false" tabindex="-1">Oppo, Realme, OnePlus</button>
+    </div>
+
+    <div class="vendor-panel" role="tabpanel" id="panel-stock" aria-labelledby="tab-stock" tabindex="0">
+      <ol class="steps">
+        <li><span><span class="path">Settings <i aria-hidden="true">&rsaquo;</i> Apps <i aria-hidden="true">&rsaquo;</i> Muralis <i aria-hidden="true">&rsaquo;</i> Battery</span><span class="act">Choose <b>Unrestricted</b>.</span></span></li>
+      </ol>
+      <p class="deck-note">On older Android the same setting lives under Settings, Apps, Special access, Battery optimisation, where Muralis should be set to <b>Do not optimise</b>.</p>
+    </div>
+
+    <div class="vendor-panel" role="tabpanel" id="panel-huawei" aria-labelledby="tab-huawei" tabindex="0">
+      <ol class="steps">
+        <li><span><span class="path">Settings <i aria-hidden="true">&rsaquo;</i> Apps <i aria-hidden="true">&rsaquo;</i> Special access <i aria-hidden="true">&rsaquo;</i> Battery optimisation</span><span class="act">Switch the list to <b>All apps</b>, find Muralis, choose <b>Do not optimise</b>.</span></span></li>
+        <li><span><span class="path">Settings <i aria-hidden="true">&rsaquo;</i> Battery <i aria-hidden="true">&rsaquo;</i> App launch <i aria-hidden="true">&rsaquo;</i> Muralis</span><span class="act">Turn <b>Manage automatically</b> off, then turn on all three switches.</span></span></li>
+      </ol>
+      <p class="deck-note">Muralis is missing from App launch when it is the home app on that tablet, which is how a provisioned panel is set up. That is expected: the list is for apps that start themselves in the background, and the home app is started by Android. Step one is the one that matters.</p>
+    </div>
+
+    <div class="vendor-panel" role="tabpanel" id="panel-xiaomi" aria-labelledby="tab-xiaomi" tabindex="0">
+      <ol class="steps">
+        <li><span><span class="path">Settings <i aria-hidden="true">&rsaquo;</i> Apps <i aria-hidden="true">&rsaquo;</i> Manage apps <i aria-hidden="true">&rsaquo;</i> Muralis</span><span class="act">Turn <b>Autostart</b> on.</span></span></li>
+        <li><span><span class="path">Same screen <i aria-hidden="true">&rsaquo;</i> Battery saver</span><span class="act">Choose <b>No restrictions</b>.</span></span></li>
+      </ol>
+    </div>
+
+    <div class="vendor-panel" role="tabpanel" id="panel-samsung" aria-labelledby="tab-samsung" tabindex="0">
+      <ol class="steps">
+        <li><span><span class="path">Settings <i aria-hidden="true">&rsaquo;</i> Apps <i aria-hidden="true">&rsaquo;</i> Muralis <i aria-hidden="true">&rsaquo;</i> Battery</span><span class="act">Choose <b>Unrestricted</b>.</span></span></li>
+        <li><span><span class="path">Settings <i aria-hidden="true">&rsaquo;</i> Battery <i aria-hidden="true">&rsaquo;</i> Background usage limits</span><span class="act">Take Muralis out of <b>Sleeping apps</b>.</span></span></li>
+      </ol>
+    </div>
+
+    <div class="vendor-panel" role="tabpanel" id="panel-oppo" aria-labelledby="tab-oppo" tabindex="0">
+      <ol class="steps">
+        <li><span><span class="path">Settings <i aria-hidden="true">&rsaquo;</i> Battery <i aria-hidden="true">&rsaquo;</i> App battery management <i aria-hidden="true">&rsaquo;</i> Muralis</span><span class="act">Allow <b>background running</b>.</span></span></li>
+      </ol>
+    </div>
+  </div>
+
+  <p class="deck-note stroke">These paths are right for most tablets, but makers rename screens and move them between Android versions: what is <b>Battery</b> on one device is <b>App battery usage</b> on another. If a step is not where it says, check your maker's own support pages, or <a href="https://dontkillmyapp.com/">dontkillmyapp.com</a>, which keeps the steps per maker and per Android version, with screenshots.</p>
+
+  <div class="verify stroke">
+    <h2>Check it worked</h2>
+    <p>Unplug the tablet, press the power button so the screen goes dark, wait ten minutes, then press it again. Your dashboard should be on the screen.</p>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project.</span>
+    <nav>
+      <a href="../">Overview</a>
+      <a href="../privacy/">Privacy policy</a>
+      <a href="../terms/">Terms</a>
+      <a href="../imprint/">Imprint</a>
+      <a href="https://github.com/spazio17/muralis">Source</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/js/theme.js?v=4"></script>
+<script src="../assets/js/motion.js?v=4"></script>
+<script src="../assets/js/setup.js?v=1"></script>
+</body>
+</html>
