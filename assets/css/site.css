@@ -1506,3 +1506,93 @@ dialog.lightbox.blueprint .bar strong {
   /* The grain is texture rather than movement, so it stays. */
   .stroke.on { animation: none !important; }
 }
+
+/* ---------------------------------------------------- setup: the maker switcher
+ *
+ * The setup page is instructions, so it is built as a picker over a list of
+ * steps rather than as another /privacy/-shaped column of prose. Buttons choose
+ * the maker and one panel shows at a time, driven by assets/js/setup.js. Without
+ * that file every panel stays visible: a longer page, still a correct one, which
+ * is the same bargain the clip deck makes.
+ *
+ * Colour note: text on an accent background is var(--base), never a literal.
+ * --accent and --base swap lightness between the themes (dark purple on near
+ * white in light, light purple on near black in dark), so the one pairing reads
+ * correctly in both and a hardcoded white would fail the dark theme.
+ */
+
+.setup { padding: 2.6rem 0 4rem; }
+.setup h1 { font-size: 2.1rem; margin: 0 0 .4rem; color: var(--accent); font-weight: 650; }
+.setup .lede { color: var(--subtext); margin: 0 0 2rem; max-width: 42rem; }
+
+.why { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 1rem; margin: 0 0 2.2rem; }
+.whycard {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--chip, var(--accent));
+  border-radius: var(--radius);
+  background: var(--panel-bg);
+  padding: 1rem 1.1rem;
+}
+.whycard:nth-child(2) { --chip: var(--comp-2); }
+.whycard h2 { margin: 0 0 .35rem; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.whycard p { margin: 0; color: var(--subtext); font-size: .92rem; }
+
+.vendordeck { border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel-bg); overflow: hidden; }
+.vendorpick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  padding: .7rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.vendorpick button {
+  font: inherit;
+  font-size: .85rem;
+  padding: .4rem .9rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--subtext);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.vendorpick button:hover { color: var(--text); border-color: var(--border); }
+.vendorpick button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.vendorpick button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--base); font-weight: 600; }
+
+.vendor-panel { padding: 1.3rem; }
+.vendor-panel[hidden] { display: none; }
+.vendor-panel:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; display: grid; gap: 1rem; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 1.7rem minmax(0, 1fr); gap: .8rem; align-items: start; }
+.steps li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--base);
+  font-size: .8rem;
+  font-weight: 700;
+}
+.path { display: block; color: var(--text); font-weight: 600; font-size: .95rem; }
+/* The separator is decorative: it must not be read out as a word between steps. */
+.path i { font-style: normal; color: var(--subtext); padding: 0 .35rem; }
+.act { display: block; margin-top: .2rem; color: var(--subtext); font-size: .9rem; }
+.act b { color: var(--accent); font-weight: 600; }
+.deck-note { margin: 1.1rem 0 0; color: var(--subtext); font-size: .85rem; }
+
+.verify { margin: 2.2rem 0 0; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 1rem 1.1rem; }
+.verify h2 { margin: 0 0 .3rem; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.verify p { margin: 0; color: var(--subtext); font-size: .92rem; }
+
+@media (max-width: 560px) {
+  .setup h1 { font-size: 1.8rem; }
+  .vendorpick button { font-size: .8rem; padding: .35rem .7rem; }
+  .vendor-panel { padding: 1.1rem; }
+}
