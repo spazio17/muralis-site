@@ -7,7 +7,7 @@
 <meta name="description" content="Provider identification for muralis.spazio17.org under the Austrian E-Commerce Act.">
 <link rel="canonical" href="https://muralis.spazio17.org/imprint/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=12">
+<link rel="stylesheet" href="../assets/css/site.css?v=26">
 <script>
   try {
     var t = localStorage.getItem('muralis-theme');
@@ -23,16 +23,37 @@
       <img src="../assets/img/icon-512.png" alt="">
       Muralis
     </a>
-    <nav>
+    <nav class="pagenav" aria-label="Pages">
       <a href="../">Overview</a>
       <a href="../setup/">Setup</a>
-      <a href="../privacy/">Privacy</a>
-      <a href="../terms/">Terms</a>
-      <a href="../imprint/">Imprint</a>
+      <a href="../download/">Download</a>
     </nav>
-    <div class="themepick" role="group" aria-label="Colour theme">
-      <button type="button" data-theme="light" aria-pressed="false">Light</button>
-      <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+    <button class="menubtn" type="button" aria-expanded="false" aria-controls="sitemenu">
+      <span class="bars" aria-hidden="true"></span>
+      <span class="menubtn-label">Menu</span>
+    </button>
+  </div>
+  <!-- One menu for the whole site, at every width. The bar carries the pages, which is
+       the site's structure and is the same everywhere; the menu carries this page's own
+       sections, which only the front page has, and the theme, which is a setting rather
+       than a destination and was taking bar space on every page for it. Hidden here in
+       the markup rather than by CSS alone, so it is closed before the script runs and a
+       reader with no JavaScript is not given a panel that can never be shut. -->
+  <div class="sitemenu" id="sitemenu" hidden>
+    <div class="wrap menuwrap">
+      <nav class="menugroup" aria-label="Pages">
+        <p class="menuhead">Pages</p>
+        <a href="../">Overview</a>
+        <a href="../setup/">Setup</a>
+        <a href="../download/">Download</a>
+      </nav>
+      <div class="menugroup">
+        <p class="menuhead">Appearance</p>
+        <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="light" aria-pressed="false">Light</button>
+          <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -95,8 +116,7 @@
   <div class="wrap">
     <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project.</span>
     <nav>
-      <a href="../setup/">Setup</a>
-      <a href="../privacy/">Privacy policy</a>
+      <a href="../privacy/">Privacy</a>
       <a href="../terms/">Terms</a>
       <a href="../imprint/">Imprint</a>
       <a href="https://github.com/spazio17/muralis">Source</a>
@@ -104,7 +124,8 @@
   </div>
 </footer>
 
+<script src="../assets/js/menu.js?v=1"></script>
 <script src="../assets/js/theme.js?v=4"></script>
-<script src="../assets/js/motion.js?v=4"></script>
+<script src="../assets/js/motion.js?v=5"></script>
 </body>
 </html>

@@ -1,0 +1,81 @@
+# The site is published by this workflow rather than straight from the branch, for one
+# reason. download/ holds the app people install by scanning the QR, and every other file in
+# there is derived from that one APK: the checksum, the provisioning payload, the QR, and the
+# listing page. They used to be committed, and a check re-derived them and required no diff.
+# Now they are not committed at all: they are built here, from the APK, on every deploy, so
+# there is no committed copy that could disagree with the APK beside it. A QR that does not
+# match its APK fails on a tablet that has already been wiped, and says nothing about why.
+#
+# The build job also runs on pull requests, as a dry run, and that is where a wrong APK is
+# refused: one signed with anything but Google's app signing key for Muralis, or one carrying
+# Play's automatic integrity protection (scripts/generate-download.py explains both). Only a
+# push to main deploys. Pages keeps serving the previous deployment when a run fails, so a
+# broken build leaves the site stale, never down.
+#
+# Pages must be set to publish from GitHub Actions (Settings, Pages, Source) for the deploy
+# job to be accepted; with the branch as source, that job fails and the legacy build would
+# publish main without download/index.html and the QR. Flip the setting before merging.
+name: pages-deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deploy at a time, and never cancel one that has started: a half-finished deployment is
+# the one state worse than a stale site.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # A Python of our own rather than the runner's system one: Ubuntu marks that one as
+      # externally managed and pip refuses to install into it, a refusal that arrives with
+      # the runner image rather than with any change here.
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      # The only dependency, and only for rendering the QR. Everything else, including
+      # reading the signing certificate out of the APK, is the standard library.
+      - name: Install the QR encoder
+        run: pip install --quiet segno==1.6.6
+
+      - name: Derive download/ from the APK in it
+        run: python3 scripts/generate-download.py
+
+      # What a tablet will be handed, in the log, so any deploy can be read back later.
+      - name: Show what the QR encodes
+        run: |
+          cat download/provisioning-qr.json
+          cat download/muralis-latest.apk.sha256
+
+      # The whole tree, which is what the branch source served too. .git and .github are
+      # always left out; so are dotfiles, which drops .nojekyll and .gitignore, and neither
+      # matters here because nothing runs Jekyll on an artifact.
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: .
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
