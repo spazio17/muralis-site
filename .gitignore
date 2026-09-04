@@ -1,2 +1,10 @@
 # scripts/apksig.py is imported by the generator, so Python leaves a cache beside it.
 __pycache__/
+
+# Everything in download/ except the APK is derived from the APK by
+# scripts/generate-download.py: at deploy time by .github/workflows/pages-deploy.yml, and
+# locally before a preview. Committing a copy would only give it a chance to disagree.
+download/index.html
+download/muralis-latest.apk.sha256
+download/provisioning-qr.json
+download/provisioning-qr.svg

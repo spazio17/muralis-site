@@ -16,8 +16,11 @@ Usage:
     scripts/generate-download.py --base-url http://192.168.1.5:8000/download
                                                      # a throwaway QR for a local test
 
-check-download.py re-runs all of this and requires no diff, so a forgotten regeneration
-fails in CI rather than on someone's tablet.
+None of the four derived files is committed. .github/workflows/pages-deploy.yml runs this on
+every push to main and publishes the result, so the site cannot carry a QR that disagrees
+with the APK beside it; the same job runs on pull requests as a dry run, which is where a
+wrong APK is refused (refuse_unless_publishable, below). Locally, run it once after cloning
+or after swapping the APK, and the working tree is what Pages serves.
 """
 
 import argparse
@@ -26,6 +29,7 @@ import hashlib
 import json
 import pathlib
 import sys
+import zipfile
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import apksig
@@ -34,6 +38,39 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DOWNLOAD = ROOT / "download"
 APK = DOWNLOAD / "muralis-latest.apk"
 PUBLISHED_BASE = "https://muralis.spazio17.org/download"
+
+# Google's app signing certificate for Muralis: what apksigner prints for every Play-signed
+# build, and the number the download page and the recruiting post quote as the seal. The QR
+# is derived from whatever APK is in download/, so on its own it would describe a debug
+# build or an upload-key build just as faithfully, and provisioning would install it. This
+# constant is what makes the wrong file fail here instead. It changes only if Google rotates
+# the key, and then on purpose, in a commit that says so.
+PLAY_SIGNING_CERTIFICATE_SHA256 = \
+    "7e76196a63e6f1a98a124fb3072956d1c91ed503f61480bd7c4221d30e9dfd91"
+
+# Play Console's automatic integrity protection rewrites the signed APK: the application
+# class becomes com.pairip's and a licence activity is added that refuses to run unless Play
+# itself installed the app for a signed-in account. A QR-provisioned tablet has no account,
+# so a protected 0.4.5 locked one up on 2026-09-03. The switch is per release and nothing in
+# a local build shows it, so every APK going behind the QR is scanned for the injected code.
+PAIRIP_MARKER = b"Lcom/pairip/"
+
+
+def refuse_unless_publishable(certificate_hex):
+    """Stops on the two APKs that would provision fine and go wrong afterwards."""
+    where = APK.relative_to(ROOT)
+    if certificate_hex != PLAY_SIGNING_CERTIFICATE_SHA256:
+        sys.exit(f"{where} is signed with {certificate_hex}, which is not Google's app signing "
+                 f"certificate for Muralis. Put the Play-signed universal APK here (Play "
+                 f"Console, App bundle explorer, the version's Downloads tab), not a local build.")
+    with zipfile.ZipFile(APK) as archive:
+        for name in archive.namelist():
+            if name.startswith("classes") and name.endswith(".dex") \
+                    and PAIRIP_MARKER in archive.read(name):
+                sys.exit(f"{where} carries Play's automatic integrity protection ({name} "
+                         f"references com.pairip), which locks up a tablet with no Google "
+                         f"account. Turn it off for this release in Play Console (Test and "
+                         f"release, App integrity, Automatic protection) and download it again.")
 
 # The provisioning payload, minus the download location and the checksum, which are read
 # from the APK. LEAVE_ALL_SYSTEM_APPS_ENABLED is true on purpose: left at its default,
@@ -51,6 +88,7 @@ def facts(base_url):
     """Everything the generated files need, all of it read out of the APK."""
     blob = APK.read_bytes()
     certificate_hex = apksig.certificate_sha256(APK)
+    refuse_unless_publishable(certificate_hex)
     payload = dict(PAYLOAD_CONSTANTS)
     payload["android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION"] = \
         f"{base_url}/{APK.name}"
