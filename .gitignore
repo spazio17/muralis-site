@@ -1,0 +1,2 @@
+# scripts/apksig.py is imported by the generator, so Python leaves a cache beside it.
+__pycache__/

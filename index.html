@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://muralis.spazio17.org/">
 <link rel="icon" href="assets/img/icon-512.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/icon-512.png">
-<link rel="stylesheet" href="assets/css/site.css?v=25">
+<link rel="stylesheet" href="assets/css/site.css?v=26">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Muralis, hang it up and leave it">
 <meta property="og:description" content="Locks a tablet to one Home Assistant dashboard, recovers on its own, answers to MQTT and HTTP.">
@@ -28,21 +28,51 @@
 <header class="masthead">
   <div class="wrap">
     <a class="brand" href="./">
-      <img src="assets/img/icon-512.png" alt="">
+      <img src="./assets/img/icon-512.png" alt="">
       Muralis
     </a>
-    <nav>
-      <a href="#features">What it does</a>
-      <a href="#motion">In motion</a>
-      <a href="#look">Screens</a>
-      <a href="#recipes">Recipes</a>
-      <a href="#pricing">Free &amp; Pro</a>
-      <a href="#requirements">Requirements</a>
-      <a href="#status">Availability</a>
+    <nav class="pagenav" aria-label="Pages">
+      <a href="./" aria-current="page">Overview</a>
+      <a href="setup/">Setup</a>
+      <a href="download/">Download</a>
     </nav>
-    <div class="themepick" role="group" aria-label="Colour theme">
-      <button type="button" data-theme="light" aria-pressed="false">Light</button>
-      <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+    <button class="menubtn" type="button" aria-expanded="false" aria-controls="sitemenu">
+      <span class="bars" aria-hidden="true"></span>
+      <span class="menubtn-label">Menu</span>
+    </button>
+  </div>
+  <!-- One menu for the whole site, at every width. The bar carries the pages, which is
+       the site's structure and is the same everywhere; the menu carries this page's own
+       sections, which only the front page has, and the theme, which is a setting rather
+       than a destination and was taking bar space on every page for it. Hidden here in
+       the markup rather than by CSS alone, so it is closed before the script runs and a
+       reader with no JavaScript is not given a panel that can never be shut. -->
+  <div class="sitemenu" id="sitemenu" hidden>
+    <div class="wrap menuwrap">
+      <nav class="menugroup" aria-label="On this page">
+        <p class="menuhead">On this page</p>
+        <a href="#features">What it does</a>
+        <a href="#motion">In motion</a>
+        <a href="#look">Screens</a>
+        <a href="#recipes">Recipes</a>
+        <a href="#pricing">Free &amp; Pro</a>
+        <a href="#install">Install</a>
+        <a href="#requirements">Requirements</a>
+        <a href="#status">Availability</a>
+      </nav>
+      <nav class="menugroup" aria-label="Pages">
+        <p class="menuhead">Pages</p>
+        <a href="./" aria-current="page">Overview</a>
+        <a href="setup/">Setup</a>
+        <a href="download/">Download</a>
+      </nav>
+      <div class="menugroup">
+        <p class="menuhead">Appearance</p>
+        <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="light" aria-pressed="false">Light</button>
+          <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -59,19 +89,32 @@
     <div class="grain" aria-hidden="true"></div>
     <div class="spray" aria-hidden="true"></div>
     <div class="wrap">
-      <span class="status"><span class="dot" aria-hidden="true"></span>In development</span>
-      <h1>Hang it up,<br>and leave it.</h1>
-      <p class="lede">
-        An Android kiosk launcher for wall-mounted Home Assistant dashboards. It locks the tablet to
-        one page, recovers on its own, and answers to MQTT and HTTP.
-      </p>
-      <ul class="facts">
-        <li>Android 8 and up</li>
-        <li>Ordinary APK</li>
-        <li>No root</li>
-        <li>MQTT + HTTP</li>
-        <li>Home Assistant discovery</li>
-      </ul>
+      <div class="herocopy">
+        <span class="status"><span class="dot" aria-hidden="true"></span>In development</span>
+        <h1>Hang it up,<br>and leave it.</h1>
+        <p class="lede">
+          An Android kiosk launcher for wall-mounted Home Assistant dashboards. It locks the tablet to
+          one page, recovers on its own, and answers to MQTT and HTTP.
+        </p>
+        <ul class="facts">
+          <li>Android 8 and up</li>
+          <li>Ordinary APK</li>
+          <li>No root</li>
+          <li>MQTT + HTTP</li>
+          <li>Home Assistant discovery</li>
+        </ul>
+      </div>
+      <!-- The QR is a real control, not decoration, so it says what scanning it does before
+           anyone points a camera at it: this one wipes the tablet. The long explanation is in
+           #install and the link goes there rather than repeating it here. -->
+      <aside class="heroqr">
+        <div class="qrcard">
+          <img src="download/provisioning-qr.svg" alt="Provisioning QR code for Muralis" width="320" height="320">
+        </div>
+        <p class="qrlabel">Turn a factory-reset tablet into a wall panel</p>
+        <p class="qrnote">Scan it from the setup screen, not from Android.</p>
+        <a class="button qrmore" href="#install">See how this works</a>
+      </aside>
     </div>
   </div>
 
@@ -325,6 +368,65 @@
     </div>
   </section>
 
+  <!-- Two ways in, and they are not variants of each other: one installs an app, the other
+       builds a panel from a tablet that has already been reset. The QR is repeated here at a
+       size an old front-facing camera can actually resolve; the hero's copy is the same file.
+       The files it points at, and how to check them, are on /download/ rather than here. -->
+  <section id="install">
+    <div class="wrap">
+      <h2 class="stroke">Getting it onto a tablet</h2>
+      <p class="intro stroke">Two ways in, and they are not the same. Only the QR makes a panel.</p>
+
+      <!-- A deck rather than two boxes side by side. They were 417px and 860px tall on a
+           desktop, which made the taller one look like the complicated option rather than
+           the real one, and a reader had to scroll past a QR they were not ready to use.
+           One at a time also lets the tab labels carry the difference, which the two
+           headings alone never managed. Same pattern and script shape as the maker picker
+           on /setup/. -->
+      <div class="waydeck stroke">
+        <div class="waypick" role="tablist" aria-label="How to install Muralis">
+          <button type="button" role="tab" id="tab-qr" aria-controls="panel-qr" aria-selected="true" tabindex="0">By QR</button>
+          <button type="button" role="tab" id="tab-play" aria-controls="panel-play" aria-selected="false" tabindex="-1">From Google Play</button>
+        </div>
+
+        <div class="way-panel" role="tabpanel" id="panel-qr" aria-labelledby="tab-qr" tabindex="0">
+          <div class="way-split">
+            <div>
+              <p class="lead"><strong>The full panel.</strong> Muralis owns the tablet and holds the screen on your dashboard.</p>
+              <ol class="steps">
+                <li>Back up anything on the tablet.</li>
+                <li>Factory reset, and stop at the welcome screen.</li>
+                <li>Tap the screen six times, then join a network when it asks.</li>
+                <li>Scan the code.</li>
+              </ol>
+              <p class="note">A tablet that cannot verify the code&#8217;s signing fingerprint refuses to go on.</p>
+            </div>
+            <div class="qrcard big">
+              <img src="download/provisioning-qr.svg" alt="Provisioning QR code for Muralis" width="420" height="420">
+            </div>
+          </div>
+        </div>
+
+        <div class="way-panel" role="tabpanel" id="panel-play" aria-labelledby="tab-play" tabindex="0">
+          <p class="lead"><strong>The app only, to try it.</strong> No lockdown: Android grants that during setup and never after. Nothing is wiped.</p>
+          <p class="note">In closed testing: the link opens only for accounts on the tester list.</p>
+          <!-- Google's own badge file, used unaltered as its guidelines require: no recolour,
+               no crop, no effects. The transparent margin in the PNG is the clear space the
+               rules ask for, one quarter of the badge height, so it needs none added. The
+               anchor is inline-block and no wider than the badge: as a bare inline element it
+               stretched to the full column, so a click well to the right of the artwork still
+               opened the Play listing. -->
+          <p class="playbadge"><a href="https://play.google.com/store/apps/details?id=org.spazio17.muralis"><img src="assets/img/google-play-badge.png" alt="Get it on Google Play" width="646" height="250"></a></p>
+        </div>
+      </div>
+
+      <aside class="callout stroke">
+        <p><strong>Nothing hidden.</strong> The APK, its checksum and its signature are all published.</p>
+        <a class="button" href="download/">Open the download page</a>
+      </aside>
+    </div>
+  </section>
+
   <section id="requirements">
     <div class="wrap">
       <h2 class="stroke">Requirements</h2>
@@ -385,8 +487,7 @@
   <div class="wrap">
     <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project.</span>
     <nav>
-      <a href="setup/">Setup</a>
-      <a href="privacy/">Privacy policy</a>
+      <a href="privacy/">Privacy</a>
       <a href="terms/">Terms</a>
       <a href="imprint/">Imprint</a>
       <a href="https://github.com/spazio17/muralis">Source</a>
@@ -424,10 +525,12 @@
   </div>
 </dialog>
 
+<script src="assets/js/menu.js?v=1"></script>
 <script src="assets/js/theme.js?v=4"></script>
 <script src="assets/js/lightbox.js?v=4"></script>
 <script src="assets/js/motion.js?v=5"></script>
 <script src="assets/js/recipes.js?v=2"></script>
 <script src="assets/js/clips.js?v=7"></script>
+<script src="assets/js/waydeck.js?v=1"></script>
 </body>
 </html>

@@ -199,19 +199,120 @@ a:hover { color: var(--accent); }
 .masthead nav { display: flex; align-items: center; gap: 1.1rem; font-size: .9rem; }
 .masthead nav a { color: var(--subtext); text-decoration: none; white-space: nowrap; }
 .masthead nav a:hover { color: var(--accent); }
+/* The page you are on, named rather than merely current: the bar is identical on every
+   page now, so without this there is nothing in it that says where you are. */
+.masthead nav a[aria-current="page"] { color: var(--text); font-weight: 600; }
 
-/* Narrow screens: brand and theme pick share the first row, the nav wraps whole
- * links on its own line below. Without this the flex row squeezed every link
- * until its label broke mid-word ("What / it / does") and the theme pick fell
- * to a stray third row. */
-@media (max-width: 760px) {
-  .masthead .wrap { row-gap: .2rem; padding-bottom: .6rem; }
-  .masthead nav {
-    order: 3;
-    flex-basis: 100%;
-    flex-wrap: wrap;
-    gap: .35rem .9rem;
+/* ------------------------------------------------------------------- the menu
+ *
+ * One button and one panel, on every page and at every width. The bar carries the
+ * pages, which are the site's structure and the same everywhere; the panel carries
+ * this page's own sections, which only the front page has, and the theme, which is a
+ * setting rather than a destination and used to spend bar space on all six pages.
+ *
+ * Below 60rem the pages leave the bar and join the panel, so a phone gets one button
+ * instead of two rows of links that used to wrap. */
+.menubtn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .45rem .8rem .45rem .7rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+  font: inherit;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
+}
+.menubtn:hover { background: color-mix(in srgb, var(--accent) 22%, var(--surface)); border-color: var(--accent); }
+.menubtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Three bars drawn from one element: the middle is the box, the outer two are its
+   shadows, so there is no extra markup and nothing to keep in step. */
+.menubtn .bars {
+  width: 1rem;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor;
+}
+.menubtn[aria-expanded="true"] { background: var(--accent); color: var(--base); border-color: var(--accent); }
+
+.sitemenu {
+  border-top: 1px solid var(--border);
+  background: var(--panel-bg);
+  box-shadow: 0 18px 30px -24px rgba(0, 0, 0, .55);
+}
+.sitemenu[hidden] { display: none; }
+/* `.masthead .menuwrap`, not `.menuwrap`: this div also carries .wrap and sits inside the
+   masthead, so `.masthead .wrap` reached it with align-items:center and a 4rem min-height,
+   and the Appearance group floated 50px below the sections heading. Equal specificity
+   here, later in the file, so these win. */
+.masthead .menuwrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem 3.5rem;
+  padding-top: 1.1rem;
+  padding-bottom: 1.3rem;
+  min-height: 0;
+  align-items: flex-start;
+}
+/* align-items has to be said out loud: these groups are <nav> elements inside the
+   masthead, so `.masthead nav { align-items: center }` reaches them and centred every
+   link in its own column, which read as a staggered list rather than a menu. */
+/* `.masthead .menugroup` rather than `.menugroup`: these groups are <nav> elements inside
+   the masthead, so `.masthead nav` (one class and one element) outranks a lone class and
+   its align-items:center kept centring every link. It only showed on phones, because on a
+   wide screen the two-column rule below is more specific again and quietly won. */
+.masthead .menugroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .1rem;
+  min-width: 9rem;
+}
+/* Eight sections in one column made the panel taller than it needed to be. Two columns
+   on a wide screen, one on a phone where there is no width to spend. */
+@media (min-width: 46rem) {
+  .sitemenu nav[aria-label="On this page"] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(7rem, auto));
+    column-gap: 2.5rem;
+    align-content: start;
   }
+  .sitemenu nav[aria-label="On this page"] .menuhead { grid-column: 1 / -1; }
+}
+.menuhead {
+  margin: 0 0 .5rem;
+  font-size: .7rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+.menugroup a {
+  color: var(--subtext);
+  text-decoration: none;
+  font-size: .95rem;
+  padding: .3rem 0;
+  border-bottom: 0;
+  background-image: none;
+}
+.menugroup a:hover { color: var(--accent); }
+.menugroup a[aria-current="page"] { color: var(--text); font-weight: 600; }
+
+/* Narrow screens: the pages move out of the bar and into the panel, leaving the bar
+ * with a brand and one button. Before the menu existed the bar wrapped its links onto
+ * a second row and squeezed labels until they broke mid-word ("What / it / does"). */
+@media (max-width: 60rem) {
+  .masthead .pagenav { display: none; }
+}
+@media (min-width: 60rem) {
+  /* On a wide screen the pages are already in the bar, so repeating them in the panel
+     would be the same list twice, one above the other. */
+  .sitemenu nav[aria-label="Pages"] { display: none; }
 }
 
 /* The same pill-shaped segmented control the web admin uses for its theme pick. */
@@ -235,6 +336,64 @@ a:hover { color: var(--accent); }
   cursor: pointer;
 }
 .themepick button[aria-pressed="true"] { background: var(--surface-alt); color: var(--text); }
+
+/* ---------------------------------------------------------------- downloads
+ *
+ * The file table was as wide as the page, which on a desktop left three short
+ * columns stranded across 1100px and read as a directory listing rather than as
+ * part of the site. Capped at the measure the prose uses, so the page has one
+ * column of content down the middle like every other page here. */
+.downloads { padding-block: 3rem; max-width: 58rem; }
+.downloads h1 { margin-bottom: .4rem; }
+.downloads h2 { margin-top: 2.4rem; }
+.downloads .lede { margin-bottom: 2rem; }
+.downloads .note { margin-top: 2rem; font-size: .85rem; color: var(--subtext); }
+.filelist {
+  --chip: var(--accent);
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--chip) 34%, var(--border));
+  border-radius: var(--radius);
+  background:
+      radial-gradient(150% 130% at 0 0,
+                      color-mix(in srgb, var(--chip) 9%, transparent), transparent 62%),
+      var(--panel-bg);
+  box-shadow: var(--panel-shadow);
+  overflow: hidden;
+  margin: 0;
+  padding: .4rem 1.2rem;
+}
+.filelist::after {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--chip);
+}
+/* The one clip on this page is 1280x800; the shared figure box is 1280x1000 for the
+   front page's mixed deck, so it gets its own shape here and no letterbox. */
+.downloads figure.clip { margin: 0 0 2.4rem; }
+.downloads figure.clip .frame { aspect-ratio: 1280 / 800; }
+.downloads .clip-note { margin: .8rem 0 0; }
+/* Four files with one line each is a list, not a table: a table with two columns is a
+   list wearing a grid. Filename as the term in the mono face, what it is as the
+   definition, a hairline between entries. The shape a release page gives its assets. */
+.filelist dt {
+  margin: 0;
+  padding: .85rem 0 .1rem;
+  font-family: var(--mono);
+  font-size: .92rem;
+  font-weight: 600;
+}
+.filelist dt a { color: var(--text); text-decoration: none; border-bottom: 0; background-image: none; }
+.filelist dt a:hover { color: var(--accent); }
+.filelist dt small { margin-left: .6rem; font: inherit; font-size: .78rem; font-weight: 400; color: var(--subtext); }
+.filelist dd {
+  margin: 0;
+  padding: 0 0 .85rem;
+  color: var(--subtext);
+  font-size: .92rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+}
+.filelist dd:last-child { border-bottom: 0; }
+.downloads .code-scroll { margin: .6rem 0 0; max-height: none; }
+.downloads .code-scroll code { color: var(--text); word-break: break-all; white-space: pre-wrap; }
 
 /* -------------------------------------------------------------------- hero
  *
@@ -456,7 +615,160 @@ a:hover { color: var(--accent); }
   max-width: var(--measure);
   margin: 1rem 0 0;
 }
-.hero .sub { color: var(--subtext); max-width: var(--measure); margin: .9rem 0 0; }
+/* ---------------------------------------------------------------- the hero QR */
+
+/* Copy and code side by side once there is room for both at a readable width, and stacked
+   before either has to shrink. minmax(0, ...) on both tracks and min-width: 0 on the items,
+   because a grid track's floor is otherwise its item's min-content width, and this one holds
+   a 320px image that would take the page's width with it. Same trap as the clip deck. */
+.hero > .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: center;
+}
+.hero > .wrap > * { min-width: 0; }
+@media (min-width: 62rem) {
+  .hero > .wrap {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+    gap: 3rem;
+  }
+}
+
+.heroqr { text-align: center; }
+/* White, in both themes, and not a token. The card is the code's quiet zone: a QR scanner
+   needs light modules around the pattern, and letting the page's dark palette paint it would
+   invert the code for the one reader that matters, an Android setup wizard on a tablet nobody
+   can log into yet. */
+.qrcard {
+  display: inline-block;
+  background: #fff;
+  /* A hairline as well as the shadow: on the light theme a white card on a near-white
+     page has nothing but the shadow to hold its edge, and the shadow alone is too soft. */
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .9rem;
+  box-shadow: var(--panel-shadow);
+  line-height: 0;
+}
+/* An explicit width rather than a percentage: the card shrinks to fit its content, so a
+   content width given as a percentage of the card is a question with no answer. The card is
+   what bends on a narrow screen now, not the code. */
+.qrcard { max-width: 100%; }
+.qrcard img { display: block; width: 17rem; height: auto; max-width: 100%; }
+.qrcard.big img { width: 22rem; }
+.qrlabel {
+  margin: .9rem 0 0;
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.qrnote {
+  margin: .3rem 0 0;
+  font-size: .82rem;
+  color: var(--subtext);
+}
+.qrmore { margin-top: .8rem; }
+
+/* The page's one button shape, taken from the pills the recipe cards already use so a
+   button here is recognisably the same object as a button there. A link wearing it is
+   still a link: it navigates, and it keeps its own focus ring. */
+.button {
+  display: inline-block;
+  padding: .55rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: .87rem;
+  text-decoration: none;
+  transition: border-color .15s ease, color .15s ease;
+}
+.button:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+/* The hero's one call to action, dressed like the Pro card rather than like the quiet
+   buttons elsewhere: the card's mauve, a tint of it behind, and its three-pigment stroke
+   as the top edge, so the two things on this page that ask for a click wear the same
+   paint. Kept a pill, so it is still recognisably a .button. */
+.button.qrmore {
+  --fill: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--fill), var(--fill)) padding-box,
+    linear-gradient(90deg, var(--accent), var(--comp-2) 60%, var(--comp)) border-box;
+  color: var(--accent);
+  font-weight: 600;
+  transition: color .2s ease;
+}
+.button.qrmore:hover {
+  --fill: color-mix(in srgb, var(--accent) 26%, var(--surface));
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------- install */
+
+/* Google's own artwork, shown whole and unaltered as the badge guidelines require. The
+   transparent margin baked into the PNG is the clear space those rules ask for, one quarter
+   of the badge height, so nothing here adds or trims any. Sized well above the 28px minimum
+   height: at 15rem wide the badge inside the file is about 62px tall. */
+.playbadge { margin: 1.1rem 0 0; }
+/* inline-block so the link is exactly the artwork and nothing beside it; as a bare
+   inline element its line box ran the width of the column, and a click well clear of the
+   badge still opened Play (measured: a 480px link around a 240px image). line-height 0
+   and no underline because the page's default link rule would otherwise draw a rule
+   across the bottom of the badge, which the guidelines do not allow over the artwork. */
+/* inline-block so the link is exactly the artwork and nothing beside it; as a bare inline
+   element its line box ran the width of the column, and a click well clear of the badge
+   still opened Play (measured: a 480px link around a 240px image). The rest undoes the
+   painted underline `section p a` gives prose links: it was always being applied here,
+   and making the anchor inline-block is what finally made it visible, as a hairline
+   ruled across the bottom of Google's artwork. The badge guidelines do not allow
+   anything drawn over it. */
+.playbadge a {
+  display: inline-block;
+  max-width: 15rem;
+  line-height: 0;
+  text-decoration: none;
+  border-bottom: 0;
+  background-image: none;
+}
+.playbadge img { display: block; width: 100%; max-width: 15rem; height: auto; }
+.playbadge a:hover { opacity: .85; }
+
+/* The one callout on the page, and it is allowed to be loud: it is the door to the files a
+   careful reader wants to see before a tablet does. A stroke of the brand pigment down the
+   left edge and a wash of the same behind the text, which is the card treatment above with the
+   dial turned up, so it reads as a painted note rather than an alert box. */
+.callout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin: 1.5rem 0 0;
+  padding: 1.1rem 1.4rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  border-left: 5px solid var(--accent);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(90deg,
+                    color-mix(in srgb, var(--accent) 14%, var(--panel-bg)),
+                    color-mix(in srgb, var(--accent) 5%, var(--panel-bg)) 70%);
+  box-shadow: var(--panel-shadow);
+}
+.callout > p {
+  flex: 1 1 26rem;
+  min-width: 0;
+  margin: 0;
+  color: var(--text);
+  font-size: .95rem;
+}
+.callout strong { color: var(--accent); font-weight: 650; }
+.callout .button {
+  flex: 0 0 auto;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.callout .button:hover { background: var(--accent); color: var(--base); }
 
 /* ---------------------------------------------------------------- sections */
 
@@ -526,9 +838,7 @@ section > .wrap > .intro { color: var(--subtext); max-width: var(--measure); mar
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.4rem 1.5rem 1.5rem;
-}
-.tier.paid { border-color: var(--accent); }
-.tier h3 {
+}.tier h3 {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 650;
@@ -626,22 +936,7 @@ figure.shot .frame {
   overflow: hidden;
   display: flex;
 }
-figure.shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
-figure.shot.pending .frame {
-  border-style: dashed;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 1.25rem;
-}
-figure.shot.pending .placeholder { color: var(--subtext); font-size: .85rem; }
-figure.shot.pending .placeholder strong {
-  display: block;
-  color: var(--text);
-  font-weight: 600;
-  margin-bottom: .3rem;
-}
-figure.shot figcaption {
+figure.shot img { width: 100%; height: 100%; object-fit: cover; display: block; }figure.shot figcaption {
   margin-top: .6rem;
   color: var(--subtext);
   font-size: .85rem;
@@ -690,8 +985,8 @@ figure.shot figcaption b { color: var(--text); font-weight: 600; }
   border: 1px solid var(--border);
   border-left: 3px solid transparent;
   border-radius: 12px;
-  background: var(--panel-bg);
-  transition: border-color .25s ease, color .25s ease, background .25s ease;
+  background-color: var(--panel-bg);
+  transition: border-color .25s ease, color .25s ease, background-color .25s ease, box-shadow .25s ease;
 }
 .clipdeck-list button b {
   display: block;
@@ -704,14 +999,13 @@ figure.shot figcaption b { color: var(--text); font-weight: 600; }
   margin-top: .15rem;
   font-size: .82rem;
 }
-.clipdeck-list button:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
 .clipdeck-list button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 .clipdeck-list button[aria-selected="true"] {
   border-left-color: var(--chip, var(--accent));
-  background: var(--surface);
+  background-color: var(--surface);
   color: var(--text);
 }
 .clipdeck-list button:nth-child(3n+2) { --chip: var(--comp); }
@@ -851,8 +1145,6 @@ dialog.lightbox .bar button {
 dialog.lightbox .bar button:hover { border-color: var(--accent); color: var(--accent); }
 
 /* Portrait captures (the tablet's own screens) want a taller slot. */
-figure.shot.portrait .frame { aspect-ratio: 10 / 16; }
-
 /*
  * A capture whose own proportions are not 16:10, the web admin reflows into columns, so its
  * natural shape is nearly square. Letterbox it rather than cropping: the point of that shot is
@@ -874,14 +1166,6 @@ figure.shot.contain img { object-fit: contain; background: var(--mantle); }
 .spec td { color: var(--subtext); }
 .spec tr:last-child th.spec tr:last-child td { border-bottom: 0; }
 .table-scroll { overflow-x: auto; }
-
-code.mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: .88em;
-  background: var(--surface);
-  padding: .1em .35em;
-  border-radius: 6px;
-}
 
 /* ----------------------------------------------------------------- notices */
 
@@ -1055,9 +1339,13 @@ section p a,
 section p a:hover,
 .tier a:hover { background-size: 100% 2px; }
 
-/* Cards as paint chips. Which pigment a card uses cycles across the grid, so a
-   row of nine is not one colour nine times, and it is set once as --chip rather
-   than repeated per property: every rule below reads that one variable.
+/* Cards as paint chips, and the same treatment on the two install boxes and the free
+   tier, so a panel on this page is a painted chip wherever it appears rather than a grey
+   box in some sections and a coloured one in others. Which pigment a feature card uses
+   cycles across the grid, so a row of nine is not one colour nine times; the other boxes
+   name theirs, because there are two or three of them and a cycle would be arbitrary. It
+   is set once as --chip rather than repeated per property: every rule below reads that one
+   variable.
 
    The colour is on the card at rest, not only under a pointer. Nine panels in
    nothing but mantle and a grey hairline read as nine dark boxes until you touch
@@ -1072,7 +1360,12 @@ section p a:hover,
    it an alpha. Where it is unsupported the whole declaration is dropped and the
    card falls back to the grey hairline it had before, which is the old design
    rather than a broken one. */
-.card {
+.card,
+.waydeck,
+.tier.free,
+.tier.paid,
+.clipdeck-list button,
+.whycard {
   --chip: var(--accent);
   position: relative;
   overflow: hidden;
@@ -1085,7 +1378,19 @@ section p a:hover,
 }
 .cards .card:nth-child(3n+2) { --chip: var(--comp); }
 .cards .card:nth-child(3n+3) { --chip: var(--comp-2); }
-.card::after {
+/* The deck is the path that turns a tablet into a panel, so it takes the brand's own
+   mauve rather than the calm pigment the ordinary cards cycle through. */
+.waydeck { --chip: var(--accent); }
+/* The green the free tier already spends on its own bullets, so the box agrees with its
+   own list instead of introducing a fourth pigment into that row. */
+.tier.free { --chip: var(--ok); }
+/* The Pro card is one of the few things on the page that gets the brand's mauve at full
+   strength, so its border stays the solid accent the 34% mix above would have diluted.
+   The glow it gains from the shared rule is the part Juri noticed it was missing. */
+.tier.paid { --chip: var(--accent); border-color: var(--accent); }.card::after,
+.waydeck::after,
+.tier.free::after,
+.whycard::after {
   content: "";
   position: absolute;
   top: 0;
@@ -1109,12 +1414,25 @@ section p a:hover,
 .card:hover::after,
 .card:focus-within::after,
 .card:active::after { transform: scaleX(1); }
+.clipdeck-list button:hover,
+.clipdeck-list button:focus-visible {
+  border-color: color-mix(in srgb, var(--chip) 72%, var(--border));
+  box-shadow: 0 10px 24px -18px color-mix(in srgb, var(--chip) 55%, transparent),
+              inset 0 18px 36px -30px color-mix(in srgb, var(--chip) 55%, transparent);
+}
 
 /* No pointer, so the resting state is all most readers will ever see: the stub
    is longer and the border a little stronger, and a tap still does the rest. */
 @media (hover: none) {
-  .card { border-color: color-mix(in srgb, var(--chip) 46%, var(--border)); }
-  .card::after { transform: scaleX(.4); }
+  .card,
+  .waydeck,
+  .tier.free,
+  .clipdeck-list button,
+  .whycard { border-color: color-mix(in srgb, var(--chip) 46%, var(--border)); }
+  .card::after,
+  .waydeck::after,
+  .tier.free::after,
+  .whycard::after { transform: scaleX(.4); }
 }
 
 /* The paid tier, with wet paint along its top edge and a drip below it. */
@@ -1496,8 +1814,19 @@ dialog.lightbox.blueprint .bar strong {
   white-space: pre;
 }
 
+/* Snapping was tried here and taken out again. It suits pages built as equal-height
+   slides; these sections are content of every height, and a snap point that does not
+   match where the eye wants to rest reads as the page grabbing the scroll. Gliding to an
+   anchor stays, and scroll-padding-top is what keeps that landing clear of the bar. */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4.6rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
+  /* Gliding and snapping are both motion the reader did not ask for. */
+  html { scroll-behavior: auto; }
   /* The spray and the drip exist only to move, so they go entirely. The patches,
      grain, mat and pigment all hold their first frame and still look painted. */
   .hero > .spray,
@@ -1527,18 +1856,21 @@ dialog.lightbox.blueprint .bar strong {
 
 .why { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 1rem; margin: 0 0 2.2rem; }
 .whycard {
-  border: 1px solid var(--border);
+  border-width: 1px;
+  border-style: solid;
   border-left: 3px solid var(--chip, var(--accent));
   border-radius: var(--radius);
-  background: var(--panel-bg);
+  background-color: var(--panel-bg);
   padding: 1rem 1.1rem;
 }
 .whycard:nth-child(2) { --chip: var(--comp-2); }
 .whycard h2 { margin: 0 0 .35rem; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
 .whycard p { margin: 0; color: var(--subtext); font-size: .92rem; }
 
-.vendordeck { border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel-bg); overflow: hidden; }
-.vendorpick {
+.vendordeck,
+.waydeck { border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel-bg); overflow: hidden; }
+.vendorpick,
+.waypick {
   display: flex;
   flex-wrap: wrap;
   gap: .3rem;
@@ -1546,7 +1878,8 @@ dialog.lightbox.blueprint .bar strong {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
-.vendorpick button {
+.vendorpick button,
+.waypick button {
   font: inherit;
   font-size: .85rem;
   padding: .4rem .9rem;
@@ -1558,13 +1891,39 @@ dialog.lightbox.blueprint .bar strong {
   white-space: nowrap;
   transition: background .2s ease, color .2s ease, border-color .2s ease;
 }
-.vendorpick button:hover { color: var(--text); border-color: var(--border); }
-.vendorpick button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.vendorpick button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--base); font-weight: 600; }
+.vendorpick button:hover,
+.waypick button:hover { color: var(--text); border-color: var(--border); }
+.vendorpick button:focus-visible,
+.waypick button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.vendorpick button[aria-selected="true"],
+.waypick button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--base); font-weight: 600; }
 
-.vendor-panel { padding: 1.3rem; }
-.vendor-panel[hidden] { display: none; }
-.vendor-panel:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+.vendor-panel,
+.way-panel { padding: 1.3rem; }
+.vendor-panel[hidden],
+.way-panel[hidden] { display: none; }
+.vendor-panel:focus-visible,
+.way-panel:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+
+/* The QR panel puts its words and its code side by side, because stacked they made the
+   panel twice the height of the other one and pushed the code below the fold. Under
+   46rem there is no room for two columns and it stacks again, code last. */
+.way-split { display: grid; gap: 1.4rem; align-items: start; }
+@media (min-width: 46rem) {
+  .way-split { grid-template-columns: minmax(0, 1fr) auto; }
+  .way-split .qrcard { margin-top: 0; }
+}
+.way-panel .lead { margin: 0 0 1rem; color: var(--subtext); font-size: .95rem; }
+.way-panel .note { margin-top: 1rem; font-size: .85rem; }
+.way-panel .steps { font-size: .92rem; }
+/* On a phone the two labels wrapped onto separate rows and stopped reading as a choice
+   between two things. Below 34rem they split the row evenly instead, which is the
+   segmented control the deck was always trying to be. Short labels are what make that
+   fit: the distinction they used to carry is the bold opening line of each panel now. */
+@media (max-width: 34rem) {
+  .waypick { gap: .35rem; }
+  .waypick button { flex: 1 1 0; min-width: 0; text-align: center; padding: .45rem .5rem; }
+}
 
 .steps { list-style: none; margin: 0; padding: 0; counter-reset: step; display: grid; gap: 1rem; }
 .steps li { counter-increment: step; display: grid; grid-template-columns: 1.7rem minmax(0, 1fr); gap: .8rem; align-items: start; }
