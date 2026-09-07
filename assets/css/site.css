@@ -1853,6 +1853,12 @@ html {
 .setup { padding: 2.6rem 0 4rem; }
 .setup h1 { font-size: 2.1rem; margin: 0 0 .4rem; color: var(--accent); font-weight: 650; }
 .setup .lede { color: var(--subtext); margin: 0 0 2rem; max-width: 42rem; }
+/* The page carries two numbered sections now, the battery limits and the brightness
+   permission, so each needs a heading. Sized between the h1 and the small uppercase
+   labels inside the cards: it names a step in a sequence, not a card. */
+.setup h2.sectionhead { margin: 2.8rem 0 1rem; font-size: 1.15rem; font-weight: 650; color: var(--text); }
+.setup h2.sectionhead + .lede { margin-bottom: 1.4rem; }
+.setup h1 + .sectionhead { margin-top: 1.6rem; }
 
 .why { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 1rem; margin: 0 0 2.2rem; }
 .whycard {
