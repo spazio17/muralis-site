@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Muralis device setup</title>
-<meta name="description" content="Turn the battery limits off for Muralis: why it is needed, why Muralis cannot do it itself, and the steps for each tablet maker.">
+<meta name="description" content="The two settings Android only lets a person change for Muralis: the battery limits, and permission to set the brightness. Why each is needed, and the steps for each tablet maker.">
 <link rel="canonical" href="https://muralis.spazio17.org/setup/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=26">
+<link rel="stylesheet" href="../assets/css/site.css?v=27">
 <script>
   try {
     var t = localStorage.getItem('muralis-theme');
@@ -60,8 +60,10 @@
 
 <main class="wrap setup">
 
-  <h1 class="stroke">Turn the battery limits off</h1>
+  <h1 class="stroke">Two settings only you can change</h1>
   <p class="lede stroke">Two minutes, once, on the tablet. Muralis sets up everything else by itself.</p>
+
+  <h2 class="sectionhead stroke">1. Turn the battery limits off</h2>
 
   <div class="why">
     <div class="whycard stroke">
@@ -124,6 +126,29 @@
   <div class="verify stroke">
     <h2>Check it worked</h2>
     <p>Unplug the tablet, press the power button so the screen goes dark, wait ten minutes, then press it again. Your dashboard should be on the screen.</p>
+  </div>
+
+  <h2 class="sectionhead stroke">2. Let Muralis set the brightness</h2>
+  <p class="lede stroke">Only if you want it. Everything else works without this one.</p>
+
+  <div class="why">
+    <div class="whycard stroke">
+      <h2>Why you might</h2>
+      <p>Without it, the brightness slider in Muralis and the brightness control in your dashboard both do nothing. The tablet keeps setting its own brightness.</p>
+    </div>
+    <div class="whycard stroke">
+      <h2>Why Muralis cannot</h2>
+      <p>Brightness is a setting for the whole tablet, so Android asks a person. Being the tablet's admin does not change that, and no other part of Muralis needs this.</p>
+    </div>
+  </div>
+
+  <div class="vendordeck stroke">
+    <div class="vendor-panel">
+      <ol class="steps">
+        <li><span><span class="path">Muralis <i aria-hidden="true">&rsaquo;</i> settings <i aria-hidden="true">&rsaquo;</i> Display</span><span class="act">Under Brightness, tap <b>Grant it now</b>. Muralis opens the one Android screen that can allow this, and comes back on its own when you are done.</span></span></li>
+      </ol>
+      <p class="deck-note">By hand instead: Settings, Apps, Special access, Modify system settings, then allow Muralis. Some makers keep that list under Settings, Apps, Advanced, Special app access. A few hide it altogether, and then the button in Muralis has nothing to open: brightness stays with the tablet, and everything else works as it should.</p>
+    </div>
   </div>
 
 </main>

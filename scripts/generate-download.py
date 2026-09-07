@@ -186,7 +186,7 @@ def index_page(found):
 <meta name="description" content="The Play-signed Muralis APK, its checksum, the signing fingerprint, and the provisioning QR, published so anyone can check them.">
 <link rel="canonical" href="https://muralis.spazio17.org/download/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=26">
+<link rel="stylesheet" href="../assets/css/site.css?v=27">
 <script>
   /* The same bootstrap every page carries: a theme chosen anywhere on the site holds
      here too, applied before first paint so an explicit choice never flashes the other
