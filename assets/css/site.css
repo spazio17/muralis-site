@@ -27,6 +27,8 @@
   --code-text: #ebe8f7;
   --code-accent: #c9b1ff;
   --shadow: 0 1px 2px rgba(27, 26, 46, .05), 0 12px 32px -20px rgba(27, 26, 46, .25);
+  --bezel: #17162a;
+  --frame-line: var(--line);
   --radius: 12px;
   --page: 1120px;
   --measure: 66ch;
@@ -52,6 +54,8 @@ html[data-theme="dark"] {
   --bad: #ff7a90;
   --code-bg: #0e0d19;
   --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 14px 32px -20px rgba(0, 0, 0, .7);
+  --bezel: #2a2840;
+  --frame-line: rgba(255, 255, 255, .18);
 }
 
 * { box-sizing: border-box; }
@@ -292,10 +296,10 @@ html[data-theme="dark"] .button.secondary, html[data-theme="dark"] .button.secon
 }
 .device { margin: 0; }
 .device .bezel {
-  background: #17162a;
+  background: var(--bezel);
   border-radius: 22px;
   padding: 12px;
-  box-shadow: 0 30px 60px -30px rgba(27, 26, 46, .5), 0 0 0 1px rgba(27, 26, 46, .08);
+  box-shadow: 0 30px 60px -30px rgba(27, 26, 46, .5), 0 0 0 1px var(--frame-line);
 }
 .device img { display: block; width: 100%; height: auto; border-radius: 12px; }
 .device figcaption { font-size: .85rem; color: var(--muted); text-align: center; margin-top: 1rem; }
@@ -425,8 +429,8 @@ figure.clip .frame {
   border-radius: 14px;
   overflow: hidden;
   display: block;
-  background: #17162a;
-  border: 1px solid var(--line);
+  background: var(--bezel);
+  border: 1px solid var(--frame-line);
 }
 figure.clip video { width: 100%; height: 100%; object-fit: contain; display: block; }
 .clip-note { margin: .8rem 0 0; max-width: 62ch; color: var(--muted); font-size: .88rem; }
@@ -448,7 +452,7 @@ figure.shot { margin: 0; }
 figure.shot .frame {
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid var(--frame-line);
   background: var(--panel);
   aspect-ratio: 16 / 10;
   display: block;

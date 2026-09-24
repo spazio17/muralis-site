@@ -206,7 +206,7 @@
           </div>
         </div>
         <div>
-          <div class="code-scroll" tabindex="0" role="region" aria-label="Change the page over HTTP"><pre><code>curl -u :your-admin-password -X POST http://192.0.2.42:8080/api/command \
+          <div class="code-scroll" tabindex="0" role="region" aria-label="Change the page over HTTP"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
      -d cmnd=kiosk.open_url \
      -d url=https://muralis.spazio17.org</code></pre></div>
           <p class="reply">The panel answers:</p>
@@ -258,7 +258,7 @@
             <div class="frame"><video src="assets/video/http-command.mp4" poster="assets/video/poster/http-command.jpg" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
           </figure>
           <p class="clip-note">A POST to the panel&#8217;s own web admin and it changes page, with nobody near it. The reply under the command is the panel&#8217;s own.</p>
-          <div class="code-scroll" tabindex="0" role="region" aria-label="The HTTP command, as a shell line"><pre><code>curl -u :your-admin-password -X POST http://192.0.2.42:8080/api/command \
+          <div class="code-scroll" tabindex="0" role="region" aria-label="The HTTP command, as a shell line"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
      -d cmnd=kiosk.open_url \
      -d url=https://muralis.spazio17.org</code></pre></div>
         </div>
@@ -324,7 +324,7 @@
           <p class="asks-label">It asks you for</p>
           <ul class="asks">
             <li>a motion or occupancy sensor</li>
-            <li>the panel&#8217;s <b>Wake display</b> and <b>Display off</b> buttons</li>
+            <li>the panel&#8217;s <b>Display on</b> and <b>Display off</b> buttons</li>
             <li>how long the room must be empty first</li>
             <li>optionally, something that keeps it dark regardless</li>
           </ul>
