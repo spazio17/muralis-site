@@ -96,8 +96,8 @@
         </ul>
       </div>
       <figure class="device">
-        <div class="bezel"><img src="assets/img/screenshots/panel-in-place.png" alt="A dashboard filling the whole tablet screen, with no browser bar and no Android bars" width="1920" height="1200"></div>
-        <figcaption>A page on a locked tablet. This one is Home Assistant&#8217;s public demo; it could be any page.</figcaption>
+        <div class="bezel"><img src="assets/img/screenshots/panel-room.png" alt="A meeting-room board filling the whole tablet screen, with no browser bar and no Android bars" width="1920" height="1200"></div>
+        <figcaption>A page on a locked tablet. This one is a room board served on the office network; it could be any page.</figcaption>
       </figure>
     </div>
   </div>
@@ -147,32 +147,53 @@
       <p class="intro">Wall panels drift. A browser stops repainting, a network blip leaves an error page, an update reboots into the stock launcher. Muralis handles each of those without anyone walking over.</p>
       <div class="cards">
         <div class="card">
-          <h3>Locked to one page</h3>
-          <p>Home app, lock task, no reachable system UI. Comes back by itself after a reboot.</p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <div>
+            <h3>Locked to one page</h3>
+            <p>Home app, lock task, no system UI to reach. Back by itself after a reboot.</p>
+          </div>
         </div>
         <div class="card">
-          <h3>Recovers unattended</h3>
-          <p>Failed loads retry, hung loads time out, a killed renderer is rebuilt, and a server back from a restart earns one clean reload.</p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>
+          <div>
+            <h3>Recovers unattended</h3>
+            <p>Failed loads retry, hung loads time out, a dead renderer is rebuilt.</p>
+          </div>
         </div>
         <div class="card">
-          <h3>Catches a frozen page</h3>
-          <p>Reloads a page that was updating and stopped. A page that never changed is left alone.</p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>
+          <div>
+            <h3>Catches a frozen page</h3>
+            <p>A page that was updating and stopped is reloaded. One that never changes is left alone.</p>
+          </div>
         </div>
         <div class="card">
-          <h3>Restarts itself nightly</h3>
-          <p>A full restart in the small hours, and a page rebuild whenever the tablet reports low memory.</p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+          <div>
+            <h3>Restarts itself nightly</h3>
+            <p>A full restart in the small hours, and a rebuild whenever memory runs low.</p>
+          </div>
         </div>
         <div class="card">
-          <h3>A way out you choose</h3>
-          <p>Three to twelve corner taps, recorded on the device. Nothing is hardcoded.</p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><circle cx="12" cy="12" r="2"/></svg>
+          <div>
+            <h3>A way out you choose</h3>
+            <p>Three to twelve corner taps, recorded on the device. Nothing is hardcoded.</p>
+          </div>
         </div>
         <div class="card">
-          <h3>Display off, done properly</h3>
-          <p>Turns the screen off for real where the tablet can be trusted to sleep, and shows a black film where it cannot. It tells you which, and why.</p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/></svg>
+          <div>
+            <h3>Display off, done properly</h3>
+            <p>A real screen-off where the tablet can be trusted to sleep, a black film where it cannot. It says which.</p>
+          </div>
         </div>
         <div class="card">
-          <h3>Something to look at when nobody is</h3>
-          <p>After the idle time you set: a dimmed page, a black film, another web page, or pictures. Your own folders and uploads in playlists, or Bing&#8217;s and Wikimedia Commons&#8217; picture of the day, with a credit line. A touch brings the page back.</p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.5"/></svg>
+          <div>
+            <h3>Something to look at when nobody is</h3>
+            <p>Dimmed page, black film, another page, or pictures: your folders in playlists, or a picture of the day, credited.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -272,9 +293,13 @@
       <p class="eyebrow">Screens</p>
       <h2>The tablet, the web admin, and what they produce</h2>
       <div class="shots">
-        <figure class="shot">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a dashboard filling the tablet under lock task, with no browser chrome"><img src="assets/img/screenshots/panel-in-place.png" alt="A dashboard filling the tablet under lock task, with no browser chrome" loading="lazy"></button></div>
-          <figcaption><b>In place.</b> One page, nothing else reachable.</figcaption>
+        <figure class="shot trio">
+          <div class="frames">
+            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a Grafana dashboard on the locked tablet"><img src="assets/img/screenshots/panel-grafana.png" alt="A Grafana dashboard filling the tablet, with no browser chrome" loading="lazy"></button></div>
+            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: Wikimedia Commons on the locked tablet"><img src="assets/img/screenshots/panel-commons.png" alt="Wikimedia Commons&#8217; picture of the day filling the tablet" loading="lazy"></button></div>
+            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: openHAB&#8217;s demo on the locked tablet"><img src="assets/img/screenshots/panel-openhab.png" alt="openHAB&#8217;s public demo filling the tablet" loading="lazy"></button></div>
+          </div>
+          <figcaption><b>In place.</b> A Grafana board, Wikimedia Commons, an openHAB home: three pages, one panel, nothing else reachable.</figcaption>
         </figure>
         <figure class="shot contain">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the web admin in a desktop browser, every setting and a live status block"><img src="assets/img/screenshots/web-admin.png" alt="The web admin in a desktop browser: every setting and a live status block" loading="lazy"></button></div>
@@ -292,9 +317,13 @@
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the screensaver settings on the tablet, the five modes, the playlists and the options for pictures"><img src="assets/img/screenshots/screensaver.png" alt="The screensaver settings on the tablet: the five modes, the playlists, and the options for pictures" loading="lazy"></button></div>
           <figcaption><b>Screensaver.</b> Pictures from the panel&#8217;s own folders, in playlists, or a picture of the day.</figcaption>
         </figure>
-        <figure class="shot contain">
+        <figure class="shot">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Muralis device page in Home Assistant, controls, sensors and diagnostics, all created by MQTT discovery"><img src="assets/img/screenshots/home-assistant.png" alt="The Muralis device page in Home Assistant: controls, sensors and diagnostics, all created by MQTT discovery" loading="lazy"></button></div>
           <figcaption><b>In Home Assistant.</b> Discovered, not declared.</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a Gatus status page on the locked tablet"><img src="assets/img/screenshots/panel-gatus.png" alt="A Gatus health dashboard filling the tablet, every endpoint green" loading="lazy"></button></div>
+          <figcaption><b>A status page.</b> Gatus, on the wall of the room that runs the servers.</figcaption>
         </figure>
       </div>
     </div>

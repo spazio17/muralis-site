@@ -23,6 +23,16 @@
   --ok: #1f8a4c;
   --warn: #a86400;
   --bad: #c41e3a;
+  /* Three more hues beside the violet, for icon chips, tags and tints: enough colour to be
+     remembered, never a second accent on a button (Juri, 2026-09-23: professional but not
+     unknown). */
+  --teal: #0f8b86;
+  --teal-soft: #dff4f2;
+  --amber: #b8720c;
+  --amber-soft: #fbeed8;
+  --rose: #bf3f76;
+  --rose-soft: #fbe4ee;
+  --hero-wash: linear-gradient(135deg, #efe9fd 0%, #f6f6fa 45%, #fdf1e9 100%);
   --code-bg: #1c1a2e;
   --code-text: #ebe8f7;
   --code-accent: #c9b1ff;
@@ -52,6 +62,13 @@ html[data-theme="dark"] {
   --ok: #6fd39a;
   --warn: #f0b24a;
   --bad: #ff7a90;
+  --teal: #5fd3c8;
+  --teal-soft: rgba(95, 211, 200, .14);
+  --amber: #f2b35c;
+  --amber-soft: rgba(242, 179, 92, .14);
+  --rose: #ff8fb8;
+  --rose-soft: rgba(255, 143, 184, .14);
+  --hero-wash: linear-gradient(135deg, #1b1733 0%, #121120 50%, #1f1622 100%);
   --code-bg: #0e0d19;
   --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 14px 32px -20px rgba(0, 0, 0, .7);
   --bezel: #2a2840;
@@ -141,8 +158,8 @@ html[data-theme="dark"] .button.secondary, html[data-theme="dark"] .button.secon
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
-  color: var(--accent-text);
-  background: var(--accent-soft);
+  color: var(--amber);
+  background: var(--amber-soft);
   border-radius: 999px;
   padding: .15rem .6rem;
   margin: 0 0 .6rem;
@@ -260,7 +277,7 @@ html[data-theme="dark"] .button.secondary, html[data-theme="dark"] .button.secon
 .themepick button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-text); font-weight: 650; }
 
 /* Hero */
-.hero { padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(2.5rem, 5vw, 4rem); }
+.hero { padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(2.5rem, 5vw, 4rem); background: var(--hero-wash); }
 .hero > .wrap {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -287,13 +304,16 @@ html[data-theme="dark"] .button.secondary, html[data-theme="dark"] .button.secon
 }
 .facts li {
   font-size: .82rem;
-  font-weight: 550;
-  color: var(--muted);
-  background: var(--panel);
-  border: 1px solid var(--line);
+  font-weight: 600;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  border: 1px solid transparent;
   border-radius: 999px;
   padding: .3rem .75rem;
 }
+.facts li:nth-child(2) { color: var(--teal); background: var(--teal-soft); }
+.facts li:nth-child(3) { color: var(--amber); background: var(--amber-soft); }
+.facts li:nth-child(4) { color: var(--rose); background: var(--rose-soft); }
 .device { margin: 0; }
 .device .bezel {
   background: var(--bezel);
@@ -306,6 +326,8 @@ html[data-theme="dark"] .button.secondary, html[data-theme="dark"] .button.secon
 
 /* Sections */
 section { padding: clamp(2.75rem, 6vw, 4.5rem) 0; border-top: 1px solid var(--line); }
+section.remote, section#pricing { background: linear-gradient(180deg, var(--accent-soft), transparent 70%); }
+section#home-assistant { background: linear-gradient(180deg, var(--teal-soft), transparent 70%); }
 section > .wrap > h2 { max-width: 30rem; }
 section > .wrap > .intro {
   margin-top: .9rem;
@@ -328,12 +350,19 @@ section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
   padding: 1.25rem 1.25rem 1.35rem;
   box-shadow: var(--shadow);
 }
+#features .card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .9rem; align-items: start; }
+#features .card svg { width: 40px; height: 40px; padding: 8px; border-radius: 12px; flex: none; color: var(--accent-text); background: var(--accent-soft); }
+#features .card:nth-child(4n+2) svg { color: var(--teal); background: var(--teal-soft); }
+#features .card:nth-child(4n+3) svg { color: var(--amber); background: var(--amber-soft); }
+#features .card:nth-child(4n) svg { color: var(--rose); background: var(--rose-soft); }
+#features .card p { font-size: .92rem; }
 .card h3 { margin-bottom: .45rem; }
 .card p { color: var(--muted); font-size: .95rem; }
 .card p + p { margin-top: .5rem; }
 
-.audience .cards { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
-.audience .card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
+.audience .cards { grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
+.audience .card { display: block; }
+.audience .card svg { margin-bottom: .9rem; }
 .audience .card svg {
   width: 40px;
   height: 40px;
@@ -342,7 +371,13 @@ section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
   background: var(--accent-soft);
   color: var(--accent-text);
   flex: none;
+  border-radius: 12px;
+  color: var(--accent-text);
+  background: var(--accent-soft);
 }
+.audience .card:nth-child(2) svg { color: var(--teal); background: var(--teal-soft); }
+.audience .card:nth-child(3) svg { color: var(--amber); background: var(--amber-soft); }
+.audience .card:nth-child(4) svg { color: var(--rose); background: var(--rose-soft); }
 
 .remote > .wrap > .split {
   display: grid;
@@ -372,15 +407,18 @@ section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
 .remote .reply { font-size: .82rem; color: var(--muted); margin: .5rem 0 0; }
 
 /* Code blocks */
+/* The block clips and the <pre> inside it scrolls, so the Copy button, positioned against the
+   block, floats over the top-right corner and stays put when a long line is scrolled; the first
+   line of code is the first line of the block, with room kept at its right for the button. */
 .code-scroll {
   position: relative;
   background: var(--code-bg);
   color: var(--code-text);
   border-radius: 10px;
-  overflow: auto;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, .06);
 }
-.code-scroll pre { margin: 0; padding: .9rem 1rem; font-family: var(--mono); font-size: .84rem; line-height: 1.55; }
+.code-scroll pre { margin: 0; padding: .9rem 1rem; font-family: var(--mono); font-size: .84rem; line-height: 1.55; overflow: auto; }
 .code-scroll code { font-family: inherit; font-size: inherit; color: inherit; background: none; padding: 0; }
 .code-scroll .prompt { color: var(--code-accent); user-select: none; }
 .code-scroll .copy {
@@ -391,14 +429,15 @@ section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
   font-size: .72rem;
   font-weight: 600;
   color: var(--code-text);
-  background: rgba(255, 255, 255, .08);
-  border: 1px solid rgba(255, 255, 255, .12);
+  background: color-mix(in srgb, var(--code-bg) 92%, white);
+  border: 1px solid rgba(255, 255, 255, .16);
   border-radius: 7px;
   padding: .25rem .55rem;
   cursor: pointer;
+  box-shadow: -10px 0 12px -4px var(--code-bg);
 }
 .code-scroll .copy:hover { background: rgba(255, 255, 255, .16); }
-.code-scroll.has-copy pre { padding-top: 2.4rem; }
+.code-scroll.has-copy pre { padding-right: 4.75rem; }
 
 /* Clip deck */
 .clipdeck {
@@ -424,15 +463,16 @@ section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
 .clipdeck-list button:hover { border-color: var(--line-strong); }
 .clipdeck-list button[aria-selected="true"] { border-color: var(--accent); background: var(--accent-soft); }
 figure.clip { margin: 0; min-width: 0; }
+/* No fixed aspect: the two 1280x800 clips and the two 1280x1000 ones each get their own height,
+   so nothing is padded with bars; the stage is black under the video's own edges. */
 figure.clip .frame {
-  aspect-ratio: 1280 / 1000;
   border-radius: 14px;
   overflow: hidden;
   display: block;
-  background: var(--bezel);
+  background: #000;
   border: 1px solid var(--frame-line);
 }
-figure.clip video { width: 100%; height: 100%; object-fit: contain; display: block; }
+figure.clip video { width: 100%; height: auto; display: block; }
 .clip-note { margin: .8rem 0 0; max-width: 62ch; color: var(--muted); font-size: .88rem; }
 .clipdeck-stage .code-scroll { margin-top: .75rem; }
 @media (max-width: 56rem) {
@@ -449,6 +489,11 @@ figure.clip video { width: 100%; height: 100%; object-fit: contain; display: blo
   margin-top: 2rem;
 }
 figure.shot { margin: 0; }
+/* The first figure is three pages side by side on one row: the panel does not care which
+   page it holds, and one page would say it did. */
+figure.shot.trio { grid-column: 1 / -1; }
+figure.shot.trio .frames { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 40rem) { figure.shot.trio .frames { grid-template-columns: minmax(0, 1fr); } }
 figure.shot .frame {
   border-radius: 12px;
   overflow: hidden;
