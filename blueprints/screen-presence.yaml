@@ -5,7 +5,7 @@ blueprint:
     someone is there and blanks it again once the room has been empty for a while.
 
 
-    It presses the panel's own **Wake display** and **Display off** buttons, which Muralis creates
+    It presses the panel's own **Display on** and **Display off** buttons, which Muralis creates
     over MQTT discovery, so the tablet's backlight is what changes. Nothing is uninstalled and no
     setting is written; the dashboard is still loaded and comes straight back.
 
@@ -29,8 +29,8 @@ blueprint:
             - domain: binary_sensor
               device_class: presence
     wake_button:
-      name: Wake display
-      description: The panel's "Wake display" button.
+      name: Display on
+      description: The panel's "Display on" button.
       selector:
         entity:
           filter:

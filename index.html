@@ -3,24 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Muralis, a self-recovering Android kiosk launcher for wall-mounted Home Assistant dashboards</title>
-<meta name="description" content="An Android kiosk launcher for wall-mounted Home Assistant dashboards. Locks the tablet to one page, recovers on its own, answers to MQTT and HTTP. An ordinary APK: no root, no custom ROM.">
+<title>Muralis, an Android kiosk that locks a tablet to one web page</title>
+<meta name="description" content="Muralis turns an Android tablet into a wall panel for any web page and keeps it there: locked, self-recovering, controllable over HTTP and MQTT. A dashboard, a board, a menu, a page on your own network. Made in Austria.">
 <link rel="canonical" href="https://muralis.spazio17.org/">
 <link rel="icon" href="assets/img/icon-512.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/icon-512.png">
-<link rel="stylesheet" href="assets/css/site.css?v=27">
+<link rel="stylesheet" href="assets/css/site.css?v=33">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Muralis, hang it up and leave it">
-<meta property="og:description" content="Locks a tablet to one Home Assistant dashboard, recovers on its own, answers to MQTT and HTTP.">
+<meta property="og:title" content="Muralis, lock a tablet to one page and leave it">
+<meta property="og:description" content="An Android kiosk for any web page. Locked, self-recovering, controllable over HTTP and MQTT.">
 <meta property="og:url" content="https://muralis.spazio17.org/">
 <meta property="og:image" content="https://muralis.spazio17.org/assets/img/icon-512.png">
 <meta name="twitter:card" content="summary">
 <script>
-  /* Applied before first paint so an explicit choice never flashes the other palette. */
+  /* An explicit choice from the menu is applied before first paint. Without one the page
+     follows the system, through prefers-color-scheme in the stylesheet. */
   try {
     var t = localStorage.getItem('muralis-theme');
     if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  } catch (e) { /* private mode: fall through to prefers-color-scheme */ }
+  } catch (e) { /* private mode: follow the system */ }
 </script>
 </head>
 <body>
@@ -33,6 +34,7 @@
     </a>
     <nav class="pagenav" aria-label="Pages">
       <a href="./" aria-current="page">Overview</a>
+      <a href="api/">API</a>
       <a href="setup/">Setup</a>
       <a href="download/">Download</a>
     </nav>
@@ -41,20 +43,16 @@
       <span class="menubtn-label">Menu</span>
     </button>
   </div>
-  <!-- One menu for the whole site, at every width. The bar carries the pages, which is
-       the site's structure and is the same everywhere; the menu carries this page's own
-       sections, which only the front page has, and the theme, which is a setting rather
-       than a destination and was taking bar space on every page for it. Hidden here in
-       the markup rather than by CSS alone, so it is closed before the script runs and a
-       reader with no JavaScript is not given a panel that can never be shut. -->
   <div class="sitemenu" id="sitemenu" hidden>
     <div class="wrap menuwrap">
       <nav class="menugroup" aria-label="On this page">
         <p class="menuhead">On this page</p>
+        <a href="#for">Who it is for</a>
         <a href="#features">What it does</a>
+        <a href="#remote">Remote control</a>
         <a href="#motion">In motion</a>
         <a href="#look">Screens</a>
-        <a href="#recipes">Recipes</a>
+        <a href="#home-assistant">Home Assistant</a>
         <a href="#pricing">Free &amp; Pro</a>
         <a href="#install">Install</a>
         <a href="#requirements">Requirements</a>
@@ -63,12 +61,14 @@
       <nav class="menugroup" aria-label="Pages">
         <p class="menuhead">Pages</p>
         <a href="./" aria-current="page">Overview</a>
+        <a href="api/">API</a>
         <a href="setup/">Setup</a>
         <a href="download/">Download</a>
       </nav>
       <div class="menugroup">
         <p class="menuhead">Appearance</p>
         <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="auto" aria-pressed="false">Auto</button>
           <button type="button" data-theme="light" aria-pressed="false">Light</button>
           <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
         </div>
@@ -80,87 +80,151 @@
 <main>
 
   <div class="hero">
-    <!-- Decoration only, and marked so: the passe-partout around the copy, and the
-         pass of spray that drifts over the wall twice a minute. The paint patches,
-         the tiled grid and the plaster grain are the hero's own ::before and
-         ::after, so they need no element. -->
-    <div class="mat" aria-hidden="true"></div>
-    <div class="tiles" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-    <div class="grain" aria-hidden="true"></div>
-    <div class="spray" aria-hidden="true"></div>
     <div class="wrap">
       <div class="herocopy">
-        <span class="status"><span class="dot" aria-hidden="true"></span>In development</span>
-        <h1>Hang it up,<br>and leave it.</h1>
-        <p class="lede">
-          An Android kiosk launcher for wall-mounted Home Assistant dashboards. It locks the tablet to
-          one page, recovers on its own, and answers to MQTT and HTTP.
-        </p>
+        <p class="eyebrow">Android kiosk for any web page</p>
+        <h1>Lock a tablet to one page. Then leave it.</h1>
+        <p class="lede">Muralis turns an Android tablet into a wall panel for any web page: a dashboard, a board, a menu, a page on your own network. It holds the screen on that page, recovers by itself, and takes commands over HTTP and MQTT.</p>
+        <div class="actions">
+          <a class="button" href="#install">See how it installs</a>
+          <a class="button secondary" href="api/">Read the API</a>
+        </div>
         <ul class="facts">
           <li>Android 8 and up</li>
-          <li>Ordinary APK</li>
           <li>No root</li>
-          <li>MQTT + HTTP</li>
-          <li>Home Assistant discovery</li>
+          <li>Any URL, local or internet</li>
+          <li>HTTP + MQTT</li>
+          <li>Made in Austria</li>
         </ul>
       </div>
-      <!-- The QR is a real control, not decoration, so it says what scanning it does before
-           anyone points a camera at it: this one wipes the tablet. The long explanation is in
-           #install and the link goes there rather than repeating it here. -->
-      <aside class="heroqr">
-        <div class="qrcard">
-          <img src="download/provisioning-qr.svg" alt="Provisioning QR code for Muralis" width="320" height="320">
-        </div>
-        <p class="qrlabel">Turn a factory-reset tablet into a wall panel</p>
-        <p class="qrnote">Scan it from the setup screen, not from Android.</p>
-        <a class="button qrmore" href="#install">See how this works</a>
-      </aside>
+      <figure class="device">
+        <div class="bezel"><img src="assets/img/screenshots/panel-room.png" alt="A meeting-room board filling the whole tablet screen, with no browser bar and no Android bars" width="1920" height="1200"></div>
+        <figcaption>One page. The whole screen. Nothing else.</figcaption>
+      </figure>
     </div>
   </div>
 
+  <section id="for" class="audience">
+    <div class="wrap">
+      <p class="eyebrow">Who it is for</p>
+      <h2>One screen, one page, nobody looking after it</h2>
+      <p class="intro">Muralis does not care what is on the page. If a browser can show it, a tablet on the wall can hold it.</p>
+      <div class="cards">
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-5h4v5"/></svg>
+          <div>
+            <h3>Smart-home dashboards</h3>
+            <p>Home Assistant, openHAB, ioBroker, Domoticz. To Muralis they are all a page.</p>
+          </div>
+        </div>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M6 16V9"/><path d="M11 16V5"/><path d="M16 16v-7"/><path d="M21 16v-4"/></svg>
+          <div>
+            <h3>Office and workshop boards</h3>
+            <p>A Grafana board, a build monitor, a ticket queue, on the wall of the room that needs it.</p>
+          </div>
+        </div>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10 5.5 5h13L20 10"/><path d="M4 10c0 1.4 1.1 2.5 2.5 2.5S9 11.4 9 10c0 1.4 1.3 2.5 3 2.5s3-1.1 3-2.5c0 1.4 1.1 2.5 2.5 2.5S20 11.4 20 10"/><path d="M6 12.5V19h12v-6.5"/><path d="M10 19v-4h4v4"/></svg>
+          <div>
+            <h3>Front desk and shop</h3>
+            <p>A welcome screen, a menu, today&#8217;s schedule, on a tablet nobody has to babysit.</p>
+          </div>
+        </div>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/></svg>
+          <div>
+            <h3>Your own network</h3>
+            <p>An intranet page or a local server. Nothing has to be on the internet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="features">
     <div class="wrap">
-      <h2 class="stroke">Built to be left alone</h2>
-      <p class="intro stroke">Wall panels drift. A browser stops repainting, a blip leaves an error page, an update reboots into the stock launcher.</p>
+      <p class="eyebrow">What it does</p>
+      <h2>Built to be left alone</h2>
+      <p class="intro">Wall panels drift. A browser stops repainting, a network blip leaves an error page, an update reboots into the stock launcher. Muralis handles each of those without anyone walking over.</p>
       <div class="cards">
-        <div class="card stroke">
-          <h3>Locked to one page</h3>
-          <p>Lock task, home app, no reachable system UI. Comes back by itself after a reboot.</p>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <div>
+            <h3>Locked to one page</h3>
+            <p>Home app, lock task, no system UI to reach. Back by itself after a reboot.</p>
+          </div>
         </div>
-        <div class="card stroke">
-          <h3>Recovers unattended</h3>
-          <p>Failed loads retry, hung loads time out, a killed renderer is rebuilt, and a server back from a restart earns one clean reload.</p>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>
+          <div>
+            <h3>Recovers unattended</h3>
+            <p>Failed loads retry, hung loads time out, a dead renderer is rebuilt.</p>
+          </div>
         </div>
-        <div class="card stroke">
-          <h3>Catches a frozen page</h3>
-          <p>Reloads a dashboard that was updating and stopped. A page that never changed is left alone.</p>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>
+          <div>
+            <h3>Catches a frozen page</h3>
+            <p>A page that was updating and stopped is reloaded. One that never changes is left alone.</p>
+          </div>
         </div>
-        <div class="card stroke">
-          <h3>Restarts itself nightly</h3>
-          <p>A full restart in the small hours, and a dashboard rebuild whenever the device reports low memory.</p>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+          <div>
+            <h3>Restarts itself nightly</h3>
+            <p>A full restart in the small hours, and a rebuild whenever memory runs low.</p>
+          </div>
         </div>
-        <div class="card stroke">
-          <p class="tag">Pro</p>
-          <h3>One command set, two transports</h3>
-          <p>MQTT and HTTP behave identically. A refused command always says why.</p>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><circle cx="12" cy="12" r="2"/></svg>
+          <div>
+            <h3>A way out you choose</h3>
+            <p>Three to twelve corner taps, recorded on the device. Nothing is hardcoded.</p>
+          </div>
         </div>
-        <div class="card stroke">
-          <p class="tag">Pro</p>
-          <h3>Home Assistant discovery</h3>
-          <p>Entities appear without YAML. A panel that goes silent reads unavailable, never a stale online.</p>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/></svg>
+          <div>
+            <h3>Display off, done properly</h3>
+            <p>A real screen-off where the tablet can be trusted to sleep, a black film where it cannot. It says which.</p>
+          </div>
         </div>
-        <div class="card stroke">
-          <p class="tag">Pro</p>
-          <h3>Telemetry to automate on</h3>
-          <p>Battery, memory, storage, network, CPU, thermal, app version. Once a minute, sooner when something changes.</p>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.5"/></svg>
+          <div>
+            <h3>Something to look at when nobody is</h3>
+            <p>Dimmed page, black film, another page, or pictures: your folders in playlists, or a picture of the day, credited.</p>
+          </div>
         </div>
-        <div class="card stroke">
-          <h3>A way out you choose</h3>
-          <p>Three to twelve corner taps, recorded on the device. Nothing hardcoded in the binary.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="remote" class="remote">
+    <div class="wrap">
+      <p class="eyebrow">Remote control, Pro</p>
+      <h2>Every setting, from anywhere on your network</h2>
+      <p class="intro">The web admin is a page the panel serves itself. The same commands and settings answer over HTTP and MQTT, and the reference shows each one with the panel&#8217;s real reply.</p>
+      <div class="split">
+        <div>
+          <ul class="points">
+            <li><b>One command set.</b> The same names over HTTP and MQTT. A refused command says why.</li>
+            <li><b>Every setting.</b> The page, brightness, orientation, display off, the screensaver and its playlists, the broker, the escape combinations.</li>
+            <li><b>Live status.</b> Battery, memory, storage, network, temperature and page health, as JSON.</li>
+            <li><b>Telemetry to automate on.</b> Battery, memory, storage, network, CPU, thermal, screen and page health, once a minute and sooner when something changes.</li>
+            <li><b>Nothing leaves your network, and nothing is on until you set it up.</b> No default credentials; broker and admin secrets encrypted in the Android keystore. No cloud, no account.</li>
+          </ul>
+          <div class="actions">
+            <a class="button" href="api/">Open the reference</a>
+          </div>
         </div>
-        <div class="card stroke">
-          <h3>Off until configured</h3>
-          <p>No default credentials. Broker and admin secrets encrypted in the Android keystore.</p>
+        <div>
+          <div class="code-scroll" tabindex="0" role="region" aria-label="Change the page over HTTP"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=kiosk.open_url \
+     -d url=https://muralis.spazio17.org</code></pre></div>
+          <p class="reply">The panel answers:</p>
+          <div class="code-scroll" tabindex="0" role="region" aria-label="The panel's reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         </div>
       </div>
     </div>
@@ -168,9 +232,10 @@
 
   <section id="motion">
     <div class="wrap">
-      <h2 class="stroke">In motion</h2>
-      <p class="intro stroke">Four clips off a real panel, recorded over the cable. They loop, there is no sound, and nothing in them is a mock-up.</p>
-      <div class="clipdeck stroke">
+      <p class="eyebrow">In motion</p>
+      <h2>Four clips off a real panel</h2>
+      <p class="intro">Recorded over the cable. They loop, there is no sound, and nothing in them is a mock-up.</p>
+      <div class="clipdeck">
         <div class="clipdeck-list" role="tablist" aria-label="Choose a clip" aria-orientation="vertical">
           <button type="button" role="tab" id="tab-self-healing" aria-controls="panel-self-healing" aria-selected="true" tabindex="0">
             <b>Recovers unattended</b>
@@ -186,36 +251,36 @@
           </button>
           <button type="button" role="tab" id="tab-mqtt-command" aria-controls="panel-mqtt-command" aria-selected="false" tabindex="-1">
             <b>And to MQTT</b>
-            <span>The broker your house already runs.</span>
+            <span>The broker you already run.</span>
           </button>
         </div>
         <div class="clipdeck-stage">
         <div class="clip-panel" role="tabpanel" id="panel-self-healing" aria-labelledby="tab-self-healing" tabindex="0">
           <figure class="clip">
-            <div class="frame"><video src="assets/video/self-healing.mp4" poster="assets/video/poster/self-healing.jpg" preload="none" muted loop playsinline width="1280" height="800"></video></div>
+            <div class="frame"><video src="assets/video/self-healing.mp4?v=2" poster="assets/video/poster/self-healing.jpg?v=2" preload="none" muted loop playsinline width="1280" height="800"></video></div>
           </figure>
-          <p class="clip-note">The dashboard fails and nobody touches the tablet. About ten seconds later the panel loads the configured page again by itself. The waiting runs at five times speed, and the badge counts the real seconds as they pass.</p>
+          <p class="clip-note">The page fails and nobody touches the tablet. About ten seconds later the panel loads the configured page again by itself. The waiting runs at five times speed, and the badge counts the real seconds as they pass.</p>
         </div>
         <div class="clip-panel" role="tabpanel" id="panel-magic-taps" aria-labelledby="tab-magic-taps" tabindex="0">
           <figure class="clip">
-            <div class="frame"><video src="assets/video/magic-taps.mp4" poster="assets/video/poster/magic-taps.jpg" preload="none" muted loop playsinline width="1280" height="800"></video></div>
+            <div class="frame"><video src="assets/video/magic-taps.mp4?v=2" poster="assets/video/poster/magic-taps.jpg?v=2" preload="none" muted loop playsinline width="1280" height="800"></video></div>
           </figure>
           <p class="clip-note">Five taps in one corner opens the settings. You choose the corners on the device, and the page underneath carries on as if nothing happened.</p>
         </div>
         <div class="clip-panel" role="tabpanel" id="panel-http-command" aria-labelledby="tab-http-command">
           <figure class="clip">
-            <div class="frame"><video src="assets/video/http-command.mp4" poster="assets/video/poster/http-command.jpg" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
+            <div class="frame"><video src="assets/video/http-command.mp4?v=2" poster="assets/video/poster/http-command.jpg?v=2" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
           </figure>
-          <p class="clip-note">A POST to the panel's own web admin and it changes page, with nobody near it. The reply under the command is the panel's own.</p>
-          <div class="code-scroll" tabindex="0" role="region" aria-label="The HTTP command, as a shell line"><pre><code>curl -u :your-admin-password -X POST http://192.0.2.42:8888/api/command \
+          <p class="clip-note">A POST to the panel&#8217;s own web admin and it changes page, with nobody near it. The reply under the command is the panel&#8217;s own.</p>
+          <div class="code-scroll" tabindex="0" role="region" aria-label="The HTTP command, as a shell line"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
      -d cmnd=kiosk.open_url \
      -d url=https://muralis.spazio17.org</code></pre></div>
         </div>
         <div class="clip-panel" role="tabpanel" id="panel-mqtt-command" aria-labelledby="tab-mqtt-command">
           <figure class="clip">
-            <div class="frame"><video src="assets/video/mqtt-command.mp4" poster="assets/video/poster/mqtt-command.jpg" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
+            <div class="frame"><video src="assets/video/mqtt-command.mp4?v=2" poster="assets/video/poster/mqtt-command.jpg?v=2" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
           </figure>
-          <p class="clip-note">One message on the panel's command topic. It does as it is told and answers on its own result topic.</p>
+          <p class="clip-note">One message on the panel&#8217;s command topic. It does as it is told and answers on its own result topic.</p>
           <div class="code-scroll" tabindex="0" role="region" aria-label="The MQTT command, as a shell line"><pre><code>mosquitto_pub -h test.mosquitto.org \
     -t kiosk/hallway-panel/command \
     -m '{"command":"kiosk.open_url","args":{"url":"https://muralis.spazio17.org"}}'</code></pre></div>
@@ -227,60 +292,61 @@
 
   <section id="look">
     <div class="wrap">
-      <h2 class="stroke">Screens</h2>
-      <p class="intro stroke">The tablet, the web admin, and the entities they produce.</p>
+      <p class="eyebrow">Screens</p>
+      <h2>The tablet, the web admin, and what they produce</h2>
       <div class="shots">
-
-        <figure class="shot stroke">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: A Home Assistant dashboard filling the tablet under lock task, with no browser chrome"><img src="assets/img/screenshots/panel-in-place.png" alt="A Home Assistant dashboard filling the tablet under lock task, with no browser chrome"></button></div>
-          <figcaption><b>In place.</b> One dashboard, nothing else reachable.</figcaption>
+        <figure class="shot trio">
+          <div class="frames">
+            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a Grafana dashboard on the locked tablet"><img src="assets/img/screenshots/panel-grafana.png" alt="A Grafana dashboard filling the tablet, with no browser chrome" loading="lazy"></button></div>
+            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a Home Assistant dashboard on the locked tablet"><img src="assets/img/screenshots/panel-home-assistant.png" alt="Home Assistant&#8217;s demo dashboard filling the tablet" loading="lazy"></button></div>
+            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: openHAB&#8217;s demo on the locked tablet"><img src="assets/img/screenshots/panel-openhab.png" alt="openHAB&#8217;s public demo filling the tablet" loading="lazy"></button></div>
+          </div>
+          <figcaption><b>In place.</b> A Grafana board, a Home Assistant dashboard, an openHAB home: three pages, one panel, nothing else reachable.</figcaption>
         </figure>
-
-        <figure class="shot contain stroke">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The web admin in a desktop browser: every setting and a live status block"><img src="assets/img/screenshots/web-admin.png" alt="The web admin in a desktop browser: every setting and a live status block"></button></div>
+        <figure class="shot contain">
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the web admin in a desktop browser, every setting and a live status block"><img src="assets/img/screenshots/web-admin.png" alt="The web admin in a desktop browser: every setting and a live status block" loading="lazy"></button></div>
           <figcaption><b>Web admin.</b> Every setting, without touching the panel.</figcaption>
         </figure>
-
-        <figure class="shot stroke">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The on-device configuration screen, reached through the corner-tap sequence"><img src="assets/img/screenshots/config-screen.png" alt="The on-device configuration screen, reached through the corner-tap sequence"></button></div>
+        <figure class="shot">
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the on-device settings, reached through the corner-tap combination"><img src="assets/img/screenshots/config-screen.png" alt="The on-device settings, reached through the corner-tap combination" loading="lazy"></button></div>
           <figcaption><b>On the device.</b> The same settings, in your hand.</figcaption>
         </figure>
-
-        <figure class="shot stroke">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: Recording a corner-tap combination, four taps in"><img src="assets/img/screenshots/escape-recorder.png" alt="Recording a corner-tap combination, four taps in"></button></div>
-          <figcaption><b>Escape recorder.</b> Tap out the combination you want.</figcaption>
+        <figure class="shot">
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Escape sequences page on the tablet, the two recorded corner-tap combinations and the optional PIN"><img src="assets/img/screenshots/escape-sequences.png" alt="The Escape sequences page on the tablet: the two recorded corner-tap combinations and the optional PIN" loading="lazy"></button></div>
+          <figcaption><b>The way out.</b> Corner taps you record yourself, and a PIN if you want one.</figcaption>
         </figure>
-
-        <figure class="shot stroke">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The optional stats overlay drawn over the top-right of the dashboard"><img src="assets/img/screenshots/stats-overlay.png" alt="The optional stats overlay drawn over the top-right of the dashboard"></button></div>
-          <figcaption><b>Stats overlay.</b> Optional numbers on the glass.</figcaption>
+        <figure class="shot">
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the screensaver settings on the tablet, the five modes, the playlists and the options for pictures"><img src="assets/img/screenshots/screensaver.png" alt="The screensaver settings on the tablet: the five modes, the playlists, and the options for pictures" loading="lazy"></button></div>
+          <figcaption><b>Screensaver.</b> Pictures from the panel&#8217;s own folders, in playlists, or a picture of the day.</figcaption>
         </figure>
-
-        <figure class="shot contain stroke">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: The Muralis device page in Home Assistant: controls, sensors and diagnostics, all created by MQTT discovery"><img src="assets/img/screenshots/home-assistant.png" alt="The Muralis device page in Home Assistant: controls, sensors and diagnostics, all created by MQTT discovery"></button></div>
+        <figure class="shot contain">
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Muralis device page in Home Assistant, controls, sensors and diagnostics, all created by MQTT discovery"><img src="assets/img/screenshots/home-assistant.png" alt="The Muralis device page in Home Assistant: controls, sensors and diagnostics, all created by MQTT discovery" loading="lazy"></button></div>
           <figcaption><b>In Home Assistant.</b> Discovered, not declared.</figcaption>
         </figure>
-
-
+        <figure class="shot">
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a Gatus status page on the locked tablet"><img src="assets/img/screenshots/panel-gatus.png" alt="A Gatus health dashboard filling the tablet, every endpoint green" loading="lazy"></button></div>
+          <figcaption><b>A status page.</b> Gatus, on the wall of the room that runs the servers.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
-  <section id="recipes">
+  <section id="home-assistant">
     <div class="wrap">
-      <h2 class="stroke">Automation recipes</h2>
-      <p class="intro stroke">Muralis publishes its controls to Home Assistant, so a panel arrives as a device with buttons and sensors. The recipes below are ready-made automations built on them. Import one and Home Assistant asks you which entities to use; there is no YAML to edit unless you want to.</p>
+      <p class="eyebrow">For Home Assistant users</p>
+      <h2>Discovered, not declared</h2>
+      <p class="intro">Over MQTT the panel appears in Home Assistant as one device, with no YAML: sensors for battery, memory, storage and temperature, controls for brightness, orientation, display off and the page, buttons for reload, restart and reboot. The two recipes below are ready-made automations built on them. Import one and Home Assistant asks you which entities to use.</p>
 
       <div class="cards recipes">
 
-        <article class="card stroke">
+        <article class="card">
           <p class="tag">Needs Pro</p>
           <h3>Wake on presence, blank when empty</h3>
-          <p class="what">A panel that glows all night is a nightlight nobody asked for. This wakes the screen when someone is in the room and blanks it again once the room has been empty for a while. Only the backlight changes, so the dashboard is still loaded and comes straight back.</p>
+          <p class="what">A panel that glows all night is a nightlight nobody asked for. This wakes the screen when someone is in the room and blanks it again once the room has been empty for a while. The page stays loaded and comes straight back.</p>
           <p class="asks-label">It asks you for</p>
           <ul class="asks">
             <li>a motion or occupancy sensor</li>
-            <li>the panel's <b>Wake display</b> and <b>Display off</b> buttons</li>
+            <li>the panel&#8217;s <b>Display on</b> and <b>Display off</b> buttons</li>
             <li>how long the room must be empty first</li>
             <li>optionally, something that keeps it dark regardless</li>
           </ul>
@@ -294,13 +360,13 @@
           </div>
         </article>
 
-        <article class="card stroke">
+        <article class="card">
           <p class="tag">Needs Pro</p>
           <h3>Keep the battery in a healthy band</h3>
           <p class="what">A tablet left plugged in forever sits at 100 percent and warms up, and after a year or two the battery swells and lifts the screen off the front. This charges it only between two thresholds instead. The panel keeps running throughout; only the charger is switched.</p>
           <p class="asks-label">It asks you for</p>
           <ul class="asks">
-            <li>the panel's battery level sensor</li>
+            <li>the panel&#8217;s battery level sensor</li>
             <li>the smart plug feeding its charger</li>
             <li>the floor and the ceiling, 20 and 80 by default</li>
           </ul>
@@ -316,120 +382,100 @@
 
       </div>
 
-      <p class="intro footnote stroke">Both read the panel's own entities, so both need Pro. Home Assistant imports blueprints from GitHub rather than from any website, which is why the buttons above hand it <a href="https://github.com/spazio17/muralis-blueprints">the repository</a> and not this page.</p>
+      <p class="intro footnote">Both read the panel&#8217;s own entities, so both need Pro. Home Assistant imports blueprints from GitHub rather than from any website, which is why the buttons above hand it <a href="https://github.com/spazio17/muralis-blueprints">the repository</a> and not this page.</p>
     </div>
   </section>
 
   <section id="pricing">
     <div class="wrap">
-      <h2 class="stroke">Free, and Pro</h2>
-      <p class="intro stroke">A panel on a wall is meant to be left alone, and the kiosk does that for free. Pro is how you reach it anyway: a broker, an automation, or a browser, without walking up to it.</p>
+      <p class="eyebrow">Free, and Pro</p>
+      <h2>The kiosk is free. Reaching it from a distance is Pro.</h2>
+      <p class="intro">A panel on a wall is meant to be left alone, and the kiosk does that for free. Pro is how you reach it anyway: a browser, a broker or an automation, without walking up to it.</p>
       <div class="tiers">
 
-        <div class="tier free stroke">
+        <div class="tier free">
           <h3>Muralis</h3>
           <p class="price">Free</p>
-          <p class="what">
-            Everything that makes a tablet a wall panel. Not a trial, not a cut-down edition.
-          </p>
+          <p class="what">Everything that makes a tablet a wall panel. Not a trial, not a cut-down edition.</p>
           <ul>
             <li>Locked to one page, with the system UI out of reach</li>
             <li>Recovers on its own: retries, timeouts, frozen-page detection, a nightly restart</li>
             <li>The recorded corner-tap way out</li>
+            <li>Display off, real or black film, chosen for you and explained</li>
             <li>Optional stats overlay, drawn on the panel itself</li>
             <li><b>No Google account needed</b>, on a de-Googled tablet or any other</li>
+            <li>A screensaver: dimmed page, black film, a web page, or pictures from your own folders and from Bing or Wikimedia Commons</li>
             <li><b>No watermark, no expiry, no sign-in, nothing that phones home</b></li>
           </ul>
         </div>
 
-        <div class="tier paid stroke">
+        <div class="tier paid">
           <h3>Muralis Pro</h3>
           <p class="price">&euro;4.99 once*</p>
           <p class="taxnote">* Before tax.</p>
-          <p class="what">
-            The remote surfaces. Worth it if you want the panel to be one more thing your house can
-            control; irrelevant if you want a dashboard on a wall.
-          </p>
+          <p class="what">The remote surfaces. Worth it if the panel should be one more thing you can reach from your desk; irrelevant if you want a page on a wall.</p>
           <ul>
-            <li>MQTT: Home Assistant discovery, so entities appear without YAML</li>
-            <li>Telemetry to your broker: battery, memory, network, thermal, dashboard health</li>
-            <li>Commands over MQTT and HTTP: reload, restart, set URL, brightness, reboot</li>
             <li>The built-in web admin</li>
+            <li>Commands over HTTP and MQTT: reload, restart, set the page, brightness, display off, the screensaver, reboot</li>
+            <li>Telemetry to your broker: battery, memory, network, thermal, page health</li>
+            <li>Home Assistant discovery, so entities appear without YAML</li>
             <li><b>One purchase covers every panel on the same Google account</b></li>
           </ul>
         </div>
 
       </div>
-      <p class="intro" style="margin-top:1.5rem">
-        Nothing is on sale yet. The price and the split above are how it will work, not
-        something you can buy today. A panel that never buys Pro is never nagged and never stops
-        working.
-      </p>
+      <p class="intro footnote">Muralis is in closed testing on Google Play, and nothing is on sale yet: the price and the split above are the plan, not a shop. A panel that never buys Pro is never nagged and never stops working.</p>
     </div>
   </section>
 
-  <!-- Two ways in, and they are not variants of each other: one installs an app, the other
-       builds a panel from a tablet that has already been reset. The QR is repeated here at a
-       size an old front-facing camera can actually resolve; the hero's copy is the same file.
-       The files it points at, and how to check them, are on /download/ rather than here. -->
   <section id="install">
     <div class="wrap">
-      <h2 class="stroke">Getting it onto a tablet</h2>
-      <p class="intro stroke">Two ways in, and they are not the same. Only the QR makes a panel.</p>
+      <p class="eyebrow">Install</p>
+      <h2>Two ways onto a tablet</h2>
+      <p class="intro">They are not the same. Only the QR makes a locked panel; the app from Play is for trying it.</p>
 
-      <!-- A deck rather than two boxes side by side. They were 417px and 860px tall on a
-           desktop, which made the taller one look like the complicated option rather than
-           the real one, and a reader had to scroll past a QR they were not ready to use.
-           One at a time also lets the tab labels carry the difference, which the two
-           headings alone never managed. Same pattern and script shape as the maker picker
-           on /setup/. -->
-      <div class="waydeck stroke">
+      <div class="waydeck">
         <div class="waypick" role="tablist" aria-label="How to install Muralis">
-          <button type="button" role="tab" id="tab-qr" aria-controls="panel-qr" aria-selected="true" tabindex="0">By QR</button>
-          <button type="button" role="tab" id="tab-play" aria-controls="panel-play" aria-selected="false" tabindex="-1">From Google Play</button>
+          <button type="button" role="tab" id="tab-qr" aria-controls="panel-qr" aria-selected="true" tabindex="0">By QR, the full panel</button>
+          <button type="button" role="tab" id="tab-play" aria-controls="panel-play" aria-selected="false" tabindex="-1">From Google Play, to try it</button>
         </div>
 
         <div class="way-panel" role="tabpanel" id="panel-qr" aria-labelledby="tab-qr" tabindex="0">
           <div class="way-split">
             <div>
-              <p class="lead"><strong>The full panel.</strong> Muralis owns the tablet and holds the screen on your dashboard.</p>
+              <p class="lead"><strong>Muralis owns the tablet</strong> and holds the screen on your page. Android grants that only during setup, which is why the tablet has to be reset first.</p>
               <ol class="steps">
                 <li>Back up anything on the tablet.</li>
                 <li>Factory reset, and stop at the welcome screen.</li>
                 <li>Tap the screen six times, then join a network when it asks.</li>
                 <li>Scan the code.</li>
               </ol>
-              <p class="note">A tablet that cannot verify the code&#8217;s signing fingerprint refuses to go on.</p>
+              <p class="note">A tablet that cannot verify the code&#8217;s signing fingerprint refuses to go on. What the code encodes, and how to check it, is on the <a href="download/">download page</a>.</p>
             </div>
             <div class="qrcard big">
-              <img src="download/provisioning-qr.svg" alt="Provisioning QR code for Muralis" width="420" height="420">
+              <img src="download/provisioning-qr.svg" alt="Provisioning QR code for Muralis" width="280" height="280">
             </div>
           </div>
         </div>
 
         <div class="way-panel" role="tabpanel" id="panel-play" aria-labelledby="tab-play" tabindex="0">
-          <p class="lead"><strong>The app only, to try it.</strong> No lockdown: Android grants that during setup and never after. Nothing is wiped.</p>
+          <p class="lead"><strong>The app only.</strong> No lockdown, nothing is wiped: Android grants ownership during setup and never after. Good for seeing what it does before you reset a tablet.</p>
           <p class="note">In closed testing: the link opens only for accounts on the tester list.</p>
-          <!-- Google's own badge file, used unaltered as its guidelines require: no recolour,
-               no crop, no effects. The transparent margin in the PNG is the clear space the
-               rules ask for, one quarter of the badge height, so it needs none added. The
-               anchor is inline-block and no wider than the badge: as a bare inline element it
-               stretched to the full column, so a click well to the right of the artwork still
-               opened the Play listing. -->
           <p class="playbadge"><a href="https://play.google.com/store/apps/details?id=org.spazio17.muralis"><img src="assets/img/google-play-badge.png" alt="Get it on Google Play" width="646" height="250"></a></p>
         </div>
       </div>
 
-      <aside class="callout stroke">
-        <p><strong>Nothing hidden.</strong> The APK, its checksum and its signature are all published.</p>
-        <a class="button" href="download/">Open the download page</a>
+      <aside class="callout">
+        <p><strong>Nothing hidden.</strong> The APK, its checksum and its signing certificate are published.</p>
+        <a class="button secondary" href="download/">Open the download page</a>
       </aside>
     </div>
   </section>
 
   <section id="requirements">
     <div class="wrap">
-      <h2 class="stroke">Requirements</h2>
+      <p class="eyebrow">Requirements</p>
+      <h2>What it needs</h2>
       <div class="table-scroll">
         <table class="spec">
           <tbody>
@@ -447,7 +493,7 @@
             </tr>
             <tr>
               <th scope="row">Without it</th>
-              <td>Still runs and recovers. System UI stays reachable, reboot unavailable.</td>
+              <td>Still runs and recovers. System UI stays reachable, reboot and real screen-off unavailable.</td>
             </tr>
             <tr>
               <th scope="row">Battery settings</th>
@@ -458,8 +504,8 @@
               <td>Only to buy Pro.</td>
             </tr>
             <tr>
-              <th scope="row">Dashboard</th>
-              <td>Any web page, internet or local.</td>
+              <th scope="row">The page</th>
+              <td>Any web page, on the internet or on your own network.</td>
             </tr>
             <tr>
               <th scope="row">Broker</th>
@@ -473,10 +519,11 @@
 
   <section id="status">
     <div class="wrap">
-      <h2 class="stroke">Availability</h2>
-      <p class="intro stroke">Runs on real hardware daily. Not published yet, and nothing here to download.</p>
-      <div class="notice warn">
-        <p><strong>Pre-release.</strong> The app is signed and running on real panels. The download and the provisioning QR arrive with the first public release: the QR pins the certificate the app is signed with, so it can be published once and then never changes.</p>
+      <p class="eyebrow">Availability</p>
+      <h2>Where it stands</h2>
+      <p class="intro">Runs on real panels every day. On Google Play in closed testing, and published in full on the download page.</p>
+      <div class="notice">
+        <p><strong>Closed testing.</strong> The Play link opens only for accounts on the tester list. The <a href="download/">download page</a> has the same APK, signed by Google, together with its checksum, its signing certificate and the provisioning QR, for anyone who wants to check it or make a panel with it today.</p>
       </div>
     </div>
   </section>
@@ -485,7 +532,7 @@
 
 <footer>
   <div class="wrap">
-    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project.</span>
+    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project. Made in Vienna, Austria.</span>
     <nav>
       <a href="privacy/">Privacy</a>
       <a href="terms/">Terms</a>
@@ -505,20 +552,12 @@
   </div>
 </dialog>
 
-<!-- The blueprint, in the dialog the screenshots already use: same gesture, same object.
-     It carries the whole file, description included, because that description is what
-     Home Assistant itself shows on the import screen. -->
 <dialog class="lightbox blueprint" id="blueprint" aria-labelledby="blueprint-title">
   <div class="sheet">
-    <!-- tabindex, because a panel that scrolls has to be scrollable by someone
-         who is not holding a mouse. showModal() then lands the focus here, which
-         is where a reader wants it: the arrow keys work straight away. -->
     <div class="code-scroll" tabindex="0" role="region" aria-label="The blueprint, as YAML"><pre><code class="yaml" id="blueprint-code"></code></pre></div>
     <div class="bar">
       <strong id="blueprint-title"></strong>
       <p id="blueprint-file"></p>
-      <!-- The button says Copied by rewriting its own label, which is silent to a
-           screen reader unless the change is announced. -->
       <button type="button" class="copy-yaml" id="blueprint-copy" aria-live="polite">Copy the YAML</button>
       <button type="button" id="blueprint-close">Close</button>
     </div>
@@ -526,11 +565,11 @@
 </dialog>
 
 <script src="assets/js/menu.js?v=1"></script>
-<script src="assets/js/theme.js?v=4"></script>
+<script src="assets/js/theme.js?v=6"></script>
 <script src="assets/js/lightbox.js?v=4"></script>
-<script src="assets/js/motion.js?v=5"></script>
 <script src="assets/js/recipes.js?v=2"></script>
 <script src="assets/js/clips.js?v=7"></script>
 <script src="assets/js/waydeck.js?v=1"></script>
+<script src="assets/js/copy.js?v=1"></script>
 </body>
 </html>

@@ -7,12 +7,12 @@
 <meta name="description" content="The two settings Android only lets a person change for Muralis: the battery limits, and permission to set the brightness. Why each is needed, and the steps for each tablet maker.">
 <link rel="canonical" href="https://muralis.spazio17.org/setup/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=27">
+<link rel="stylesheet" href="../assets/css/site.css?v=33">
 <script>
   try {
     var t = localStorage.getItem('muralis-theme');
     if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  } catch (e) { /* private mode: fall through to prefers-color-scheme */ }
+  } catch (e) { /* private mode: follow the system */ }
 </script>
 </head>
 <body>
@@ -25,6 +25,7 @@
     </a>
     <nav class="pagenav" aria-label="Pages">
       <a href="../">Overview</a>
+      <a href="../api/">API</a>
       <a href="../setup/" aria-current="page">Setup</a>
       <a href="../download/">Download</a>
     </nav>
@@ -33,23 +34,19 @@
       <span class="menubtn-label">Menu</span>
     </button>
   </div>
-  <!-- One menu for the whole site, at every width. The bar carries the pages, which is
-       the site's structure and is the same everywhere; the menu carries this page's own
-       sections, which only the front page has, and the theme, which is a setting rather
-       than a destination and was taking bar space on every page for it. Hidden here in
-       the markup rather than by CSS alone, so it is closed before the script runs and a
-       reader with no JavaScript is not given a panel that can never be shut. -->
   <div class="sitemenu" id="sitemenu" hidden>
     <div class="wrap menuwrap">
       <nav class="menugroup" aria-label="Pages">
         <p class="menuhead">Pages</p>
         <a href="../">Overview</a>
+        <a href="../api/">API</a>
         <a href="../setup/" aria-current="page">Setup</a>
         <a href="../download/">Download</a>
       </nav>
       <div class="menugroup">
         <p class="menuhead">Appearance</p>
         <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="auto" aria-pressed="false">Auto</button>
           <button type="button" data-theme="light" aria-pressed="false">Light</button>
           <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
         </div>
@@ -60,23 +57,23 @@
 
 <main class="wrap setup">
 
-  <h1 class="stroke">Two settings only you can change</h1>
-  <p class="lede stroke">Two minutes, once, on the tablet. Muralis sets up everything else by itself.</p>
+  <h1>Two settings only you can change</h1>
+  <p class="lede">Two minutes, once, on the tablet. Muralis sets up everything else by itself.</p>
 
-  <h2 class="sectionhead stroke">1. Turn the battery limits off</h2>
+  <h2 class="sectionhead">1. Turn the battery limits off</h2>
 
   <div class="why">
-    <div class="whycard stroke">
+    <div class="whycard">
       <h2>Why you must</h2>
       <p>On battery with the screen off, tablets stop background apps. Yours can wake showing the launcher instead of your dashboard.</p>
     </div>
-    <div class="whycard stroke">
+    <div class="whycard">
       <h2>Why Muralis cannot</h2>
       <p>Android puts this behind a dialog only you can accept. No app is allowed to grant it to itself.</p>
     </div>
   </div>
 
-  <div class="vendordeck stroke">
+  <div class="vendordeck">
     <div class="vendorpick" role="tablist" aria-label="Choose your tablet maker">
       <button type="button" role="tab" id="tab-stock" aria-controls="panel-stock" aria-selected="true" tabindex="0">Any Android</button>
       <button type="button" role="tab" id="tab-huawei" aria-controls="panel-huawei" aria-selected="false" tabindex="-1">Huawei, Honor</button>
@@ -121,28 +118,28 @@
     </div>
   </div>
 
-  <p class="deck-note stroke">These paths are right for most tablets, but makers rename screens and move them between Android versions: what is <b>Battery</b> on one device is <b>App battery usage</b> on another. If a step is not where it says, check your maker's own support pages, or <a href="https://dontkillmyapp.com/">dontkillmyapp.com</a>, which keeps the steps per maker and per Android version, with screenshots.</p>
+  <p class="deck-note">These paths are right for most tablets, but makers rename screens and move them between Android versions: what is <b>Battery</b> on one device is <b>App battery usage</b> on another. If a step is not where it says, check your maker's own support pages, or <a href="https://dontkillmyapp.com/">dontkillmyapp.com</a>, which keeps the steps per maker and per Android version, with screenshots.</p>
 
-  <div class="verify stroke">
+  <div class="verify">
     <h2>Check it worked</h2>
     <p>Unplug the tablet, press the power button so the screen goes dark, wait ten minutes, then press it again. Your dashboard should be on the screen.</p>
   </div>
 
-  <h2 class="sectionhead stroke">2. Let Muralis set the brightness</h2>
-  <p class="lede stroke">Only if you want it. Everything else works without this one.</p>
+  <h2 class="sectionhead">2. Let Muralis set the brightness</h2>
+  <p class="lede">Only if you want it. Everything else works without this one.</p>
 
   <div class="why">
-    <div class="whycard stroke">
+    <div class="whycard">
       <h2>Why you might</h2>
       <p>Without it, the brightness slider in Muralis and the brightness control in your dashboard both do nothing. The tablet keeps setting its own brightness.</p>
     </div>
-    <div class="whycard stroke">
+    <div class="whycard">
       <h2>Why Muralis cannot</h2>
       <p>Brightness is a setting for the whole tablet, so Android asks a person. Being the tablet's admin does not change that, and no other part of Muralis needs this.</p>
     </div>
   </div>
 
-  <div class="vendordeck stroke">
+  <div class="vendordeck">
     <div class="vendor-panel">
       <ol class="steps">
         <li><span><span class="path">Muralis <i aria-hidden="true">&rsaquo;</i> settings <i aria-hidden="true">&rsaquo;</i> Display</span><span class="act">Under Brightness, tap <b>Grant it now</b>. Muralis opens the one Android screen that can allow this, and comes back on its own when you are done.</span></span></li>
@@ -155,7 +152,7 @@
 
 <footer>
   <div class="wrap">
-    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project.</span>
+    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project. Made in Vienna, Austria.</span>
     <nav>
       <a href="../privacy/">Privacy</a>
       <a href="../terms/">Terms</a>
@@ -166,8 +163,7 @@
 </footer>
 
 <script src="../assets/js/menu.js?v=1"></script>
-<script src="../assets/js/theme.js?v=4"></script>
-<script src="../assets/js/motion.js?v=5"></script>
+<script src="../assets/js/theme.js?v=6"></script>
 <script src="../assets/js/setup.js?v=1"></script>
 </body>
 </html>

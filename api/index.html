@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muralis remote control reference: HTTP, commands, settings, status, MQTT</title>
+<meta name="description" content="Every way to control a Muralis panel from a distance: the HTTP endpoints, every command with its real reply, every remotely writable setting, the status document field by field, and the MQTT topics and Home Assistant discovery.">
+<link rel="canonical" href="https://muralis.spazio17.org/api/">
+<link rel="icon" href="../assets/img/icon-512.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/site.css?v=33">
+<script>
+  try {
+    var t = localStorage.getItem('muralis-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) { /* private mode: follow the system */ }
+</script>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="../">
+      <img src="../assets/img/icon-512.png" alt="">
+      Muralis
+    </a>
+    <nav class="pagenav" aria-label="Pages">
+      <a href="../">Overview</a>
+      <a href="../api/" aria-current="page">API</a>
+      <a href="../setup/">Setup</a>
+      <a href="../download/">Download</a>
+    </nav>
+    <button class="menubtn" type="button" aria-expanded="false" aria-controls="sitemenu">
+      <span class="bars" aria-hidden="true"></span>
+      <span class="menubtn-label">Menu</span>
+    </button>
+  </div>
+  <div class="sitemenu" id="sitemenu" hidden>
+    <div class="wrap menuwrap">
+      <nav class="menugroup" aria-label="On this page">
+        <p class="menuhead">On this page</p>
+        <a href="#start">Before you start</a>
+        <a href="#http">HTTP</a>
+        <a href="#commands">Commands</a>
+        <a href="#settings">Settings</a>
+        <a href="#checks">Checks</a>
+        <a href="#status">Status document</a>
+        <a href="#mqtt">MQTT</a>
+        <a href="#beyond">Beyond the API</a>
+      </nav>
+      <nav class="menugroup" aria-label="Pages">
+        <p class="menuhead">Pages</p>
+        <a href="../">Overview</a>
+        <a href="../api/" aria-current="page">API</a>
+        <a href="../setup/">Setup</a>
+        <a href="../download/">Download</a>
+      </nav>
+      <div class="menugroup">
+        <p class="menuhead">Appearance</p>
+        <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="auto" aria-pressed="false">Auto</button>
+          <button type="button" data-theme="light" aria-pressed="false">Light</button>
+          <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap docs">
+  <p class="eyebrow">Reference</p>
+  <h1>Remote control</h1>
+  <p class="intro">Everything a Muralis panel answers to from a distance: the HTTP endpoints, every command, every setting you can write remotely, the status document field by field, and the MQTT side. The examples use <code>192.0.2.42</code> as the panel&#8217;s address; put your own in its place.</p>
+
+  <div class="docs-grid">
+    <nav class="docs-nav" aria-label="Sections">
+      <p>Sections</p>
+      <a href="#start">Before you start</a>
+      <a href="#http">HTTP</a>
+      <a class="sub" href="#tls">HTTPS and the certificate</a>
+      <a class="sub" href="#auth">Authentication</a>
+      <a class="sub" href="#browser">From a browser</a>
+      <a class="sub" href="#endpoints">Endpoints</a>
+      <a class="sub" href="#limits">Limits</a>
+      <a href="#commands">Commands</a>
+      <a class="sub" href="#sending">Sending one</a>
+      <a class="sub" href="#replies">Replies</a>
+      <a class="sub" href="#cmd-page">The page</a>
+      <a class="sub" href="#cmd-screensaver">The screensaver</a>
+      <a class="sub" href="#cmd-display">The display</a>
+      <a class="sub" href="#cmd-panel">The panel</a>
+      <a href="#settings">Settings</a>
+      <a class="sub" href="#instant">Instant settings</a>
+      <a class="sub" href="#boxes">Settings boxes</a>
+      <a href="#checks">Checks</a>
+      <a href="#status">Status document</a>
+      <a href="#mqtt">MQTT</a>
+      <a class="sub" href="#mqtt-connection">Connection</a>
+      <a class="sub" href="#mqtt-topics">Topics</a>
+      <a class="sub" href="#mqtt-commands">Commands over MQTT</a>
+      <a class="sub" href="#discovery">Home Assistant discovery</a>
+      <a class="sub" href="#liveness">Liveness</a>
+      <a href="#beyond">Beyond the API</a>
+    </nav>
+
+    <div class="docs-body">
+
+      <h2 id="start">Before you start</h2>
+      <p>The web admin and MQTT are <b>Muralis Pro</b>. Everything else on this page describes what those two surfaces do once Pro is active.</p>
+      <p><b>The web admin</b> starts once an admin password of at least 8 characters is stored and the Web admin switch is on. Default port 8080; any port from 1024 to 65535. <b>MQTT</b> starts as soon as a broker host is stored; username and password are optional, the connection is plain TCP without TLS, so use it on a network you trust.</p>
+      <p><b>One command set.</b> HTTP and MQTT hand every command to the same code, so a command behaves the same and is refused with the same words on both. After an accepted command the panel republishes its MQTT state within half a second, so a Home Assistant control does not snap back.</p>
+      <p><b>Device owner.</b> Three things need the device-owner install (by QR at setup, or <code>dpm set-device-owner</code> over adb): <code>system.reboot</code>, the real screen-off, and CPU and temperature readings on stock Android. Everything else works on an ordinary install.</p>
+
+      <h2 id="http">HTTP</h2>
+
+      <h3 id="tls">HTTPS and the certificate</h3>
+      <p>The panel serves HTTPS with a certificate it made itself. No authority signed it, so a browser warns once, about the authority and about the name, and one click accepts both. Compare what the browser shows with the fingerprint the panel prints on its web-admin card, on the web admin page itself, and in <code>config.http_certificate_sha256</code>. A plain <code>http://</code> request on the same port is answered with a redirect to the https address and is never asked for a password. In the examples on this page <code>-k</code> tells curl to accept the certificate; to pin it instead, save it once with <code>openssl s_client -connect 192.0.2.42:8080 -showcerts</code> and pass it with <code>--cacert</code>.</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="A plain request on the HTTPS port"><pre><code>curl -i http://192.0.2.42:8080/api/stats</code></pre></div>
+      <p class="reply">Reply</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="The redirect"><pre><code>HTTP/1.1 301 Moved Permanently
+Location: https://192.0.2.42:8080/
+
+This panel speaks HTTPS: https://192.0.2.42:8080/</code></pre></div>
+
+      <h3 id="auth">Authentication</h3>
+      <p>HTTP Basic on every request, the page included. The username is ignored; only the password counts, compared in constant time. No cookies, no tokens, no sessions.</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="A request without credentials"><pre><code>curl -k -i https://192.0.2.42:8080/api/stats</code></pre></div>
+      <p class="reply">Reply</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="The 401 reply"><pre><code>HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Basic realm="Muralis"
+Content-Type: text/plain
+
+Unauthorized</code></pre></div>
+      <p>Five wrong passwords from one address lock that address out: <code>429 Too Many Requests</code> with a <code>Retry-After</code> header, 30 seconds the first time, doubling each round up to 15 minutes, forgotten after an hour of quiet. Every lockout is counted in the status document under <code>runtime.auth_lockouts</code>, with the address that caused it.</p>
+
+      <h3 id="browser">From a browser</h3>
+      <p>Every POST is checked against cross-site requests before it is routed. If the request carries <code>Sec-Fetch-Site</code> it must be <code>same-origin</code> or <code>none</code>; if it carries <code>Origin</code> it must match the <code>Host</code> the request went to. A request with neither header, which is what curl and automations send, passes. A refusal is <code>403</code> with a one-line reason.</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="A cross-site POST"><pre><code>curl -k -u :your-admin-password -H 'Origin: http://evil.example' -X POST https://192.0.2.42:8080/api/command -d cmnd=kiosk.reload</code></pre></div>
+      <p class="reply">Reply, HTTP 403</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="The 403 reply"><pre><code>Forbidden: Origin does not match Host</code></pre></div>
+
+      <h3 id="endpoints">Endpoints</h3>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th>Method</th><th>Path</th><th>What it does</th><th>Replies</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/</code></td><td>The web admin page.</td><td><code>200</code> HTML</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/</code></td><td>Saves one settings box. <a href="#boxes">Settings boxes</a>.</td><td>The page again, <code>200</code> saved or <code>400</code> refused with the reason on it</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/command</code></td><td>Runs a command. <a href="#commands">Commands</a>.</td><td><code>200</code> JSON; <code>400</code> when the request itself is malformed</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/command</code></td><td>Refused: a GET must not change state.</td><td><code>405</code>, <code>Allow: POST</code></td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/stats</code></td><td>The status document. <a href="#status">Status document</a>.</td><td><code>200</code> JSON</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/setting</code></td><td>Applies one instant setting. <a href="#instant">Instant settings</a>.</td><td><code>200</code> or <code>400</code> JSON</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/check</code></td><td>Tests a value from the panel&#8217;s side. <a href="#checks">Checks</a>.</td><td><code>200</code> JSON, the verdict inside</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/privacy</code>, <code>/terms</code></td><td>The legal texts the app carries.</td><td><code>200</code> HTML</td></tr>
+            <tr><th scope="row">any</th><td>anything else</td><td></td><td><code>404</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="A GET on the command endpoint"><pre><code>curl -k -i -u :your-admin-password 'https://192.0.2.42:8080/api/command?cmnd=kiosk.reload'</code></pre></div>
+      <p class="reply">Reply</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="The 405 reply"><pre><code>HTTP/1.1 405 Method Not Allowed
+Allow: POST
+Content-Type: application/json
+
+{"status":"rejected","detail":"use POST; GET cannot change state"}</code></pre></div>
+
+      <h3 id="limits">Limits</h3>
+      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th scope="row">Request body</th><td>16 384 bytes. A larger body closes the connection without a reply.</td></tr>
+            <tr><th scope="row">Request line</th><td>4096 bytes, then <code>400</code>.</td></tr>
+            <tr><th scope="row">Time</th><td>8 seconds for the whole request.</td></tr>
+            <tr><th scope="row">Connections</th><td>One request per connection (<code>Connection: close</code> on every reply), 6 at a time per address, 8 in total.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="commands">Commands</h2>
+
+      <h3 id="sending">Sending one</h3>
+      <p>Always a POST to <code>/api/command</code>. Three encodings are accepted, and they mean the same thing.</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="A command as a form body"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=display.brightness -d percent=40</code></pre></div>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="A command in the query string"><pre><code>curl -k -u :your-admin-password -X POST 'https://192.0.2.42:8080/api/command?cmnd=kiosk.reload'</code></pre></div>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="A command as JSON"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -H 'Content-Type: application/json' \
+     -d '{"command":"display.orientation","args":{"value":"auto"}}'</code></pre></div>
+      <p>Arguments are <code>url</code>, <code>percent</code>, <code>value</code> and <code>enabled</code>, as form fields or inside <code>args</code>. <code>enabled</code> takes <code>true</code>/<code>false</code>, <code>1</code>/<code>0</code> or <code>on</code>/<code>off</code>.</p>
+
+      <h3 id="replies">Replies</h3>
+      <p>Every reply is JSON with two fields, <code>status</code> and <code>detail</code>.</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th><code>status</code></th><th>Meaning</th><th>HTTP code</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>accepted</code></th><td>Done, or handed to the screen. <code>detail</code> is usually empty.</td><td>200</td></tr>
+            <tr><th scope="row"><code>rejected</code></th><td>A bad argument, or something the panel cannot do right now. <code>detail</code> says why, in one sentence.</td><td>200 when the command was understood and refused; 400 when the request itself was broken (<code>missing command</code>, <code>malformed json</code>, <code>enabled must be true or false</code>)</td></tr>
+            <tr><th scope="row"><code>unsupported</code></th><td>Unknown command, or <code>system.reboot</code> without device owner.</td><td>200</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="notice">
+        <p><strong>Read <code>status</code>, not the HTTP code.</strong> A command that was understood and refused is still HTTP 200. Only a request the server could not parse is 400.</p>
+      </div>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="An unknown command"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=kiosk.dance</code></pre></div>
+      <p class="reply">Reply</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="The unsupported reply"><pre><code>{"status":"unsupported","detail":"unknown command"}</code></pre></div>
+
+      <h3 id="cmd-page">The page</h3>
+
+      <article class="entry" id="kiosk-set-url">
+        <header><h3>kiosk.set_url</h3></header>
+        <p>Stores <code>url</code> as the panel&#8217;s page and shows it. <code>http://</code> or <code>https://</code>, up to 2048 characters.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="kiosk.set_url"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=kiosk.set_url -d url=https://grafana.example.net/d/wall</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>url must not be empty</code>, <code>url is too long</code> or <code>url must start with http:// or https://</code>.</p>
+      </article>
+
+      <article class="entry" id="kiosk-open-url">
+        <header><h3>kiosk.open_url</h3></header>
+        <p>Shows <code>url</code> now without storing it. A restart, a reboot or the nightly clean returns to the stored page. Same rules as <code>kiosk.set_url</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="kiosk.open_url"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=kiosk.open_url -d url=https://example.com/</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Afterwards the status document shows <code>runtime.last_page_url</code> as <code>https://example.com/</code> while <code>config.dashboard_url</code> is unchanged.</p>
+      </article>
+
+      <article class="entry" id="kiosk-home">
+        <header><h3>kiosk.home</h3></header>
+        <p>Back to the stored page.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="kiosk.home"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=kiosk.home</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+      </article>
+
+      <article class="entry" id="kiosk-reload">
+        <header><h3>kiosk.reload</h3></header>
+        <p>Reloads the page that is on the screen.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="kiosk.reload"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=kiosk.reload</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+      </article>
+
+      <article class="entry" id="kiosk-restart">
+        <header><h3>kiosk.restart</h3></header>
+        <p>Shows the stored page again from scratch: a fresh web view, not just a reload.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="kiosk.restart"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=kiosk.restart</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+      </article>
+
+      <article class="entry" id="kiosk-stop">
+        <header><h3>kiosk.stop</h3> <h3>kiosk.start</h3></header>
+        <p><code>kiosk.stop</code> blanks the panel and stops loading anything until <code>kiosk.start</code> or a new page arrives. Both survive the nightly restart.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="kiosk.stop"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=kiosk.stop</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+      </article>
+
+      <h3 id="cmd-screensaver">The screensaver</h3>
+
+      <p>Every screensaver setting is a command, and every one is also an entity over MQTT discovery, so a caller can publish a command or move a control, whichever suits. A changed setting is saved and republished at once; it takes effect the next time the screensaver starts.</p>
+
+      <article class="entry" id="cmd-screensaver-start">
+        <header><h3>screensaver.start</h3></header>
+        <p>Shows the screensaver now, in the mode that is set, without waiting for the idle time. A touch on the glass ends it as usual.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.start"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.start</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with the reason when it cannot show: <code>the screensaver mode is off</code>, <code>the kiosk is stopped</code>, <code>Muralis is not on screen</code>, <code>the first-start wizard is on screen</code>, or <code>the escape combination recorder is on screen</code>. With the panel&#8217;s settings open it shows as a preview, and a tap on the glass brings the settings back.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-stop">
+        <header><h3>screensaver.stop</h3></header>
+        <p>Ends a showing screensaver and brings the page back. Accepted even when none is showing.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.stop"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.stop</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-mode">
+        <header><h3>screensaver.mode</h3></header>
+        <p>What the screensaver is: <code>off</code>, <code>dim</code> (the page, dimmed), <code>film</code> (a black film over the page), <code>url</code> (another web page) or <code>pictures</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.mode"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.mode -d value=pictures</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be off, dim, film, url or pictures</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-idle-seconds">
+        <header><h3>screensaver.idle_seconds</h3></header>
+        <p>Seconds without a touch before the screensaver starts. <code>0</code> means only when asked for, with <code>screensaver.start</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.idle_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.idle_seconds -d value=120</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be a whole number of seconds, 0 to 86400</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-off-seconds">
+        <header><h3>screensaver.off_seconds</h3></header>
+        <p>Seconds of screensaver before the display is turned off, the way <code>display.visual_off</code> does it. <code>0</code> means never.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.off_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.off_seconds -d value=900</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be a whole number of seconds, 0 to 86400</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-dim-percent">
+        <header><h3>screensaver.dim_percent</h3></header>
+        <p>The brightness of the dimmed page, for the <code>dim</code> mode.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.dim_percent"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.dim_percent -d value=20</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be a whole number from 1 to 100</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-url">
+        <header><h3>screensaver.url</h3></header>
+        <p>The page the <code>url</code> mode shows, checked like the dashboard address; empty forgets it.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.url"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.url -d url=https://example.org/clock</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with the same reasons as <code>kiosk.set_url</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-on-wake">
+        <header><h3>screensaver.on_wake</h3></header>
+        <p>What a wake from display off shows first: <code>screensaver</code>, a touch then opens the page, or <code>dashboard</code>, the page at once.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.on_wake"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.on_wake -d value=screensaver</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be screensaver or dashboard</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-source">
+        <header><h3>screensaver.source</h3></header>
+        <p>Where the pictures mode takes its pictures: <code>local</code>, the panel&#8217;s own folders and uploads in the playlist in use, <code>bing</code>, Bing&#8217;s image of the day, or <code>wikimedia</code>, Wikimedia Commons&#8217; picture of the day. The two online sources are fetched over the internet and always shown with their credit line.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.source"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.source -d value=local</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be local, bing or wikimedia</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-playlist">
+        <header><h3>screensaver.playlist</h3></header>
+        <p>The playlist the <code>local</code> source shows, by name; an empty value puts none in use. Playlists are made and filled on the panel or in the web admin.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.playlist"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.playlist -d value=Holidays</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused when no playlist has that name.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-picture-seconds">
+        <header><h3>screensaver.picture_seconds</h3></header>
+        <p>How long each picture stays.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.picture_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.picture_seconds -d value=20</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be a whole number of seconds, 1 to 86400</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-transition">
+        <header><h3>screensaver.transition</h3></header>
+        <p>How one picture gives way to the next: <code>none</code> (a cut), <code>fade</code> or <code>slide</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.transition"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.transition -d value=fade</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be none, fade or slide</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-picture-fit">
+        <header><h3>screensaver.picture_fit</h3></header>
+        <p>How a picture is laid on the screen, one setting for all of them: <code>fit</code> shows the whole picture with bars where its shape differs from the screen&#8217;s, <code>fill</code> covers the screen and crops the edges, <code>stretch</code> covers the screen and pulls the picture out of shape, <code>actual</code> shows it at its own size, centred.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.picture_fit"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.picture_fit -d value=fit</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be fit, fill, stretch or actual</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-credit-corner">
+        <header><h3>screensaver.credit_corner</h3></header>
+        <p>The corner the title and credit line sit in: <code>bottom_left</code>, <code>bottom_right</code>, <code>top_left</code> or <code>top_right</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.credit_corner"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.credit_corner -d value=bottom_left</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be bottom_left, bottom_right, top_left or top_right</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-shuffle">
+        <header><h3>screensaver.shuffle</h3></header>
+        <p>Shows the playlist in a random order rather than its own.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.shuffle"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.shuffle -d enabled=true</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>enabled must be true or false</code>. The same shape for <code>screensaver.one_per_cycle</code>, one picture per screensaver instead of a slideshow, and <code>screensaver.credit</code>, the title and credit line, which the two online sources show whatever this says because their licences require it.</p>
+      </article>
+
+      <h3 id="cmd-display">The display</h3>
+
+      <article class="entry" id="display-wake">
+        <header><h3>display.wake</h3></header>
+        <p>Wakes the screen: ends a sleep, lifts the black film, restores the brightness.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="display.wake"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=display.wake</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+      </article>
+
+      <article class="entry" id="display-visual-off">
+        <header><h3>display.visual_off</h3></header>
+        <p>Darkens the panel the way the display-off method decides: a real screen-off on a device-owner install that can be trusted to sleep, or a black film at minimum brightness. Survives the nightly restart, not a reboot.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="display.visual_off"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=display.visual_off</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>The status document then shows <code>display.screen_on: false</code>, <code>display.source: "display_off"</code>, <code>display.brightness_percent: null</code>, and under <code>display.off_method_effective</code> which of the two happened.</p>
+      </article>
+
+      <article class="entry" id="display-brightness">
+        <header><h3>display.brightness</h3></header>
+        <p>Sets the brightness, <code>percent</code> from 0 to 100. Needs the one grant Android keeps for a person, <a href="../setup/">explained on the setup page</a>; does nothing while automatic brightness is on.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="display.brightness"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=display.brightness -d percent=40</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p class="reply">With <code>percent=150</code></p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply to an out-of-range value"><pre><code>{"status":"rejected","detail":"percent must be between 0 and 100"}</code></pre></div>
+        <p>Also refused with <code>brightness needs the WRITE_SETTINGS permission, which has not been granted</code>, <code>automatic brightness is on; turn it off to set a level</code>, or <code>the system refused the brightness write</code>.</p>
+      </article>
+
+      <article class="entry" id="display-auto-brightness">
+        <header><h3>display.auto_brightness</h3></header>
+        <p>Hands the brightness to the ambient light sensor with <code>enabled=true</code>, or takes it back.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="display.auto_brightness"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=display.auto_brightness -d enabled=true</code></pre></div>
+        <p class="reply">Reply on a tablet without a light sensor</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"rejected","detail":"this device has no ambient light sensor"}</code></pre></div>
+      </article>
+
+      <article class="entry" id="display-orientation">
+        <header><h3>display.orientation</h3></header>
+        <p><code>value</code> is <code>auto</code>, <code>landscape</code> or <code>portrait</code>. <code>auto</code> follows the accelerometer; a fixed value renders the right way up even when the panel hangs upside down. Stored.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="display.orientation"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -H 'Content-Type: application/json' \
+     -d '{"command":"display.orientation","args":{"value":"landscape"}}'</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be auto, landscape or portrait</code>, or <code>this device has no accelerometer to follow</code> for <code>auto</code> on a tablet without one.</p>
+      </article>
+
+      <article class="entry" id="display-off-method">
+        <header><h3>display.off_method</h3></header>
+        <p>How <code>display.visual_off</code> darkens the panel: <code>auto</code>, <code>sleep</code> or <code>film</code>. <code>auto</code> sleeps where that can be trusted (device owner, on mains or exempt from battery optimisation, no earlier sleep that ended badly) and shows the film otherwise. Setting the method, to any value, also forgets a recorded bad sleep.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="display.off_method"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=display.off_method -d value=auto</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be auto, sleep or film</code>, or <code>a real screen-off needs the device-owner install</code> for <code>sleep</code> on an ordinary install.</p>
+      </article>
+
+      <h3 id="cmd-panel">The panel</h3>
+
+      <article class="entry" id="webadmin-enabled">
+        <header><h3>webadmin.enabled</h3></header>
+        <p>Switches the web admin off or on without touching the stored password. Stored. A caller on the web admin itself hears <code>accepted</code> and then loses the connection, which is the point.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="webadmin.enabled"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=webadmin.enabled -d enabled=true</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+      </article>
+
+      <article class="entry" id="telemetry-publish">
+        <header><h3>telemetry.publish</h3></header>
+        <p>Publishes the MQTT state document now, without waiting for the next minute.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="telemetry.publish"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=telemetry.publish</code></pre></div>
+        <p class="reply">Reply with no broker reachable</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"rejected","detail":"MQTT is not connected"}</code></pre></div>
+        <p>Also <code>MQTT is not configured</code> when no broker host is stored. With a broker connected the reply is <code>accepted</code>.</p>
+      </article>
+
+      <article class="entry" id="system-reboot">
+        <header><h3>system.reboot</h3><span class="tag">Device owner</span></header>
+        <p>Reboots the tablet.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="system.reboot"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=system.reboot</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":"rebooting"}</code></pre></div>
+        <p class="reply">On an ordinary install</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply without device owner"><pre><code>{"status":"unsupported","detail":"reboot needs device-owner status; provision Muralis as device owner"}</code></pre></div>
+      </article>
+
+      <p>There is no <code>system.shutdown</code>: Android has no API an app could use to power a tablet off. It answers <code>unsupported</code> like any unknown command.</p>
+
+      <h2 id="settings">Settings</h2>
+      <p>The stats overlay, the display-off method and every screensaver setting apply instantly through <code>/api/setting</code>; the web admin posts them the same way. The rest are saved the way the web admin saves them, one box at a time, through a POST to <code>/</code>. Orientation, automatic brightness and the page itself are set with the commands above.</p>
+
+      <h3 id="instant">Instant settings</h3>
+      <p>Form-encoded, <code>section=behaviour</code>, one key per request. The panel republishes its MQTT state afterwards.</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th>Key</th><th>Values</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>stats_overlay</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Draws or hides the live stats block on the panel.</td></tr>
+            <tr><th scope="row"><code>display_off_method</code></th><td><code>auto</code>, <code>sleep</code>, <code>film</code></td><td>Same as the command <code>display.off_method</code>.</td></tr>
+            <tr><th scope="row"><code>screensaver_mode</code></th><td><code>off</code>, <code>dim</code>, <code>film</code>, <code>url</code>, <code>pictures</code></td><td>Same as <code>screensaver.mode</code>.</td></tr>
+            <tr><th scope="row"><code>screensaver_idle_s</code>, <code>screensaver_off_s</code>, <code>screensaver_picture_s</code></th><td>whole seconds</td><td>Same as <code>screensaver.idle_seconds</code>, <code>screensaver.off_seconds</code> and <code>screensaver.picture_seconds</code>.</td></tr>
+            <tr><th scope="row"><code>screensaver_dim_percent</code></th><td><code>1</code> to <code>100</code></td><td>Same as <code>screensaver.dim_percent</code>.</td></tr>
+            <tr><th scope="row"><code>screensaver_url</code></th><td>an address, or empty</td><td>Same as <code>screensaver.url</code>.</td></tr>
+            <tr><th scope="row"><code>screensaver_on_wake</code>, <code>screensaver_source</code>, <code>screensaver_transition</code>, <code>screensaver_picture_fit</code>, <code>screensaver_credit_corner</code></th><td>the same words as the commands</td><td>Same as the command of the same name.</td></tr>
+            <tr><th scope="row"><code>screensaver_shuffle</code>, <code>screensaver_one_per_cycle</code>, <code>screensaver_credit</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Same as the commands with <code>enabled</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="An instant setting"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/setting \
+     -d section=behaviour -d stats_overlay=1</code></pre></div>
+      <p class="reply">Reply</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":"saved"}</code></pre></div>
+      <p class="reply">With <code>display_off_method=dark</code>, HTTP 400</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Reply to a bad value"><pre><code>{"status":"rejected","detail":"Display off method must be auto, sleep or film."}</code></pre></div>
+      <p>Any other <code>section</code> is refused with <code>not an instantly applied setting</code>.</p>
+
+      <h3 id="boxes">Settings boxes</h3>
+      <p>Each box on the web admin posts its own fields to <code>/</code> together with a <b>baseline</b>: the values that were current when the page loaded, joined with <code>|</code>. A baseline that no longer matches refuses the save, so two people editing the same panel cannot overwrite each other without noticing. A script has to supply the baseline too; read the current values from <code>/api/stats</code> first. The reply is the page itself, <code>200</code> when saved, <code>400</code> with the reason when refused.</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th><code>section</code></th><th>Fields</th><th>Baseline</th><th>Refused when</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>dashboard</code></th><td><code>dashboard_url</code>, <code>device_id</code></td><td><code>baseline</code> = url<code>|</code>id</td><td>The URL does not start with <code>http://</code> or <code>https://</code>; the id is empty or uses anything but letters, digits, dot, underscore and hyphen, or is longer than 64.</td></tr>
+            <tr><th scope="row"><code>mqtt</code></th><td><code>mqtt_host</code>, <code>mqtt_port</code>, <code>mqtt_username</code>, <code>mqtt_password</code> (blank keeps the stored one)</td><td><code>baseline</code> = host<code>|</code>port<code>|</code>username</td><td>The port is not between 1 and 65535.</td></tr>
+            <tr><th scope="row"><code>webadmin</code></th><td><code>http_port</code>, <code>http_admin_password</code> (blank keeps)</td><td><code>baseline</code> = port</td><td>The port is not a number, not between 1024 and 65535, or already in use; the password is shorter than 8 characters, because a shorter one would switch the page off with only the tablet able to switch it back on.</td></tr>
+            <tr><th scope="row"><code>sequences</code></th><td><code>settings_sequence</code>, <code>launcher_sequence</code></td><td><code>sequence_baseline</code> = settings<code>|</code>launcher</td><td>Both fields are empty, or both hold the same combination. Format <code>TL,TR,BL,BR</code>, 3 to 12 taps.</td></tr>
+            <tr><th scope="row"><code>behaviour</code></th><td><code>stats_overlay</code>, <code>display_off_method</code>, every <code>screensaver_*</code> key</td><td>none</td><td>As under <a href="#instant">instant settings</a>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Saving the dashboard box"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/ \
+     -d section=dashboard \
+     -d dashboard_url=https://grafana.example.net/d/wall \
+     -d device_id=hallway-panel \
+     -d 'baseline=https://old.example.net/|hallway-panel'</code></pre></div>
+      <p class="reply">Reply when the baseline is stale, HTTP 400, on the page</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="The stale refusal"><pre><code>Not saved: these settings were changed elsewhere after this page loaded. Reload and try again.</code></pre></div>
+
+      <h2 id="checks">Checks</h2>
+      <p><code>POST /api/check</code> tests a value from the panel&#8217;s own point of view before you save it: does that URL answer, is that port free, does that broker accept a connection. It is advice, not a gate; the save paths keep their own refusals. Always <code>200</code>, the verdict is inside.</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th><code>kind</code></th><th>Fields</th><th><code>ok</code> when</th><th><code>detail</code></th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>dashboard_url</code></th><td><code>value</code></td><td>The URL answers HTTP, whatever the code.</td><td><code>answered HTTP 200</code>; <code>no HTTP answer</code> plus a <code>reason</code></td></tr>
+            <tr><th scope="row"><code>http_port</code></th><td><code>value</code></td><td>The port is free, or is the one the admin serves on.</td><td><code>port 8081 is free</code>; <code>the web admin is serving on it right now</code>; <code>port 80 is already in use on this device</code>; <code>web admin port must be between 1024 and 65535</code></td></tr>
+            <tr><th scope="row"><code>mqtt_host</code></th><td><code>value</code>, optional <code>port</code> (1883)</td><td>A TCP connection succeeds within 3 seconds.</td><td><code>accepts TCP on port 1883</code>; <code>no TCP answer on port 1883</code> plus a <code>reason</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Checking a broker"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/check \
+     -d kind=mqtt_host -d value=192.0.2.10 -d port=1883</code></pre></div>
+      <p class="reply">Reply, broker not running</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"ok":false,"detail":"no TCP answer on port 1883","reason":"failed to connect to /192.0.2.10 (port 1883) from /192.0.2.42 (port 37568) after 3000ms: isConnected failed: ECONNREFUSED"}</code></pre></div>
+
+      <h2 id="status">Status document</h2>
+      <p><code>GET /api/stats</code> returns it; the MQTT state topic carries the same document without the three lines marked <b>admin</b>. Times are milliseconds. A value the tablet cannot provide is <code>null</code>, never missing and never zero.</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="A status document"><pre><code>{
+  "schema": 1,
+  "app_version": "0.5.0",
+  "uptime_ms": 79535237,
+  "app_uptime_ms": 28207013,
+  "battery": {"present": true, "percent": 84, "status": 2, "health": 2, "plugged": 2, "charge_state": "charging",
+              "temperature_c": 29.3, "voltage_mv": 4022, "charge_counter_uah": 3126890,
+              "current_now_ua": 119018, "current_average_ua": null, "energy_counter_nwh": null},
+  "power": {"source": "mains", "volts": null, "watts": null},
+  "memory": {"available_bytes": 862355456, "total_bytes": 1954566144, "low": false,
+             "threshold_bytes": 226492416, "process_pss_kib": 125244},
+  "storage": {"available_bytes": 6103379968, "total_bytes": 7761584128},
+  "network": {"connected": true, "ip_address": "192.0.2.42", "metered": false, "validated": true,
+              "wifi": true, "ethernet": false, "wifi_rssi_dbm": -78, "wifi_signal_level": 1,
+              "wifi_link_speed_mbps": 21, "wifi_frequency_mhz": 2437},
+  "thermal_status": 0,
+  "load_average": [3.16, 3.29, 3.12],
+  "system": {"cpu_busy_percent": 3.9, "cpu_max_frequency_khz": 960000, "mem_total_kb": 1908756,
+             "mem_available_kb": 854296, "mem_used_kb": 1054460, "swap_total_kb": 1048572,
+             "swap_used_kb": 403992, "cpu_temperature_c": 40, "gpu_temperature_c": 39,
+             "load_average": [3.16, 3.29, 3.12]},
+  "runtime": {"renderer_deaths": 0, "last_renderer_death_ago_ms": null,
+              "last_page_finished_ago_ms": 366490, "last_page_error_ago_ms": 1013827,
+              "last_page_error": "HTTP 404", "last_page_url": "https://grafana.example.net/d/wall",
+              "auth_lockouts": 0, "last_auth_lockout_ago_ms": null, "last_auth_lockout_host": "",
+              "recycles": 0, "last_recycle_ago_ms": null, "last_recycle_reason": ""},
+  "display": {"screen_on": true, "off_method_effective": "sleep",
+              "off_method_reason": "Display off turns the screen off. A remote wake or the power button turns it back on.",
+              "off_method_warning": false, "auto": false, "has_light_sensor": false,
+              "source": "manual", "brightness_percent": 40, "system_raw": 102, "system_scale_assumed": 255},
+  "screensaver": {"active": false, "mode": "pictures", "idle_s": 120, "off_s": 900, "dim_percent": 20,
+                  "on_wake": "screensaver", "url": "", "source": "local", "picture_s": 20, "transition": "fade",
+                  "picture_fit": "fit", "shuffle": false, "one_per_cycle": false, "credit": true,
+                  "credit_corner": "bottom_left", "source_state": "6 pictures from Holidays.", "source_problem": null,
+                  "pictures_readable": true, "playlist": "Holidays", "playlists": 2,
+                  "picture": {"title": "The Starry Night", "credit": "Vincent van Gogh, 1889"}, "problem": null,
+                  "summary": "Pictures from this panel after 2 min without a touch, display off 15 min later."},
+  "config": {"dashboard_url": "https://grafana.example.net/d/wall", "device_id": "hallway-panel",
+             "settings_sequence": "TL,TL,TL,TL", "launcher_sequence": "BR,BR,BR,BR",
+             "stats_overlay": true, "orientation": "auto", "display_off_method": "auto",
+             "has_light_sensor": false, "auto_brightness": false, "web_admin_enabled": true,
+             "http_port": 8080, "http_tls": true,
+             "http_certificate_sha256": "F0:4D:30:A1:3D:67:35:08:11:C8:93:F4:28:EA:C3:69:D3:D9:BA:77:3B:DB:97:31:3B:B7:AB:C2:A7:50:7D:63",
+             "mqtt_host": "192.0.2.10", "mqtt_port": 1883}
+}</code></pre></div>
+      <p>A real document, with the addresses, the page and the combinations replaced. On a panel with no battery, a PoE wall panel or a screen on a DC adapter, <code>battery.present</code> is <code>false</code>, every other battery field is <code>null</code>, and <code>power.source</code> says <code>mains</code>.</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th>Field</th><th>Meaning</th><th>Values</th></tr></thead>
+          <tbody>
+            <tr class="group"><th colspan="3">Top level</th></tr>
+            <tr><th scope="row"><code>schema</code></th><td>Document version.</td><td><code>1</code></td></tr>
+            <tr><th scope="row"><code>app_version</code></th><td>The running build.</td><td>string</td></tr>
+            <tr><th scope="row"><code>uptime_ms</code></th><td>Since the tablet booted.</td><td>ms</td></tr>
+            <tr><th scope="row"><code>app_uptime_ms</code></th><td>Since Muralis started; drops at the nightly restart.</td><td>ms</td></tr>
+            <tr><th scope="row"><code>thermal_status</code></th><td>Android&#8217;s thermal status.</td><td>0 none, 1 light, 2 moderate, 3 severe, 4 critical, 5 emergency, 6 shutdown; <code>null</code> below Android 10</td></tr>
+            <tr><th scope="row"><code>load_average</code></th><td>1, 5 and 15 minute load.</td><td>three numbers, or <code>null</code></td></tr>
+            <tr class="group"><th colspan="3"><code>battery</code></th></tr>
+            <tr><th scope="row"><code>present</code></th><td>Whether the panel has a battery at all. When <code>false</code>, every other field here is <code>null</code> except <code>plugged</code>.</td><td>bool</td></tr>
+            <tr><th scope="row"><code>percent</code></th><td>Level.</td><td>0 to 100</td></tr>
+            <tr><th scope="row"><code>status</code></th><td>Android&#8217;s battery status.</td><td>1 unknown, 2 charging, 3 discharging, 4 not charging, 5 full</td></tr>
+            <tr><th scope="row"><code>health</code></th><td>Android&#8217;s battery health.</td><td>2 good, 3 overheat, 4 dead, 5 over voltage, 6 failure, 7 cold</td></tr>
+            <tr><th scope="row"><code>plugged</code></th><td>What it is plugged into.</td><td>0 nothing, 1 AC, 2 USB, 4 wireless</td></tr>
+            <tr><th scope="row"><code>charge_state</code></th><td>The word the overlay and Home Assistant show.</td><td><code>charging</code>, <code>discharging</code>, <code>charged</code>, <code>on hold</code>, <code>null</code></td></tr>
+            <tr><th scope="row"><code>temperature_c</code>, <code>voltage_mv</code></th><td>Battery temperature and voltage.</td><td>&deg;C, mV</td></tr>
+            <tr><th scope="row"><code>charge_counter_uah</code>, <code>current_now_ua</code>, <code>current_average_ua</code>, <code>energy_counter_nwh</code></th><td>Battery counters where the hardware reports them.</td><td>&micro;Ah, &micro;A, &micro;A, nWh, or <code>null</code></td></tr>
+            <tr class="group"><th colspan="3"><code>power</code></th></tr>
+            <tr><th scope="row"><code>source</code></th><td>How the panel is fed, on every panel: a cell with no cable, a cell on an induction pad, or mains, which is a charger, PoE and a DC adapter alike. Android cannot tell those three apart; <code>network.ethernet</code> says whether a cable carries the data too, and the battery object says whether a cell is filling.</td><td><code>battery</code>, <code>wireless</code>, <code>mains</code></td></tr>
+            <tr><th scope="row"><code>volts</code>, <code>watts</code></th><td>Live readings of the supply feeding the device, where the kernel measures them (<code>/sys/class/power_supply</code>, an online non-battery node, never a rating). Most tablets report none. What is reported is whatever the kernel measures at the device&#8217;s own DC input, 5 V from USB up to 12 or 24 V from a DC or PoE feed; the 230 V on the wall is never visible to any device. The overlay shows them on the MAINS row of a panel without a battery.</td><td>number, or <code>null</code></td></tr>
+            <tr class="group"><th colspan="3"><code>memory</code>, <code>storage</code></th></tr>
+            <tr><th scope="row"><code>memory.available_bytes</code>, <code>total_bytes</code>, <code>threshold_bytes</code></th><td>System memory, and the level below which Android calls it low.</td><td>bytes</td></tr>
+            <tr><th scope="row"><code>memory.low</code></th><td>Android&#8217;s low-memory flag. Published at once when it changes.</td><td>bool</td></tr>
+            <tr><th scope="row"><code>memory.process_pss_kib</code></th><td>Memory used by Muralis itself.</td><td>KiB</td></tr>
+            <tr><th scope="row"><code>storage.available_bytes</code>, <code>total_bytes</code></th><td>The data partition.</td><td>bytes, or <code>null</code></td></tr>
+            <tr class="group"><th colspan="3"><code>network</code></th></tr>
+            <tr><th scope="row"><code>connected</code>, <code>validated</code>, <code>metered</code>, <code>wifi</code>, <code>ethernet</code></th><td>The active network.</td><td>bool</td></tr>
+            <tr><th scope="row"><code>ip_address</code></th><td>The panel&#8217;s own address.</td><td>string</td></tr>
+            <tr><th scope="row"><code>wifi_rssi_dbm</code>, <code>wifi_signal_level</code>, <code>wifi_link_speed_mbps</code>, <code>wifi_frequency_mhz</code></th><td>Wi-Fi details, on Wi-Fi only.</td><td>dBm; 0 to 4; Mbps; MHz</td></tr>
+            <tr class="group"><th colspan="3"><code>system</code></th></tr>
+            <tr><th scope="row"><code>cpu_busy_percent</code></th><td>CPU busy since the last sample.</td><td>%; <code>null</code> on an ordinary install on stock Android</td></tr>
+            <tr><th scope="row"><code>cpu_max_frequency_khz</code></th><td>The current top CPU clock.</td><td>kHz</td></tr>
+            <tr><th scope="row"><code>mem_total_kb</code>, <code>mem_available_kb</code>, <code>mem_used_kb</code>, <code>swap_total_kb</code>, <code>swap_used_kb</code></th><td>From <code>/proc/meminfo</code>.</td><td>KiB</td></tr>
+            <tr><th scope="row"><code>cpu_temperature_c</code>, <code>gpu_temperature_c</code></th><td>Chip temperatures, same availability as <code>cpu_busy_percent</code>.</td><td>&deg;C, or <code>null</code></td></tr>
+            <tr class="group"><th colspan="3"><code>runtime</code></th></tr>
+            <tr><th scope="row"><code>renderer_deaths</code>, <code>last_renderer_death_ago_ms</code></th><td>Web view renderer crashes since start.</td><td>count, ms</td></tr>
+            <tr><th scope="row"><code>last_page_finished_ago_ms</code>, <code>last_page_error_ago_ms</code>, <code>last_page_error</code></th><td>Page health: last successful load, last error, and what it was.</td><td>ms, ms, string such as <code>HTTP 404</code></td></tr>
+            <tr><th scope="row"><code>last_page_url</code></th><td>The page actually on the glass, which <code>kiosk.open_url</code> changes.</td><td>string</td></tr>
+            <tr><th scope="row"><code>auth_lockouts</code>, <code>last_auth_lockout_ago_ms</code>, <code>last_auth_lockout_host</code></th><td>Web admin lockouts after repeated wrong passwords.</td><td>count, ms, address</td></tr>
+            <tr><th scope="row"><code>recycles</code>, <code>last_recycle_ago_ms</code>, <code>last_recycle_reason</code></th><td>Self-healing rebuilds of the web view.</td><td>count, ms, string</td></tr>
+            <tr class="group"><th colspan="3"><code>display</code></th></tr>
+            <tr><th scope="row"><code>screen_on</code></th><td>Whether the screen is awake.</td><td>bool</td></tr>
+            <tr><th scope="row"><code>off_method_effective</code></th><td>What <code>display.visual_off</code> would do now.</td><td><code>sleep</code>, <code>film</code></td></tr>
+            <tr><th scope="row"><code>off_method_reason</code></th><td>One sentence saying why.</td><td>string</td></tr>
+            <tr><th scope="row"><code>off_method_warning</code></th><td>A sleep ended badly and the method was switched to the film. Painted red on both admin surfaces.</td><td>bool</td></tr>
+            <tr><th scope="row"><code>auto</code>, <code>has_light_sensor</code></th><td>Automatic brightness on, and whether a light sensor exists.</td><td>bool</td></tr>
+            <tr><th scope="row"><code>source</code></th><td>Where the brightness comes from.</td><td><code>auto</code>, <code>manual</code>, <code>display_off</code></td></tr>
+            <tr><th scope="row"><code>brightness_percent</code></th><td>The level.</td><td>0 to 100; <code>null</code> while dark</td></tr>
+            <tr><th scope="row"><code>system_raw</code>, <code>system_scale_assumed</code></th><td>Android&#8217;s raw brightness value and the scale assumed for it, so a wrong percentage can be diagnosed.</td><td>int, 255</td></tr>
+            <tr class="group"><th colspan="3"><code>screensaver</code></th></tr>
+            <tr><th scope="row"><code>active</code></th><td>Whether the screensaver is showing right now.</td><td>boolean</td></tr>
+            <tr><th scope="row"><code>mode</code> &hellip; <code>credit_corner</code></th><td>The settings, one field per command above, under the command&#8217;s name without the prefix: <code>idle_s</code>, <code>off_s</code> and <code>picture_s</code> are the three times.</td><td>as the commands</td></tr>
+            <tr><th scope="row"><code>source_state</code></th><td>One sentence about the source: how many pictures, from where, and what is showing.</td><td>string</td></tr>
+            <tr><th scope="row"><code>source_problem</code></th><td>Why the source has nothing to show, when it has not.</td><td>string or <code>null</code></td></tr>
+            <tr><th scope="row"><code>pictures_readable</code></th><td>Whether the panel may read its own pictures yet.</td><td>boolean</td></tr>
+            <tr><th scope="row"><code>playlist</code>, <code>playlists</code></th><td>The playlist in use, and how many there are.</td><td>string or <code>null</code>, number</td></tr>
+            <tr><th scope="row"><code>picture</code></th><td>The picture on screen: its title and its credit line.</td><td><code>{"title","credit"}</code> or <code>null</code></td></tr>
+            <tr><th scope="row"><code>problem</code>, <code>summary</code></th><td>Why the screensaver cannot run as set, and the settings in one sentence, the same sentence both surfaces show.</td><td>string or <code>null</code>, string</td></tr>
+            <tr class="group"><th colspan="3"><code>config</code></th></tr>
+            <tr><th scope="row"><code>dashboard_url</code>, <code>device_id</code></th><td>The stored page and the panel&#8217;s id, which is also its MQTT client id.</td><td>string</td></tr>
+            <tr><th scope="row"><code>settings_sequence</code>, <code>launcher_sequence</code></th><td>The corner-tap combinations. <b>Admin</b>: HTTP only, never on MQTT.</td><td><code>TL,TR,BL,BR</code> strings</td></tr>
+            <tr><th scope="row"><code>escape_pin_set</code></th><td>Whether a PIN is asked after a combination; the PIN itself is never reported. <b>Admin</b>: HTTP only.</td><td>bool</td></tr>
+            <tr><th scope="row"><code>stats_overlay</code>, <code>orientation</code>, <code>display_off_method</code>, <code>web_admin_enabled</code></th><td>Stored settings.</td><td>bool; <code>auto</code>/<code>landscape</code>/<code>portrait</code>; <code>auto</code>/<code>sleep</code>/<code>film</code>; bool</td></tr>
+            <tr><th scope="row"><code>has_light_sensor</code>, <code>auto_brightness</code></th><td>Live, repeated here for the Home Assistant switch.</td><td>bool</td></tr>
+            <tr><th scope="row"><code>http_port</code>, <code>mqtt_host</code>, <code>mqtt_port</code></th><td>Where the panel listens and which broker it talks to. <b>Admin</b>: HTTP only.</td><td></td></tr>
+            <tr><th scope="row"><code>http_tls</code>, <code>http_certificate_sha256</code></th><td>Whether the web admin speaks HTTPS, and the fingerprint of its certificate, to compare with the browser&#8217;s. <b>Admin</b>: HTTP only.</td><td>bool, string</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="mqtt">MQTT</h2>
+      <p><code>&lt;id&gt;</code> below is the panel&#8217;s device id, <code>hallway-panel</code> in the examples. Two panels on one broker need two different ids.</p>
+
+      <h3 id="mqtt-connection">Connection</h3>
+      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th scope="row">Transport</th><td>MQTT 3.1.1 over plain TCP, default port 1883, no TLS. Clean session, keepalive 30 s.</td></tr>
+            <tr><th scope="row">Client id</th><td>The device id.</td></tr>
+            <tr><th scope="row">Last will</th><td><code>kiosk/&lt;id&gt;/availability</code> = <code>offline</code>, retained.</td></tr>
+            <tr><th scope="row">On connect</th><td>Publishes <code>online</code>, subscribes to its command topic and to <code>homeassistant/status</code>, publishes discovery. When Home Assistant announces itself as back online, discovery is published again.</td></tr>
+            <tr><th scope="row">Reconnect</th><td>Automatic after a lost connection. A broker that was unreachable when the panel started is retried when the MQTT settings are saved or at the nightly restart.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="mqtt-topics">Topics</h3>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th>Topic</th><th>Who</th><th>Payload</th><th>When</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>kiosk/&lt;id&gt;/availability</code></th><td>panel</td><td><code>online</code> or <code>offline</code>, retained</td><td>On connect, then <code>online</code> again every 30 s as a heartbeat.</td></tr>
+            <tr><th scope="row"><code>kiosk/&lt;id&gt;/state</code></th><td>panel</td><td>The <a href="#status">status document</a> without the admin lines, retained</td><td>Every 60 s; at once when battery level, charging state, low memory or thermal status change; 400 ms after every accepted command; on reconnect.</td></tr>
+            <tr><th scope="row"><code>kiosk/&lt;id&gt;/command</code></th><td>you</td><td>A bare command name, or a JSON envelope</td><td>Whenever you like. Not retained.</td></tr>
+            <tr><th scope="row"><code>kiosk/&lt;id&gt;/command/result</code></th><td>panel</td><td><code>{"id","status","detail","timestamp_ms"}</code></td><td>One per command received.</td></tr>
+            <tr><th scope="row"><code>homeassistant/device/&lt;id&gt;/config</code></th><td>panel</td><td>The <a href="#discovery">discovery bundle</a>, retained</td><td>On connect, and when Home Assistant comes back.</td></tr>
+            <tr><th scope="row"><code>homeassistant/binary_sensor/&lt;id&gt;_mqtt_state/config</code></th><td>panel</td><td>The <a href="#liveness">liveness entity</a>, retained</td><td>Same.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="mqtt-commands">Commands over MQTT</h3>
+      <p>The same commands and arguments as over HTTP. A bare name is enough for a command without arguments; the envelope carries arguments and an optional <code>id</code> of up to 96 characters, echoed in the result so you can match replies to requests.</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="A bare command over MQTT"><pre><code>mosquitto_pub -h 192.0.2.10 -t kiosk/hallway-panel/command -m kiosk.reload</code></pre></div>
+      <p class="reply">On <code>kiosk/hallway-panel/command/result</code></p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Result"><pre><code>{"id":"","status":"accepted","detail":"","timestamp_ms":1788948053209}</code></pre></div>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="An envelope over MQTT"><pre><code>mosquitto_pub -h 192.0.2.10 -t kiosk/hallway-panel/command \
+    -m '{"id":"evening-1","command":"display.brightness","args":{"percent":40}}'</code></pre></div>
+      <p class="reply">Result</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Result"><pre><code>{"id":"evening-1","status":"accepted","detail":"","timestamp_ms":1788948057237}</code></pre></div>
+      <p class="reply">With <code>"percent":150</code></p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Result of a refused command"><pre><code>{"id":"evening-1","status":"rejected","detail":"percent must be between 0 and 100","timestamp_ms":1788948061318}</code></pre></div>
+      <p class="reply">With a payload that is not JSON and not a command name</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Result of a malformed payload"><pre><code>{"id":"","status":"rejected","detail":"malformed JSON payload","timestamp_ms":1788948066121}</code></pre></div>
+      <p>Two more rules. A payload over 16 384 bytes is refused with <code>payload exceeds 16384 bytes</code>. A command the broker had <b>stored as retained</b> and delivers when the panel connects is refused with <code>retained commands are refused; publish without the retain flag</code>, and the panel clears it from the broker: a retained command would otherwise run again on every reconnect.</p>
+
+      <h3 id="discovery">Home Assistant discovery</h3>
+      <p>One retained bundle on <code>homeassistant/device/&lt;id&gt;/config</code> creates the whole device: name <code>Muralis &lt;id&gt;</code>, manufacturer and model from the hardware, software version from the app. Every entity reads the state topic and sends to the command topic, so nothing has to be declared in YAML. An entity the panel cannot serve is not announced at all: no battery sensors without a battery, no automatic brightness without a light sensor, no <code>auto</code> orientation without an accelerometer, no reboot button and no <code>sleep</code> option without the device-owner install.</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th>Entity</th><th>Type</th><th>Reads</th><th>Sends</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Power source</th><td>sensor, enum</td><td><code>power.source</code></td><td></td></tr>
+            <tr><th scope="row">Battery level</th><td>sensor, %, only on a panel with a battery</td><td><code>battery.percent</code></td><td></td></tr>
+            <tr><th scope="row">Battery temperature</th><td>sensor, &deg;C, only with a battery</td><td><code>battery.temperature_c</code></td><td></td></tr>
+            <tr><th scope="row">Battery state</th><td>sensor, only with a battery</td><td><code>battery.charge_state</code></td><td></td></tr>
+            <tr><th scope="row">Available memory</th><td>sensor, MiB</td><td><code>memory.available_bytes</code></td><td></td></tr>
+            <tr><th scope="row">Available storage</th><td>sensor, MiB</td><td><code>storage.available_bytes</code></td><td></td></tr>
+            <tr><th scope="row">Thermal status</th><td>sensor, Android 10 and up</td><td><code>thermal_status</code></td><td></td></tr>
+            <tr><th scope="row">App version</th><td>sensor, diagnostic</td><td><code>app_version</code></td><td></td></tr>
+            <tr><th scope="row">Brightness</th><td>number, 0 to 100</td><td><code>display.brightness_percent</code></td><td><code>display.brightness</code></td></tr>
+            <tr><th scope="row">Automatic brightness</th><td>switch, only with a light sensor</td><td><code>config.auto_brightness</code></td><td><code>display.auto_brightness</code></td></tr>
+            <tr><th scope="row">Orientation</th><td>select</td><td><code>config.orientation</code></td><td><code>display.orientation</code></td></tr>
+            <tr><th scope="row">Display off method</th><td>select, <code>sleep</code> offered to a device owner only</td><td><code>config.display_off_method</code></td><td><code>display.off_method</code></td></tr>
+            <tr><th scope="row">Web admin</th><td>switch</td><td><code>config.web_admin_enabled</code></td><td><code>webadmin.enabled</code></td></tr>
+            <tr><th scope="row">Dashboard URL</th><td>text</td><td><code>config.dashboard_url</code></td><td><code>kiosk.set_url</code></td></tr>
+            <tr><th scope="row">Open URL once</th><td>text</td><td><code>runtime.last_page_url</code></td><td><code>kiosk.open_url</code></td></tr>
+            <tr><th scope="row">Main dashboard, Reload dashboard, Restart kiosk</th><td>buttons</td><td></td><td><code>kiosk.home</code>, <code>kiosk.reload</code>, <code>kiosk.restart</code></td></tr>
+            <tr><th scope="row">Display on, Display off</th><td>buttons</td><td></td><td><code>display.wake</code>, <code>display.visual_off</code></td></tr>
+            <tr><th scope="row">Reboot tablet</th><td>button, only on a device-owner install</td><td></td><td><code>system.reboot</code></td></tr>
+                      <tr><th scope="row">Screensaver</th><td>switch</td><td><code>screensaver.active</code></td><td><code>screensaver.start</code>, <code>screensaver.stop</code></td></tr>
+            <tr><th scope="row">Screensaver mode</th><td>select</td><td><code>screensaver.mode</code></td><td><code>screensaver.mode</code></td></tr>
+            <tr><th scope="row">Screensaver playlist</th><td>select, the panel&#8217;s playlists by name</td><td><code>screensaver.playlist</code></td><td><code>screensaver.playlist</code></td></tr>
+            <tr><th scope="row">Screensaver source</th><td>select</td><td><code>screensaver.source</code></td><td><code>screensaver.source</code></td></tr>
+            <tr><th scope="row">Screensaver idle time, to display off, picture time</th><td>number, s</td><td><code>screensaver.idle_s</code>, <code>off_s</code>, <code>picture_s</code></td><td><code>screensaver.idle_seconds</code>, <code>off_seconds</code>, <code>picture_seconds</code></td></tr>
+            <tr><th scope="row">Screensaver dim brightness</th><td>number, %</td><td><code>screensaver.dim_percent</code></td><td><code>screensaver.dim_percent</code></td></tr>
+            <tr><th scope="row">Screensaver transition, picture fit, credit corner, after a wake</th><td>select</td><td><code>screensaver.transition</code>, <code>picture_fit</code>, <code>credit_corner</code>, <code>on_wake</code></td><td>the command of the same name</td></tr>
+            <tr><th scope="row">Screensaver shuffle, one picture per cycle, credit line</th><td>switch</td><td><code>screensaver.shuffle</code>, <code>one_per_cycle</code>, <code>credit</code></td><td>the command of the same name with <code>enabled</code></td></tr>
+            <tr><th scope="row">Screensaver page</th><td>text</td><td><code>screensaver.url</code></td><td><code>screensaver.url</code></td></tr>
+            <tr><th scope="row">Screensaver picture</th><td>sensor</td><td><code>screensaver.picture.title</code></td><td></td></tr>
+</tbody>
+        </table>
+      </div>
+
+      <h3 id="liveness">Liveness</h3>
+      <p>A separate entity, <b>MQTT state</b>, is a connectivity sensor on the availability topic with a 90 second expiry. The panel says <code>online</code> every 30 seconds; 90 seconds of silence turn the sensor off, even if a broker restart brought back a stale retained <code>online</code>. A panel that goes quiet reads unavailable in Home Assistant, never a stale online.</p>
+
+      <h2 id="beyond">Beyond the API</h2>
+      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th scope="row">Device owner over adb</th><td><code>adb shell dpm set-device-owner org.spazio17.muralis/.KioskDeviceAdminReceiver</code>, on a tablet that has finished setup, has no accounts and one user. The QR at setup does the same without adb.</td></tr>
+            <tr><th scope="row">The brightness grant</th><td><code>adb shell appops set org.spazio17.muralis WRITE_SETTINGS allow</code>, or the button in Muralis settings. The one permission a device owner cannot give itself; <a href="../setup/">the setup page</a> explains why.</td></tr>
+            <tr><th scope="row">The provisioning QR</th><td>Carries the admin component, the APK address and the signing certificate, and no Muralis settings. What it encodes is <a href="../download/">published in full</a>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project. Made in Vienna, Austria.</span>
+    <nav>
+      <a href="../privacy/">Privacy</a>
+      <a href="../terms/">Terms</a>
+      <a href="../imprint/">Imprint</a>
+      <a href="https://github.com/spazio17/muralis">Source</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/js/menu.js?v=1"></script>
+<script src="../assets/js/theme.js?v=6"></script>
+<script src="../assets/js/copy.js?v=1"></script>
+</body>
+</html>

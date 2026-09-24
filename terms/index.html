@@ -7,12 +7,12 @@
 <meta name="description" content="What you may do with Muralis, what it does to a device it is installed on, how to get back out of the kiosk, and what is not promised.">
 <link rel="canonical" href="https://muralis.spazio17.org/terms/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=27">
+<link rel="stylesheet" href="../assets/css/site.css?v=33">
 <script>
   try {
     var t = localStorage.getItem('muralis-theme');
     if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  } catch (e) { /* private mode: fall through to prefers-color-scheme */ }
+  } catch (e) { /* private mode: follow the system */ }
 </script>
 </head>
 <body>
@@ -25,6 +25,7 @@
     </a>
     <nav class="pagenav" aria-label="Pages">
       <a href="../">Overview</a>
+      <a href="../api/">API</a>
       <a href="../setup/">Setup</a>
       <a href="../download/">Download</a>
     </nav>
@@ -33,23 +34,19 @@
       <span class="menubtn-label">Menu</span>
     </button>
   </div>
-  <!-- One menu for the whole site, at every width. The bar carries the pages, which is
-       the site's structure and is the same everywhere; the menu carries this page's own
-       sections, which only the front page has, and the theme, which is a setting rather
-       than a destination and was taking bar space on every page for it. Hidden here in
-       the markup rather than by CSS alone, so it is closed before the script runs and a
-       reader with no JavaScript is not given a panel that can never be shut. -->
   <div class="sitemenu" id="sitemenu" hidden>
     <div class="wrap menuwrap">
       <nav class="menugroup" aria-label="Pages">
         <p class="menuhead">Pages</p>
         <a href="../">Overview</a>
+        <a href="../api/">API</a>
         <a href="../setup/">Setup</a>
         <a href="../download/">Download</a>
       </nav>
       <div class="menugroup">
         <p class="menuhead">Appearance</p>
         <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="auto" aria-pressed="false">Auto</button>
           <button type="button" data-theme="light" aria-pressed="false">Light</button>
           <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
         </div>
@@ -66,7 +63,7 @@
     a device in front of you.
   </p>
 
-  <!-- BEGIN GENERATED LEGAL TEXT: rendered from legal/terms.txt (sha256 c8d0153faf0c0ee6d0d31fc00dd6db38d1c345b2522235efa41b3a5c75c7cd2d) by scripts/generate-legal.py. Edit the txt and re-run the script; do not edit this block by hand. -->
+  <!-- BEGIN GENERATED LEGAL TEXT: rendered from legal/terms.txt (sha256 89a8c22d9a004e305cecd394c2f89c0e16d9eba50ba2b9631b9a3feadfc03e41) by scripts/generate-legal.py. Edit the txt and re-run the script; do not edit this block by hand. -->
   <p>Draft terms for Muralis, a kiosk launcher for displaying a web dashboard on hardware you own.</p>
   <h2>What you may do</h2>
   <p>Install and run Muralis on as many devices as you like, whether you own them or administer them for somebody else, for private or commercial purposes. You do not need an account, you do not need to register, and this does not expire.</p>
@@ -86,7 +83,9 @@
   <p>Muralis is provided as is, without warranty of any kind. It is not suitable for any purpose where failure to display information could cause harm to people or property. Do not use it as the sole interface to safety equipment, medical devices, alarms, or anything that must be operable in an emergency.</p>
   <p>The dashboard it displays is not part of Muralis. Its availability, correctness and security are yours or its provider&#x27;s responsibility.</p>
   <h2>Remote control</h2>
-  <p>The local web administration is authenticated by the password you set, and by nothing else: there is no username, and there is no limit on how many times a wrong password may be tried. MQTT is authenticated by your broker, using whatever credentials it requires, which may be none: Muralis itself does not authenticate individual commands, so anyone who can publish to your broker can control the panel. Both surfaces are UNENCRYPTED, and there is no option to encrypt either. Your broker username and password travel in clear text, so do not reuse a password you use anywhere else. Run these surfaces only on a network you trust, and reach them over a VPN rather than exposing a port. If you set a weak password, or expose these surfaces to the internet, anyone who reaches them can change what the device displays and restart it.</p>
+  <p>The local web administration is authenticated by the password you set, and by nothing else: there is no username. An address that keeps sending wrong passwords is locked out for a growing while, and the lockout is reported in the status snapshot. It is served over HTTPS with a certificate the panel makes for itself; your browser will warn about it once, and the panel shows the certificate&#x27;s fingerprint so you can check that you are talking to your panel. MQTT is authenticated by your broker, using whatever credentials it requires, which may be none: Muralis itself does not authenticate individual commands, so anyone who can publish to your broker can control the panel. MQTT is UNENCRYPTED, and there is no option to encrypt it. Your broker username and password travel in clear text, so do not reuse a password you use anywhere else. Run these surfaces only on a network you trust, and reach them over a VPN rather than exposing a port. If you set a weak password, or expose these surfaces to the internet, anyone who reaches them can change what the device displays and restart it.</p>
+  <h2>Pictures</h2>
+  <p>The screensaver can show pictures from the device, pictures you upload, and pictures from Bing&#x27;s image of the day or Wikimedia Commons&#x27; picture of the day. What a panel shows is your responsibility: make sure you have the right to display it where the panel is. Muralis grants no rights to any picture. The Bing source is unofficial: Microsoft publishes no interface for it, may change or close it at any time, and its pictures are copyrighted works shown with Bing&#x27;s own credit line, so whether you may display them is between you and their owners. Wikimedia Commons pictures carry the licences their credit line names.</p>
   <h2>Buying, and getting your money back</h2>
   <p>Muralis Pro is sold by Google, not by the developer. Google takes the payment, issues the receipt, handles the tax, and handles refunds under Google Play&#x27;s own refund policy and under whatever consumer law applies where you live. Ask Google, not the developer, about a payment or a refund. The developer never sees your payment details.</p>
   <h2>Liability</h2>
@@ -108,7 +107,7 @@
 
 <footer>
   <div class="wrap">
-    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project.</span>
+    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project. Made in Vienna, Austria.</span>
     <nav>
       <a href="../privacy/">Privacy</a>
       <a href="../terms/">Terms</a>
@@ -119,7 +118,6 @@
 </footer>
 
 <script src="../assets/js/menu.js?v=1"></script>
-<script src="../assets/js/theme.js?v=4"></script>
-<script src="../assets/js/motion.js?v=5"></script>
+<script src="../assets/js/theme.js?v=6"></script>
 </body>
 </html>
