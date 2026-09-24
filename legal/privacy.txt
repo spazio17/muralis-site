@@ -6,19 +6,21 @@ Nothing. Muralis has no analytics, no crash reporting, no advertising identifier
 
 WHAT THE APP SENDS ELSEWHERE, AND WHERE
 
-Nothing, until you configure a destination yourself. Two optional features publish data, and both stay off until you set them up: MQTT stays off until you enter a broker address, and the local web administration stays off until you set a password.
+Nothing, until you configure a destination yourself. Two optional features publish data, and both stay off until you set them up: MQTT stays off until you enter a broker address, and the local web administration stays off until you set a password. A third optional feature fetches data rather than publishing it: the screensaver can show pictures from the internet, and it does so only if you pick that source.
 
-• MQTT. If you enter a broker address, Muralis publishes a status snapshot to that broker, about once a minute and sooner when something changes. It contains device status and diagnostics: battery, memory, storage, network state, the device's own address on your network, processor load and temperatures, screen state, the panel's settings including the device identifier it generates for itself, the app version, and the health of the dashboard: which page is loaded, whether it loaded, how often the view crashed or was rebuilt.
+• MQTT. If you enter a broker address, Muralis publishes a status snapshot to that broker, about once a minute and sooner when something changes. It contains device status and diagnostics: battery, memory, storage, network state, the device's own address on your network, processor load and temperatures, screen state, the panel's settings including the device identifier it generates for itself, the app version, the health of the dashboard: which page is loaded, whether it loaded, how often the view crashed or was rebuilt, and, if you use the Pictures screensaver, the name of the playlist in use and of the picture on screen.
 
 Three things in it deserve to be called out, because you might not expect them. The snapshot includes the address of the dashboard being shown, so if that address is itself something you would not want on your broker, do not enable MQTT. It includes the network address of any device that was locked out of the web administration for repeated wrong passwords, published so that you can act on a guessing attempt. And it is retained: your broker keeps the most recent copy and hands it to anything that subscribes later, even after the panel is switched off or removed, until you clear it on the broker.
 
 The complete, current content of the snapshot is not a secret and cannot go stale in this document: it is visible to you at any time on your own broker, and in the web administration.
 
-• Local web administration. If you set an administration password, the panel serves the same status information, plus its settings, over your local network to anyone who supplies that password. This surface also shows things that are deliberately never sent to the broker: the corner-tap combinations that unlock the kiosk, and the panel's connection settings. The password is what protects the way out of the kiosk; treat it accordingly.
+• Local web administration. If you set an administration password, the panel serves the same status information, plus its settings, over your local network to anyone who supplies that password. This surface also shows things that are deliberately never sent to the broker: the corner-tap combinations that unlock the kiosk, and the panel's connection settings. If you use the Pictures screensaver, it also lists the picture folders on the panel, shows small previews and the pictures themselves, and lets whoever has the password upload pictures to the panel and delete the ones that were uploaded. The password is what protects the way out of the kiosk; treat it accordingly.
+
+• Pictures from the internet. The screensaver can show Bing's image of the day or Wikimedia Commons' picture of the day, and it does so only if you pick one of them. It then fetches a handful of pictures from that service over an encrypted connection, when the screensaver starts and about once an hour, and keeps them for a day. Like any web request, the service sees your network's public address and what was asked for; Muralis sends nothing about you or the device. Bing publishes no interface for this: Muralis reads the same address the Bing homepage uses, which Microsoft can change or close at any time, and the pictures are copyrighted works shown with Bing's own credit line. Wikimedia Commons pictures carry free licences that require the author and the licence to be named, and the credit line does that.
 
 What it is all for. The snapshot exists so that your own dashboard can show the panel's state and control it, and the web administration exists so that you can change the panel's settings without walking to the wall. Nothing in either is used for analytics, advertising, profiling or any purpose beyond making the app work.
 
-Neither connection is encrypted. Everything described above, and the credentials used to authenticate, travel in clear text over your network, so use both features on networks you trust.
+MQTT is not encrypted: the snapshot and your broker credentials travel in clear text over your network, so use it on a network you trust. The web administration is served over HTTPS with a certificate the panel makes for itself, so your browser warns about it once; the panel's settings screen shows the certificate's fingerprint for you to compare, and a request over plain HTTP is answered with a redirect to the encrypted address. If the panel cannot make a certificate it serves plain HTTP and its settings screen says so.
 
 The Wi-Fi network name is never read or transmitted. Reading it would require a location permission, which a wall panel should not need and the app does not request.
 
@@ -30,11 +32,13 @@ WHAT THE APP STORES ON THE DEVICE
 
 Your settings, a device identifier Muralis generates itself, and the corner-tap combinations you record. Your broker credentials, the administration password and the Pro purchase record are stored encrypted through the Android keystore. The dashboard view stores whatever cookies and sessions your dashboard sets, in the same way a browser would. To notice a dashboard that has frozen, the app compares two size measurements of the page against their previous values, on the device; they are never stored beyond that comparison and never transmitted.
 
-Muralis does not read your contacts, location, photos, files, messages, call history or microphone, and requests no permission that would allow it to.
+If you use the Pictures screensaver, the app also stores the playlists you make, the names you give pictures for their credit line, the pictures you upload, small previews of the pictures you browsed, and the last few pictures fetched from an online source. Your own pictures are read where they are and never copied, changed or deleted; the one thing Muralis deletes is an uploaded copy, when you ask it to.
+
+Muralis reads the photos on the device only if you turn on the Pictures screensaver with the panel's own pictures as the source, and only after you grant the permission Android asks for at that moment; it reads them to list the folders, draw the previews and show the pictures you picked, and for nothing else. It does not read your contacts, location, messages, call history or microphone, and requests no permission that would allow it to.
 
 DELETION
 
-Uninstalling the app, or clearing its data, removes everything it has stored, including the encrypted credentials. The one copy outside its reach is the retained snapshot on your broker, which you clear there.
+Uninstalling the app, or clearing its data, removes everything it has stored, including the encrypted credentials, the uploads, the previews and the cached pictures. The one copy outside its reach is the retained snapshot on your broker, which you clear there.
 
 IF YOU BUY MURALIS PRO
 
@@ -56,4 +60,4 @@ Juri Calleri, Vienna, Austria. spazio17@protonmail.com.
 
 A postal address is published on the imprint at muralis.spazio17.org, as Austrian law requires of it. It is kept in that one place rather than repeated here, so that changing it does not need a new release of the app.
 
-This policy was last updated on 2 September 2026.
+This policy was last updated on 23 September 2026.

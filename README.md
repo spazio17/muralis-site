@@ -38,8 +38,8 @@ Since the rebrand of 2026-09-09 the site has its own palette: light first, a nea
 violet-black text and one violet accent, the violet of the app icon. Dark is a choice a reader
 makes in the menu, not something inherited from the system, so every first visit sees the same
 page. The tablet UI and the web admin (`KioskTheme.java` and `PAGE_CSS` in `HttpAdminServer.java`
-in [`spazio17/muralis`](https://github.com/spazio17/muralis)) still carry the earlier Catppuccin
-palette; bringing them in line is app work, tracked there.
+in [`spazio17/muralis`](https://github.com/spazio17/muralis)) have the app's own palette, dark-first
+with the same violet; bringing them in line is app work, tracked there.
 
 No webfont and nothing from a third party: the privacy page promises that every byte comes from
 this domain, and the stylesheet keeps the promise with a system font stack.

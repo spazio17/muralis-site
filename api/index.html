@@ -84,6 +84,7 @@
       <a class="sub" href="#sending">Sending one</a>
       <a class="sub" href="#replies">Replies</a>
       <a class="sub" href="#cmd-page">The page</a>
+      <a class="sub" href="#cmd-screensaver">The screensaver</a>
       <a class="sub" href="#cmd-display">The display</a>
       <a class="sub" href="#cmd-panel">The panel</a>
       <a href="#settings">Settings</a>
@@ -258,6 +259,159 @@ Content-Type: application/json
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
       </article>
 
+      <h3 id="cmd-screensaver">The screensaver</h3>
+
+      <p>Every screensaver setting is a command, and every one is also an entity over MQTT discovery, so a caller can publish a command or move a control, whichever suits. A changed setting is saved and republished at once; it takes effect the next time the screensaver starts.</p>
+
+      <article class="entry" id="cmd-screensaver-start">
+        <header><h3>screensaver.start</h3></header>
+        <p>Shows the screensaver now, in the mode that is set, without waiting for the idle time. A touch on the glass ends it as usual.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.start"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.start</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with the reason when it cannot show: <code>the screensaver mode is off</code>, <code>the kiosk is stopped</code>, <code>Muralis is not on screen</code>, <code>Muralis settings are open on the panel</code>, or <code>the first-start wizard is on screen</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-stop">
+        <header><h3>screensaver.stop</h3></header>
+        <p>Ends a showing screensaver and brings the page back. Accepted even when none is showing.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.stop"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.stop</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-mode">
+        <header><h3>screensaver.mode</h3></header>
+        <p>What the screensaver is: <code>off</code>, <code>dim</code> (the page, dimmed), <code>film</code> (a black film over the page), <code>url</code> (another web page) or <code>pictures</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.mode"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.mode -d value=pictures</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be off, dim, film, url or pictures</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-idle-seconds">
+        <header><h3>screensaver.idle_seconds</h3></header>
+        <p>Seconds without a touch before the screensaver starts. <code>0</code> means only when asked for, with <code>screensaver.start</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.idle_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.idle_seconds -d value=120</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be a whole number of seconds, 0 to 86400</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-off-seconds">
+        <header><h3>screensaver.off_seconds</h3></header>
+        <p>Seconds of screensaver before the display is turned off, the way <code>display.visual_off</code> does it. <code>0</code> means never.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.off_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.off_seconds -d value=900</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be a whole number of seconds, 0 to 86400</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-dim-percent">
+        <header><h3>screensaver.dim_percent</h3></header>
+        <p>The brightness of the dimmed page, for the <code>dim</code> mode.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.dim_percent"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.dim_percent -d value=20</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be a whole number from 1 to 100</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-url">
+        <header><h3>screensaver.url</h3></header>
+        <p>The page the <code>url</code> mode shows, checked like the dashboard address; empty forgets it.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.url"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.url -d url=https://example.org/clock</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with the same reasons as <code>kiosk.set_url</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-on-wake">
+        <header><h3>screensaver.on_wake</h3></header>
+        <p>What a wake from display off shows first: <code>screensaver</code>, a touch then opens the page, or <code>dashboard</code>, the page at once.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.on_wake"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.on_wake -d value=screensaver</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be screensaver or dashboard</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-source">
+        <header><h3>screensaver.source</h3></header>
+        <p>Where the pictures mode takes its pictures: <code>local</code>, the panel&#8217;s own folders and uploads in the playlist in use, <code>bing</code>, Bing&#8217;s image of the day, or <code>wikimedia</code>, Wikimedia Commons&#8217; picture of the day. The two online sources are fetched over the internet and always shown with their credit line.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.source"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.source -d value=local</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be local, bing or wikimedia</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-playlist">
+        <header><h3>screensaver.playlist</h3></header>
+        <p>The playlist the <code>local</code> source shows, by name; an empty value puts none in use. Playlists are made and filled on the panel or in the web admin.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.playlist"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.playlist -d value=Holidays</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused when no playlist has that name.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-picture-seconds">
+        <header><h3>screensaver.picture_seconds</h3></header>
+        <p>How long each picture stays.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.picture_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.picture_seconds -d value=20</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be a whole number of seconds, 1 to 86400</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-transition">
+        <header><h3>screensaver.transition</h3></header>
+        <p>How one picture gives way to the next: <code>none</code> (a cut), <code>fade</code> or <code>slide</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.transition"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.transition -d value=fade</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be none, fade or slide</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-picture-fit">
+        <header><h3>screensaver.picture_fit</h3></header>
+        <p>How a picture is laid on the screen, one setting for all of them: <code>fit</code> shows the whole picture with bars where its shape differs from the screen&#8217;s, <code>fill</code> covers the screen and crops the edges, <code>stretch</code> covers the screen and pulls the picture out of shape, <code>actual</code> shows it at its own size, centred.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.picture_fit"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.picture_fit -d value=fit</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be fit, fill, stretch or actual</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-credit-corner">
+        <header><h3>screensaver.credit_corner</h3></header>
+        <p>The corner the title and credit line sit in: <code>bottom_left</code>, <code>bottom_right</code>, <code>top_left</code> or <code>top_right</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.credit_corner"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.credit_corner -d value=bottom_left</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>value must be bottom_left, bottom_right, top_left or top_right</code>.</p>
+      </article>
+
+      <article class="entry" id="cmd-screensaver-shuffle">
+        <header><h3>screensaver.shuffle</h3></header>
+        <p>Shows the playlist in a random order rather than its own.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.shuffle"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=screensaver.shuffle -d enabled=true</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>enabled must be true or false</code>. The same shape for <code>screensaver.one_per_cycle</code>, one picture per screensaver instead of a slideshow, and <code>screensaver.credit</code>, the title and credit line, which the two online sources show whatever this says because their licences require it.</p>
+      </article>
+
       <h3 id="cmd-display">The display</h3>
 
       <article class="entry" id="display-wake">
@@ -352,7 +506,7 @@ Content-Type: application/json
       <p>There is no <code>system.shutdown</code>: Android has no API an app could use to power a tablet off. It answers <code>unsupported</code> like any unknown command.</p>
 
       <h2 id="settings">Settings</h2>
-      <p>Two settings apply instantly through <code>/api/setting</code>. The rest are saved the way the web admin saves them, one box at a time, through a POST to <code>/</code>. Orientation, automatic brightness and the page itself are set with the commands above.</p>
+      <p>The stats overlay, the display-off method and every screensaver setting apply instantly through <code>/api/setting</code>; the web admin posts them the same way. The rest are saved the way the web admin saves them, one box at a time, through a POST to <code>/</code>. Orientation, automatic brightness and the page itself are set with the commands above.</p>
 
       <h3 id="instant">Instant settings</h3>
       <p>Form-encoded, <code>section=behaviour</code>, one key per request. The panel republishes its MQTT state afterwards.</p>
@@ -362,6 +516,12 @@ Content-Type: application/json
           <tbody>
             <tr><th scope="row"><code>stats_overlay</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Draws or hides the live stats block on the panel.</td></tr>
             <tr><th scope="row"><code>display_off_method</code></th><td><code>auto</code>, <code>sleep</code>, <code>film</code></td><td>Same as the command <code>display.off_method</code>.</td></tr>
+            <tr><th scope="row"><code>screensaver_mode</code></th><td><code>off</code>, <code>dim</code>, <code>film</code>, <code>url</code>, <code>pictures</code></td><td>Same as <code>screensaver.mode</code>.</td></tr>
+            <tr><th scope="row"><code>screensaver_idle_s</code>, <code>screensaver_off_s</code>, <code>screensaver_picture_s</code></th><td>whole seconds</td><td>Same as <code>screensaver.idle_seconds</code>, <code>screensaver.off_seconds</code> and <code>screensaver.picture_seconds</code>.</td></tr>
+            <tr><th scope="row"><code>screensaver_dim_percent</code></th><td><code>1</code> to <code>100</code></td><td>Same as <code>screensaver.dim_percent</code>.</td></tr>
+            <tr><th scope="row"><code>screensaver_url</code></th><td>an address, or empty</td><td>Same as <code>screensaver.url</code>.</td></tr>
+            <tr><th scope="row"><code>screensaver_on_wake</code>, <code>screensaver_source</code>, <code>screensaver_transition</code>, <code>screensaver_picture_fit</code>, <code>screensaver_credit_corner</code></th><td>the same words as the commands</td><td>Same as the command of the same name.</td></tr>
+            <tr><th scope="row"><code>screensaver_shuffle</code>, <code>screensaver_one_per_cycle</code>, <code>screensaver_credit</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Same as the commands with <code>enabled</code>.</td></tr>
           </tbody>
         </table>
       </div>
@@ -383,7 +543,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>mqtt</code></th><td><code>mqtt_host</code>, <code>mqtt_port</code>, <code>mqtt_username</code>, <code>mqtt_password</code> (blank keeps the stored one)</td><td><code>baseline</code> = host<code>|</code>port<code>|</code>username</td><td>The port is not between 1 and 65535.</td></tr>
             <tr><th scope="row"><code>webadmin</code></th><td><code>http_port</code>, <code>http_admin_password</code> (blank keeps)</td><td><code>baseline</code> = port</td><td>The port is not a number, not between 1024 and 65535, or already in use; the password is shorter than 8 characters, because a shorter one would switch the page off with only the tablet able to switch it back on.</td></tr>
             <tr><th scope="row"><code>sequences</code></th><td><code>settings_sequence</code>, <code>launcher_sequence</code></td><td><code>sequence_baseline</code> = settings<code>|</code>launcher</td><td>Both fields are empty, or both hold the same combination. Format <code>TL,TR,BL,BR</code>, 3 to 12 taps.</td></tr>
-            <tr><th scope="row"><code>behaviour</code></th><td><code>stats_overlay</code>, <code>display_off_method</code></td><td>none</td><td>As under <a href="#instant">instant settings</a>.</td></tr>
+            <tr><th scope="row"><code>behaviour</code></th><td><code>stats_overlay</code>, <code>display_off_method</code>, every <code>screensaver_*</code> key</td><td>none</td><td>As under <a href="#instant">instant settings</a>.</td></tr>
           </tbody>
         </table>
       </div>
@@ -444,6 +604,13 @@ Content-Type: application/json
               "off_method_reason": "Display off turns the screen off. A remote wake or the power button turns it back on.",
               "off_method_warning": false, "auto": false, "has_light_sensor": false,
               "source": "manual", "brightness_percent": 40, "system_raw": 102, "system_scale_assumed": 255},
+  "screensaver": {"active": false, "mode": "pictures", "idle_s": 120, "off_s": 900, "dim_percent": 20,
+                  "on_wake": "screensaver", "url": "", "source": "local", "picture_s": 20, "transition": "fade",
+                  "picture_fit": "fit", "shuffle": false, "one_per_cycle": false, "credit": true,
+                  "credit_corner": "bottom_left", "source_state": "6 pictures from Holidays.", "source_problem": null,
+                  "pictures_readable": true, "playlist": "Holidays", "playlists": 2,
+                  "picture": {"title": "The Starry Night", "credit": "Vincent van Gogh, 1889"}, "problem": null,
+                  "summary": "Pictures from this panel after 2 min without a touch, display off 15 min later."},
   "config": {"dashboard_url": "https://grafana.example.net/d/wall", "device_id": "hallway-panel",
              "settings_sequence": "TL,TL,TL,TL", "launcher_sequence": "BR,BR,BR,BR",
              "stats_overlay": true, "orientation": "auto", "display_off_method": "auto",
@@ -505,6 +672,15 @@ Content-Type: application/json
             <tr><th scope="row"><code>source</code></th><td>Where the brightness comes from.</td><td><code>auto</code>, <code>manual</code>, <code>display_off</code></td></tr>
             <tr><th scope="row"><code>brightness_percent</code></th><td>The level.</td><td>0 to 100; <code>null</code> while dark</td></tr>
             <tr><th scope="row"><code>system_raw</code>, <code>system_scale_assumed</code></th><td>Android&#8217;s raw brightness value and the scale assumed for it, so a wrong percentage can be diagnosed.</td><td>int, 255</td></tr>
+            <tr class="group"><th colspan="3"><code>screensaver</code></th></tr>
+            <tr><th scope="row"><code>active</code></th><td>Whether the screensaver is showing right now.</td><td>boolean</td></tr>
+            <tr><th scope="row"><code>mode</code> &hellip; <code>credit_corner</code></th><td>The settings, one field per command above, under the command&#8217;s name without the prefix: <code>idle_s</code>, <code>off_s</code> and <code>picture_s</code> are the three times.</td><td>as the commands</td></tr>
+            <tr><th scope="row"><code>source_state</code></th><td>One sentence about the source: how many pictures, from where, and what is showing.</td><td>string</td></tr>
+            <tr><th scope="row"><code>source_problem</code></th><td>Why the source has nothing to show, when it has not.</td><td>string or <code>null</code></td></tr>
+            <tr><th scope="row"><code>pictures_readable</code></th><td>Whether the panel may read its own pictures yet.</td><td>boolean</td></tr>
+            <tr><th scope="row"><code>playlist</code>, <code>playlists</code></th><td>The playlist in use, and how many there are.</td><td>string or <code>null</code>, number</td></tr>
+            <tr><th scope="row"><code>picture</code></th><td>The picture on screen: its title and its credit line.</td><td><code>{"title","credit"}</code> or <code>null</code></td></tr>
+            <tr><th scope="row"><code>problem</code>, <code>summary</code></th><td>Why the screensaver cannot run as set, and the settings in one sentence, the same sentence both surfaces show.</td><td>string or <code>null</code>, string</td></tr>
             <tr class="group"><th colspan="3"><code>config</code></th></tr>
             <tr><th scope="row"><code>dashboard_url</code>, <code>device_id</code></th><td>The stored page and the panel&#8217;s id, which is also its MQTT client id.</td><td>string</td></tr>
             <tr><th scope="row"><code>settings_sequence</code>, <code>launcher_sequence</code></th><td>The corner-tap combinations. <b>Admin</b>: HTTP only, never on MQTT.</td><td><code>TL,TR,BL,BR</code> strings</td></tr>
@@ -586,7 +762,17 @@ Content-Type: application/json
             <tr><th scope="row">Main dashboard, Reload dashboard, Restart kiosk</th><td>buttons</td><td></td><td><code>kiosk.home</code>, <code>kiosk.reload</code>, <code>kiosk.restart</code></td></tr>
             <tr><th scope="row">Display on, Display off</th><td>buttons</td><td></td><td><code>display.wake</code>, <code>display.visual_off</code></td></tr>
             <tr><th scope="row">Reboot tablet</th><td>button, only on a device-owner install</td><td></td><td><code>system.reboot</code></td></tr>
-          </tbody>
+                      <tr><th scope="row">Screensaver</th><td>switch</td><td><code>screensaver.active</code></td><td><code>screensaver.start</code>, <code>screensaver.stop</code></td></tr>
+            <tr><th scope="row">Screensaver mode</th><td>select</td><td><code>screensaver.mode</code></td><td><code>screensaver.mode</code></td></tr>
+            <tr><th scope="row">Screensaver playlist</th><td>select, the panel&#8217;s playlists by name</td><td><code>screensaver.playlist</code></td><td><code>screensaver.playlist</code></td></tr>
+            <tr><th scope="row">Screensaver source</th><td>select</td><td><code>screensaver.source</code></td><td><code>screensaver.source</code></td></tr>
+            <tr><th scope="row">Screensaver idle time, to display off, picture time</th><td>number, s</td><td><code>screensaver.idle_s</code>, <code>off_s</code>, <code>picture_s</code></td><td><code>screensaver.idle_seconds</code>, <code>off_seconds</code>, <code>picture_seconds</code></td></tr>
+            <tr><th scope="row">Screensaver dim brightness</th><td>number, %</td><td><code>screensaver.dim_percent</code></td><td><code>screensaver.dim_percent</code></td></tr>
+            <tr><th scope="row">Screensaver transition, picture fit, credit corner, after a wake</th><td>select</td><td><code>screensaver.transition</code>, <code>picture_fit</code>, <code>credit_corner</code>, <code>on_wake</code></td><td>the command of the same name</td></tr>
+            <tr><th scope="row">Screensaver shuffle, one picture per cycle, credit line</th><td>switch</td><td><code>screensaver.shuffle</code>, <code>one_per_cycle</code>, <code>credit</code></td><td>the command of the same name with <code>enabled</code></td></tr>
+            <tr><th scope="row">Screensaver page</th><td>text</td><td><code>screensaver.url</code></td><td><code>screensaver.url</code></td></tr>
+            <tr><th scope="row">Screensaver picture</th><td>sensor</td><td><code>screensaver.picture.title</code></td><td></td></tr>
+</tbody>
         </table>
       </div>
 

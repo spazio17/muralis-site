@@ -171,18 +171,8 @@
           <p>Turns the screen off for real where the tablet can be trusted to sleep, and shows a black film where it cannot. It tells you which, and why.</p>
         </div>
         <div class="card">
-          <p class="tag">Pro</p>
-          <h3>One command set, two transports</h3>
-          <p>MQTT and HTTP behave identically. A refused command always says why.</p>
-        </div>
-        <div class="card">
-          <p class="tag">Pro</p>
-          <h3>Telemetry to automate on</h3>
-          <p>Battery, memory, storage, network, CPU, thermal, app version. Once a minute, sooner when something changes.</p>
-        </div>
-        <div class="card">
-          <h3>Off until configured</h3>
-          <p>No default credentials. Broker and admin secrets encrypted in the Android keystore.</p>
+          <h3>Something to look at when nobody is</h3>
+          <p>After the idle time you set: a dimmed page, a black film, another web page, or pictures. Your own folders and uploads in playlists, or Bing&#8217;s and Wikimedia Commons&#8217; picture of the day, with a credit line. A touch brings the page back.</p>
         </div>
       </div>
     </div>
@@ -197,9 +187,10 @@
         <div>
           <ul class="points">
             <li><b>One command set.</b> The same names over HTTP and MQTT. A refused command says why.</li>
-            <li><b>Every setting.</b> The page, brightness, orientation, display off, the broker, the escape combinations.</li>
+            <li><b>Every setting.</b> The page, brightness, orientation, display off, the screensaver and its playlists, the broker, the escape combinations.</li>
             <li><b>Live status.</b> Battery, memory, storage, network, temperature and page health, as JSON.</li>
-            <li><b>Nothing leaves your network.</b> The panel talks to your browser and your broker. No cloud, no account.</li>
+            <li><b>Telemetry to automate on.</b> Battery, memory, storage, network, CPU, thermal, screen and page health, once a minute and sooner when something changes.</li>
+            <li><b>Nothing leaves your network, and nothing is on until you set it up.</b> No default credentials; broker and admin secrets encrypted in the Android keystore. No cloud, no account.</li>
           </ul>
           <div class="actions">
             <a class="button" href="api/">Open the reference</a>
@@ -294,12 +285,12 @@
           <figcaption><b>On the device.</b> The same settings, in your hand.</figcaption>
         </figure>
         <figure class="shot">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: recording a corner-tap combination, four taps in"><img src="assets/img/screenshots/escape-recorder.png" alt="Recording a corner-tap combination, four taps in" loading="lazy"></button></div>
-          <figcaption><b>Escape recorder.</b> Tap out the combination you want.</figcaption>
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Escape sequences page on the tablet, the two recorded corner-tap combinations and the optional PIN"><img src="assets/img/screenshots/escape-sequences.png" alt="The Escape sequences page on the tablet: the two recorded corner-tap combinations and the optional PIN" loading="lazy"></button></div>
+          <figcaption><b>The way out.</b> Corner taps you record yourself, and a PIN if you want one.</figcaption>
         </figure>
         <figure class="shot">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the optional stats overlay drawn over the top-right of the page"><img src="assets/img/screenshots/stats-overlay.png" alt="The optional stats overlay drawn over the top-right of the page" loading="lazy"></button></div>
-          <figcaption><b>Stats overlay.</b> Optional numbers on the glass.</figcaption>
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the screensaver settings on the tablet, the five modes, the playlists and the options for pictures"><img src="assets/img/screenshots/screensaver.png" alt="The screensaver settings on the tablet: the five modes, the playlists, and the options for pictures" loading="lazy"></button></div>
+          <figcaption><b>Screensaver.</b> Pictures from the panel&#8217;s own folders, in playlists, or a picture of the day.</figcaption>
         </figure>
         <figure class="shot contain">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Muralis device page in Home Assistant, controls, sensors and diagnostics, all created by MQTT discovery"><img src="assets/img/screenshots/home-assistant.png" alt="The Muralis device page in Home Assistant: controls, sensors and diagnostics, all created by MQTT discovery" loading="lazy"></button></div>
@@ -382,6 +373,7 @@
             <li>Display off, real or black film, chosen for you and explained</li>
             <li>Optional stats overlay, drawn on the panel itself</li>
             <li><b>No Google account needed</b>, on a de-Googled tablet or any other</li>
+            <li>A screensaver: dimmed page, black film, a web page, or pictures from your own folders and from Bing or Wikimedia Commons</li>
             <li><b>No watermark, no expiry, no sign-in, nothing that phones home</b></li>
           </ul>
         </div>
@@ -393,7 +385,7 @@
           <p class="what">The remote surfaces. Worth it if the panel should be one more thing you can reach from your desk; irrelevant if you want a page on a wall.</p>
           <ul>
             <li>The built-in web admin</li>
-            <li>Commands over HTTP and MQTT: reload, restart, set the page, brightness, display off, reboot</li>
+            <li>Commands over HTTP and MQTT: reload, restart, set the page, brightness, display off, the screensaver, reboot</li>
             <li>Telemetry to your broker: battery, memory, network, thermal, page health</li>
             <li>Home Assistant discovery, so entities appear without YAML</li>
             <li><b>One purchase covers every panel on the same Google account</b></li>
