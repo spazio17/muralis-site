@@ -2,8 +2,9 @@
  * muralis.spazio17.org styles, rebranded 2026-09-09.
  *
  * Light first. The page is white on a cool grey ground with one violet accent, the violet the
- * app icon already carries, and dark is a choice made in the menu rather than inherited from
- * the system, so every first visit sees the same page. No grain, no paint, no motion beyond
+ * app icon already carries. Dark follows the system unless the menu says otherwise (Juri,
+ * 2026-09-24: a reader in dark mode must open the site in dark mode; the rebrand had made
+ * light absolute for a fortnight), the same three-way pick the app's web admin has. No grain, no paint, no motion beyond
  * hover and focus. No webfont either: every byte comes from this domain, which is what the
  * privacy page promises.
  */
@@ -20,6 +21,7 @@
   --accent-strong: #5622b6;
   --accent-soft: #eee8fb;
   --accent-text: #5a25c0;
+  --on-accent: #ffffff;
   --ok: #1f8a4c;
   --warn: #a86400;
   --bad: #c41e3a;
@@ -59,6 +61,7 @@ html[data-theme="dark"] {
   --accent-strong: #c7a8ff;
   --accent-soft: rgba(180, 140, 255, .14);
   --accent-text: #c2a2ff;
+  --on-accent: #16142a;
   --ok: #6fd39a;
   --warn: #f0b24a;
   --bad: #ff7a90;
@@ -73,6 +76,41 @@ html[data-theme="dark"] {
   --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 14px 32px -20px rgba(0, 0, 0, .7);
   --bezel: #2a2840;
   --frame-line: rgba(255, 255, 255, .18);
+}
+
+/* The same palette when the system asks for dark and the menu has not said light. Kept as a
+   copy of the block above on purpose: CSS has no way to share one block between a selector and
+   a media query, and a generator here would be worse than 30 lines. Change both. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121120;
+    --panel: #1a1929;
+    --panel-2: #211f34;
+    --line: #2d2a45;
+    --line-strong: #3d3960;
+    --text: #ecebf5;
+    --muted: #a9a6c2;
+    --accent: #b48cff;
+    --accent-strong: #c7a8ff;
+    --accent-soft: rgba(180, 140, 255, .14);
+    --accent-text: #c2a2ff;
+    --on-accent: #16142a;
+    --ok: #6fd39a;
+    --warn: #f0b24a;
+    --bad: #ff7a90;
+    --teal: #5fd3c8;
+    --teal-soft: rgba(95, 211, 200, .14);
+    --amber: #f2b35c;
+    --amber-soft: rgba(242, 179, 92, .14);
+    --rose: #ff8fb8;
+    --rose-soft: rgba(255, 143, 184, .14);
+    --hero-wash: linear-gradient(135deg, #1b1733 0%, #121120 50%, #1f1622 100%);
+    --code-bg: #0e0d19;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 14px 32px -20px rgba(0, 0, 0, .7);
+    --bezel: #2a2840;
+    --frame-line: rgba(255, 255, 255, .18);
+  }
 }
 
 * { box-sizing: border-box; }
@@ -148,9 +186,8 @@ p code, li code, td code, th code, dd code {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-html[data-theme="dark"] .button { color: #16142a; }
-html[data-theme="dark"] .button:hover { color: #16142a; }
-html[data-theme="dark"] .button.secondary, html[data-theme="dark"] .button.secondary:hover { color: var(--accent-text); }
+.button, .button:hover { color: var(--on-accent); }
+.button.secondary, .button.secondary:hover { color: var(--accent-text); }
 
 .tag {
   display: inline-block;
@@ -315,13 +352,7 @@ html[data-theme="dark"] .button.secondary, html[data-theme="dark"] .button.secon
 .facts li:nth-child(3) { color: var(--amber); background: var(--amber-soft); }
 .facts li:nth-child(4) { color: var(--rose); background: var(--rose-soft); }
 .device { margin: 0; }
-.device .bezel {
-  background: var(--bezel);
-  border-radius: 22px;
-  padding: 12px;
-  box-shadow: 0 30px 60px -30px rgba(27, 26, 46, .5), 0 0 0 1px var(--frame-line);
-}
-.device img { display: block; width: 100%; height: auto; border-radius: 12px; }
+.device img { display: block; width: 100%; height: auto; }
 .device figcaption { font-size: .85rem; color: var(--muted); text-align: center; margin-top: 1rem; }
 
 /* Sections */
@@ -465,13 +496,6 @@ section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
 figure.clip { margin: 0; min-width: 0; }
 /* No fixed aspect: the two 1280x800 clips and the two 1280x1000 ones each get their own height,
    so nothing is padded with bars; the stage is black under the video's own edges. */
-figure.clip .frame {
-  border-radius: 14px;
-  overflow: hidden;
-  display: block;
-  background: #000;
-  border: 1px solid var(--frame-line);
-}
 figure.clip video { width: 100%; height: auto; display: block; }
 .clip-note { margin: .8rem 0 0; max-width: 62ch; color: var(--muted); font-size: .88rem; }
 .clipdeck-stage .code-scroll { margin-top: .75rem; }
@@ -494,15 +518,81 @@ figure.shot { margin: 0; }
 figure.shot.trio { grid-column: 1 / -1; }
 figure.shot.trio .frames { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 @media (max-width: 40rem) { figure.shot.trio .frames { grid-template-columns: minmax(0, 1fr); } }
-figure.shot .frame {
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid var(--frame-line);
-  background: var(--panel);
-  aspect-ratio: 16 / 10;
+/* Screenshots shown as the hardware they were taken on (back since 2026-09-24, Juri: "I miss
+   the old frames"): a panel shot sits inside a tablet bezel with the camera in the top edge,
+   where a tablet in landscape has its camera and sensors (Juri, 2026-09-25: not on the left,
+   and never lower on a taller clip), and a desktop shot inside a small browser
+   window with a title bar and three dots. The bezel is the same near-black in both themes: a
+   tablet does not change colour with the website, and committing to it is what makes the frame
+   read as an object instead of a border. The hero's device and the clips share the bezel. */
+figure.shot .frame, .device .bezel, figure.clip .frame {
+  --bezel: .7rem;
+  /* The top bezel is the browser window's title bar as well: the same edges on both frames,
+     so a tablet and a browser in one row of the gallery end on the same line (Juri, 2026-09-25). */
+  --bezel-cam: 1.4rem;
+  --screen-radius: 10px;
+  position: relative;
+  border-radius: 22px;
+  padding: var(--bezel-cam) var(--bezel) var(--bezel) var(--bezel);
+  background: linear-gradient(160deg, #262a38, #10121b 60%);
+  border: 1px solid rgba(255, 255, 255, .09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 24px 44px -26px rgba(0, 0, 0, .7);
   display: block;
+  overflow: visible;
 }
-figure.shot.contain .frame { background: var(--panel-2); }
+/* The camera, centred in the wider top bezel. Drawn, not an image: a dot with a darker pupil. */
+figure.shot .frame::before, .device .bezel::before, figure.clip .frame::before {
+  content: "";
+  position: absolute;
+  top: .55rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: .3rem;
+  height: .3rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #707a99, #10121b 72%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .55);
+}
+/* The glass: the screenshot is clipped to the screen, and a sheen comes up on hover, angled
+   like light across a screen. The sheen sits on the padding box with the bezel's own insets,
+   because an absolutely positioned child resolves inset against the padding box. */
+figure.shot .frame::after {
+  content: "";
+  position: absolute;
+  inset: var(--bezel-cam) var(--bezel) var(--bezel) var(--bezel);
+  border-radius: var(--screen-radius);
+  background: linear-gradient(115deg, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, .05) 26%, rgba(255, 255, 255, 0) 44%);
+  opacity: 0;
+  transition: opacity .35s ease;
+  pointer-events: none;
+}
+figure.shot:hover .frame::after, figure.shot:focus-within .frame::after { opacity: 1; }
+figure.shot .frame .shot-open, .device .bezel img, figure.clip video {
+  border-radius: var(--screen-radius);
+  overflow: hidden;
+  background: var(--panel);
+}
+/* A fixed 16:10 for the screenshots, since a panel is a panel; not for the clips, two of which
+   carry a command strip under the screen and are taller for it. */
+figure.shot .frame .shot-open { aspect-ratio: 16 / 10; }
+/* The desktop captures are not tablets and must not pretend to be: a browser window instead,
+   title bar, three window dots, chrome in the page's own colours. */
+figure.shot.contain .frame {
+  --screen-radius: 7px;
+  background: var(--panel-2);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 24px 44px -26px rgba(0, 0, 0, .5);
+}
+figure.shot.contain .frame::before {
+  top: .45rem;
+  left: .8rem;
+  transform: none;
+  width: .5rem;
+  height: .5rem;
+  background: #e5484d;
+  box-shadow: .85rem 0 0 #e9a13b, 1.7rem 0 0 #46a758;
+}
+figure.shot.contain .frame .shot-open { background: var(--panel); }
 button.shot-open {
   display: block;
   width: 100%;
@@ -569,7 +659,13 @@ dialog.lightbox.blueprint .code-scroll { border-radius: 0; border: 0; max-height
 .recipes .asks { margin: .4rem 0 0; padding-left: 1.1rem; color: var(--muted); font-size: .92rem; }
 .recipes .asks li + li { margin-top: .15rem; }
 .recipes .asks b { color: var(--text); font-weight: 600; }
-.recipe-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; margin-top: 1.1rem; }
+/* Pinned to the card's bottom edge: the two cards ask for different things and their lists
+   differ in length, so without this the two Add buttons sat at different heights (Juri,
+   2026-09-25). The card is a column and the actions row takes the slack above it. */
+.recipes .card { display: flex; flex-direction: column; }
+/* A flex column stretches its children; the badge is a pill and keeps its own width. */
+.recipes .card .tag { align-self: flex-start; }
+.recipe-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; margin-top: auto; padding-top: 1.1rem; }
 .ha-add {
   display: inline-flex;
   align-items: center;
@@ -584,7 +680,7 @@ dialog.lightbox.blueprint .code-scroll { border-radius: 0; border: 0; max-height
 }
 .ha-add svg { width: 16px; height: 16px; fill: currentColor; }
 .ha-add:hover { background: var(--accent-strong); color: #fff; }
-html[data-theme="dark"] .ha-add, html[data-theme="dark"] .ha-add:hover { color: #16142a; }
+.ha-add, .ha-add:hover { color: var(--on-accent); }
 .read-yaml {
   font: inherit;
   font-size: .88rem;
@@ -840,7 +936,10 @@ table.spec td { color: var(--muted); }
 }
 @media (min-width: 60rem) {
   .docs-grid { grid-template-columns: 14rem minmax(0, 1fr); gap: 3.5rem; }
-  .docs-nav { position: sticky; top: 4.75rem; }
+  /* Its own scroll once it is taller than the window: 26 links at 1280x800 were 835 px in an
+     800 px viewport, so the last ones could not be reached until the 30 000 px document had
+     been scrolled to its end (Juri, 2026-09-24). */
+  .docs-nav { position: sticky; top: 4.75rem; max-height: calc(100vh - 5.75rem); overflow-y: auto; overscroll-behavior: contain; padding-right: .5rem; }
 }
 @media (max-width: 60rem) {
   .docs-nav { display: none; }
@@ -883,7 +982,7 @@ table.spec td { color: var(--muted); }
   background: var(--accent);
 }
 .method.get { background: var(--ok); }
-html[data-theme="dark"] .method { color: #16142a; }
+.method { color: var(--on-accent); }
 .entry > p { margin-top: .6rem; color: var(--muted); font-size: .95rem; }
 .entry > p b { color: var(--text); font-weight: 600; }
 .entry .code-scroll { margin-top: .75rem; }

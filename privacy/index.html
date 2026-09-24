@@ -7,12 +7,12 @@
 <meta name="description" content="What Muralis sends, where it sends it, and what it stores on the device. It has no analytics, no crash reporting and no developer-controlled server.">
 <link rel="canonical" href="https://muralis.spazio17.org/privacy/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=28">
+<link rel="stylesheet" href="../assets/css/site.css?v=33">
 <script>
   try {
     var t = localStorage.getItem('muralis-theme');
-    if (t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  } catch (e) { /* private mode: light */ }
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) { /* private mode: follow the system */ }
 </script>
 </head>
 <body>
@@ -46,6 +46,7 @@
       <div class="menugroup">
         <p class="menuhead">Appearance</p>
         <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="auto" aria-pressed="false">Auto</button>
           <button type="button" data-theme="light" aria-pressed="false">Light</button>
           <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
         </div>
@@ -62,7 +63,7 @@
     readable without a device in front of you.
   </p>
 
-  <!-- BEGIN GENERATED LEGAL TEXT: rendered from legal/privacy.txt (sha256 a110f2a25b06c54fe5e4eb514684a13b52e65f5bc29a0fe5092f79c2fb216ef1) by scripts/generate-legal.py. Edit the txt and re-run the script; do not edit this block by hand. -->
+  <!-- BEGIN GENERATED LEGAL TEXT: rendered from legal/privacy.txt (sha256 957944630cbfcd5da1081d3960cd3016053be7bab59f9c1075a23345a8437083) by scripts/generate-legal.py. Edit the txt and re-run the script; do not edit this block by hand. -->
   <p>Muralis is a kiosk launcher that displays a web dashboard you choose, on a device you own. This policy says what the app does with data, in plain words, and is written against the EU General Data Protection Regulation, the GDPR.</p>
   <h2>What the app sends to the developer</h2>
   <p>Nothing. Muralis has no analytics, no crash reporting, no advertising identifiers and no server of its own. The developer receives no data from your device, at any time, for any reason.</p>
@@ -82,7 +83,7 @@
   <h2>Who is responsible for that data</h2>
   <p>You are. The broker and the network are yours: the developer is not a recipient of anything the app publishes and cannot read, correct or delete any of it. The developer processes personal data in exactly one case: if you write to the contact address below, he receives your address and what you wrote, uses them to answer you, and nothing else. For that mail the developer is what the GDPR calls the controller, and the legal basis is that you asked (Article 6(1)(b) and (f) of the GDPR).</p>
   <h2>What the app stores on the device</h2>
-  <p>Your settings, a device identifier Muralis generates itself, and the corner-tap combinations you record. Your broker credentials, the administration password and the Pro purchase record are stored encrypted through the Android keystore. The dashboard view stores whatever cookies and sessions your dashboard sets, in the same way a browser would. To notice a dashboard that has frozen, the app compares two size measurements of the page against their previous values, on the device; they are never stored beyond that comparison and never transmitted.</p>
+  <p>Your settings, a device identifier Muralis generates itself, and the corner-tap combinations you record. Your broker credentials, the administration password, the Pro purchase record and the private key of the panel&#x27;s own HTTPS certificate are stored encrypted through the Android keystore. The dashboard view stores whatever cookies and sessions your dashboard sets, in the same way a browser would. To notice a dashboard that has frozen, the app compares two size measurements of the page against their previous values, on the device; they are never stored beyond that comparison and never transmitted.</p>
   <p>If you use the Pictures screensaver, the app also stores the playlists you make, the names you give pictures for their credit line, the pictures you upload, small previews of the pictures you browsed, and the last few pictures fetched from an online source. Your own pictures are read where they are and never copied, changed or deleted; the one thing Muralis deletes is an uploaded copy, when you ask it to.</p>
   <p>Muralis reads the photos on the device only if you turn on the Pictures screensaver with the panel&#x27;s own pictures as the source, and only after you grant the permission Android asks for at that moment; it reads them to list the folders, draw the previews and show the pictures you picked, and for nothing else. It does not read your contacts, location, messages, call history or microphone, and requests no permission that would allow it to.</p>
   <h2>Deletion</h2>
@@ -122,6 +123,6 @@
 </footer>
 
 <script src="../assets/js/menu.js?v=1"></script>
-<script src="../assets/js/theme.js?v=5"></script>
+<script src="../assets/js/theme.js?v=6"></script>
 </body>
 </html>

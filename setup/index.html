@@ -7,12 +7,12 @@
 <meta name="description" content="The two settings Android only lets a person change for Muralis: the battery limits, and permission to set the brightness. Why each is needed, and the steps for each tablet maker.">
 <link rel="canonical" href="https://muralis.spazio17.org/setup/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=28">
+<link rel="stylesheet" href="../assets/css/site.css?v=33">
 <script>
   try {
     var t = localStorage.getItem('muralis-theme');
-    if (t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  } catch (e) { /* private mode: light */ }
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) { /* private mode: follow the system */ }
 </script>
 </head>
 <body>
@@ -46,6 +46,7 @@
       <div class="menugroup">
         <p class="menuhead">Appearance</p>
         <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="auto" aria-pressed="false">Auto</button>
           <button type="button" data-theme="light" aria-pressed="false">Light</button>
           <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
         </div>
@@ -162,7 +163,7 @@
 </footer>
 
 <script src="../assets/js/menu.js?v=1"></script>
-<script src="../assets/js/theme.js?v=5"></script>
+<script src="../assets/js/theme.js?v=6"></script>
 <script src="../assets/js/setup.js?v=1"></script>
 </body>
 </html>

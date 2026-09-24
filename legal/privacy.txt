@@ -30,7 +30,7 @@ You are. The broker and the network are yours: the developer is not a recipient 
 
 WHAT THE APP STORES ON THE DEVICE
 
-Your settings, a device identifier Muralis generates itself, and the corner-tap combinations you record. Your broker credentials, the administration password and the Pro purchase record are stored encrypted through the Android keystore. The dashboard view stores whatever cookies and sessions your dashboard sets, in the same way a browser would. To notice a dashboard that has frozen, the app compares two size measurements of the page against their previous values, on the device; they are never stored beyond that comparison and never transmitted.
+Your settings, a device identifier Muralis generates itself, and the corner-tap combinations you record. Your broker credentials, the administration password, the Pro purchase record and the private key of the panel's own HTTPS certificate are stored encrypted through the Android keystore. The dashboard view stores whatever cookies and sessions your dashboard sets, in the same way a browser would. To notice a dashboard that has frozen, the app compares two size measurements of the page against their previous values, on the device; they are never stored beyond that comparison and never transmitted.
 
 If you use the Pictures screensaver, the app also stores the playlists you make, the names you give pictures for their credit line, the pictures you upload, small previews of the pictures you browsed, and the last few pictures fetched from an online source. Your own pictures are read where they are and never copied, changed or deleted; the one thing Muralis deletes is an uploaded copy, when you ask it to.
 

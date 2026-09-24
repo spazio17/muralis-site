@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://muralis.spazio17.org/">
 <link rel="icon" href="assets/img/icon-512.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/icon-512.png">
-<link rel="stylesheet" href="assets/css/site.css?v=28">
+<link rel="stylesheet" href="assets/css/site.css?v=33">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Muralis, lock a tablet to one page and leave it">
 <meta property="og:description" content="An Android kiosk for any web page. Locked, self-recovering, controllable over HTTP and MQTT.">
@@ -16,11 +16,12 @@
 <meta property="og:image" content="https://muralis.spazio17.org/assets/img/icon-512.png">
 <meta name="twitter:card" content="summary">
 <script>
-  /* An explicit choice from the menu is applied before first paint. Without one the page is light. */
+  /* An explicit choice from the menu is applied before first paint. Without one the page
+     follows the system, through prefers-color-scheme in the stylesheet. */
   try {
     var t = localStorage.getItem('muralis-theme');
-    if (t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  } catch (e) { /* private mode: light */ }
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) { /* private mode: follow the system */ }
 </script>
 </head>
 <body>
@@ -67,6 +68,7 @@
       <div class="menugroup">
         <p class="menuhead">Appearance</p>
         <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="auto" aria-pressed="false">Auto</button>
           <button type="button" data-theme="light" aria-pressed="false">Light</button>
           <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
         </div>
@@ -97,7 +99,7 @@
       </div>
       <figure class="device">
         <div class="bezel"><img src="assets/img/screenshots/panel-room.png" alt="A meeting-room board filling the whole tablet screen, with no browser bar and no Android bars" width="1920" height="1200"></div>
-        <figcaption>A page on a locked tablet. This one is a room board served on the office network; it could be any page.</figcaption>
+        <figcaption>One page. The whole screen. Nothing else.</figcaption>
       </figure>
     </div>
   </div>
@@ -255,19 +257,19 @@
         <div class="clipdeck-stage">
         <div class="clip-panel" role="tabpanel" id="panel-self-healing" aria-labelledby="tab-self-healing" tabindex="0">
           <figure class="clip">
-            <div class="frame"><video src="assets/video/self-healing.mp4" poster="assets/video/poster/self-healing.jpg" preload="none" muted loop playsinline width="1280" height="800"></video></div>
+            <div class="frame"><video src="assets/video/self-healing.mp4?v=2" poster="assets/video/poster/self-healing.jpg?v=2" preload="none" muted loop playsinline width="1280" height="800"></video></div>
           </figure>
           <p class="clip-note">The page fails and nobody touches the tablet. About ten seconds later the panel loads the configured page again by itself. The waiting runs at five times speed, and the badge counts the real seconds as they pass.</p>
         </div>
         <div class="clip-panel" role="tabpanel" id="panel-magic-taps" aria-labelledby="tab-magic-taps" tabindex="0">
           <figure class="clip">
-            <div class="frame"><video src="assets/video/magic-taps.mp4" poster="assets/video/poster/magic-taps.jpg" preload="none" muted loop playsinline width="1280" height="800"></video></div>
+            <div class="frame"><video src="assets/video/magic-taps.mp4?v=2" poster="assets/video/poster/magic-taps.jpg?v=2" preload="none" muted loop playsinline width="1280" height="800"></video></div>
           </figure>
           <p class="clip-note">Five taps in one corner opens the settings. You choose the corners on the device, and the page underneath carries on as if nothing happened.</p>
         </div>
         <div class="clip-panel" role="tabpanel" id="panel-http-command" aria-labelledby="tab-http-command">
           <figure class="clip">
-            <div class="frame"><video src="assets/video/http-command.mp4" poster="assets/video/poster/http-command.jpg" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
+            <div class="frame"><video src="assets/video/http-command.mp4?v=2" poster="assets/video/poster/http-command.jpg?v=2" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
           </figure>
           <p class="clip-note">A POST to the panel&#8217;s own web admin and it changes page, with nobody near it. The reply under the command is the panel&#8217;s own.</p>
           <div class="code-scroll" tabindex="0" role="region" aria-label="The HTTP command, as a shell line"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
@@ -276,7 +278,7 @@
         </div>
         <div class="clip-panel" role="tabpanel" id="panel-mqtt-command" aria-labelledby="tab-mqtt-command">
           <figure class="clip">
-            <div class="frame"><video src="assets/video/mqtt-command.mp4" poster="assets/video/poster/mqtt-command.jpg" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
+            <div class="frame"><video src="assets/video/mqtt-command.mp4?v=2" poster="assets/video/poster/mqtt-command.jpg?v=2" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
           </figure>
           <p class="clip-note">One message on the panel&#8217;s command topic. It does as it is told and answers on its own result topic.</p>
           <div class="code-scroll" tabindex="0" role="region" aria-label="The MQTT command, as a shell line"><pre><code>mosquitto_pub -h test.mosquitto.org \
@@ -296,10 +298,10 @@
         <figure class="shot trio">
           <div class="frames">
             <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a Grafana dashboard on the locked tablet"><img src="assets/img/screenshots/panel-grafana.png" alt="A Grafana dashboard filling the tablet, with no browser chrome" loading="lazy"></button></div>
-            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: Wikimedia Commons on the locked tablet"><img src="assets/img/screenshots/panel-commons.png" alt="Wikimedia Commons&#8217; picture of the day filling the tablet" loading="lazy"></button></div>
+            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a Home Assistant dashboard on the locked tablet"><img src="assets/img/screenshots/panel-home-assistant.png" alt="Home Assistant&#8217;s demo dashboard filling the tablet" loading="lazy"></button></div>
             <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: openHAB&#8217;s demo on the locked tablet"><img src="assets/img/screenshots/panel-openhab.png" alt="openHAB&#8217;s public demo filling the tablet" loading="lazy"></button></div>
           </div>
-          <figcaption><b>In place.</b> A Grafana board, Wikimedia Commons, an openHAB home: three pages, one panel, nothing else reachable.</figcaption>
+          <figcaption><b>In place.</b> A Grafana board, a Home Assistant dashboard, an openHAB home: three pages, one panel, nothing else reachable.</figcaption>
         </figure>
         <figure class="shot contain">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the web admin in a desktop browser, every setting and a live status block"><img src="assets/img/screenshots/web-admin.png" alt="The web admin in a desktop browser: every setting and a live status block" loading="lazy"></button></div>
@@ -317,7 +319,7 @@
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the screensaver settings on the tablet, the five modes, the playlists and the options for pictures"><img src="assets/img/screenshots/screensaver.png" alt="The screensaver settings on the tablet: the five modes, the playlists, and the options for pictures" loading="lazy"></button></div>
           <figcaption><b>Screensaver.</b> Pictures from the panel&#8217;s own folders, in playlists, or a picture of the day.</figcaption>
         </figure>
-        <figure class="shot">
+        <figure class="shot contain">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Muralis device page in Home Assistant, controls, sensors and diagnostics, all created by MQTT discovery"><img src="assets/img/screenshots/home-assistant.png" alt="The Muralis device page in Home Assistant: controls, sensors and diagnostics, all created by MQTT discovery" loading="lazy"></button></div>
           <figcaption><b>In Home Assistant.</b> Discovered, not declared.</figcaption>
         </figure>
@@ -563,7 +565,7 @@
 </dialog>
 
 <script src="assets/js/menu.js?v=1"></script>
-<script src="assets/js/theme.js?v=5"></script>
+<script src="assets/js/theme.js?v=6"></script>
 <script src="assets/js/lightbox.js?v=4"></script>
 <script src="assets/js/recipes.js?v=2"></script>
 <script src="assets/js/clips.js?v=7"></script>

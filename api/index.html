@@ -7,12 +7,12 @@
 <meta name="description" content="Every way to control a Muralis panel from a distance: the HTTP endpoints, every command with its real reply, every remotely writable setting, the status document field by field, and the MQTT topics and Home Assistant discovery.">
 <link rel="canonical" href="https://muralis.spazio17.org/api/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=28">
+<link rel="stylesheet" href="../assets/css/site.css?v=33">
 <script>
   try {
     var t = localStorage.getItem('muralis-theme');
-    if (t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  } catch (e) { /* private mode: light */ }
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) { /* private mode: follow the system */ }
 </script>
 </head>
 <body>
@@ -57,6 +57,7 @@
       <div class="menugroup">
         <p class="menuhead">Appearance</p>
         <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="auto" aria-pressed="false">Auto</button>
           <button type="button" data-theme="light" aria-pressed="false">Light</button>
           <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
         </div>
@@ -68,7 +69,7 @@
 <main class="wrap docs">
   <p class="eyebrow">Reference</p>
   <h1>Remote control</h1>
-  <p class="intro">Everything a Muralis panel answers to from a distance: the HTTP endpoints, every command, every setting you can write remotely, the status document field by field, and the MQTT side. Each example was run against a real panel and shows its real reply. Replace <code>192.0.2.42</code> with your panel&#8217;s address.</p>
+  <p class="intro">Everything a Muralis panel answers to from a distance: the HTTP endpoints, every command, every setting you can write remotely, the status document field by field, and the MQTT side. The examples use <code>192.0.2.42</code> as the panel&#8217;s address; put your own in its place.</p>
 
   <div class="docs-grid">
     <nav class="docs-nav" aria-label="Sections">
@@ -112,7 +113,7 @@
       <h2 id="http">HTTP</h2>
 
       <h3 id="tls">HTTPS and the certificate</h3>
-      <p>The panel serves HTTPS with a certificate it made itself, kept in the Android Keystore. No authority signed it, so a browser warns once, about the authority and about the name, and one click accepts both. Compare what the browser shows with the fingerprint the panel prints on its web-admin card, on the web admin page itself, and in <code>config.http_certificate_sha256</code>. A plain <code>http://</code> request on the same port is answered with a redirect to the https address and is never asked for a password. In the examples on this page <code>-k</code> tells curl to accept the certificate; to pin it instead, save it once with <code>openssl s_client -connect 192.0.2.42:8080 -showcerts</code> and pass it with <code>--cacert</code>.</p>
+      <p>The panel serves HTTPS with a certificate it made itself. No authority signed it, so a browser warns once, about the authority and about the name, and one click accepts both. Compare what the browser shows with the fingerprint the panel prints on its web-admin card, on the web admin page itself, and in <code>config.http_certificate_sha256</code>. A plain <code>http://</code> request on the same port is answered with a redirect to the https address and is never asked for a password. In the examples on this page <code>-k</code> tells curl to accept the certificate; to pin it instead, save it once with <code>openssl s_client -connect 192.0.2.42:8080 -showcerts</code> and pass it with <code>--cacert</code>.</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="A plain request on the HTTPS port"><pre><code>curl -i http://192.0.2.42:8080/api/stats</code></pre></div>
       <p class="reply">Reply</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="The redirect"><pre><code>HTTP/1.1 301 Moved Permanently
@@ -270,7 +271,7 @@ Content-Type: application/json
      -d cmnd=screensaver.start</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
-        <p>Refused with the reason when it cannot show: <code>the screensaver mode is off</code>, <code>the kiosk is stopped</code>, <code>Muralis is not on screen</code>, <code>Muralis settings are open on the panel</code>, or <code>the first-start wizard is on screen</code>.</p>
+        <p>Refused with the reason when it cannot show: <code>the screensaver mode is off</code>, <code>the kiosk is stopped</code>, <code>Muralis is not on screen</code>, <code>the first-start wizard is on screen</code>, or <code>the escape combination recorder is on screen</code>. With the panel&#8217;s settings open it shows as a preview, and a tap on the glass brings the settings back.</p>
       </article>
 
       <article class="entry" id="cmd-screensaver-stop">
@@ -684,6 +685,7 @@ Content-Type: application/json
             <tr class="group"><th colspan="3"><code>config</code></th></tr>
             <tr><th scope="row"><code>dashboard_url</code>, <code>device_id</code></th><td>The stored page and the panel&#8217;s id, which is also its MQTT client id.</td><td>string</td></tr>
             <tr><th scope="row"><code>settings_sequence</code>, <code>launcher_sequence</code></th><td>The corner-tap combinations. <b>Admin</b>: HTTP only, never on MQTT.</td><td><code>TL,TR,BL,BR</code> strings</td></tr>
+            <tr><th scope="row"><code>escape_pin_set</code></th><td>Whether a PIN is asked after a combination; the PIN itself is never reported. <b>Admin</b>: HTTP only.</td><td>bool</td></tr>
             <tr><th scope="row"><code>stats_overlay</code>, <code>orientation</code>, <code>display_off_method</code>, <code>web_admin_enabled</code></th><td>Stored settings.</td><td>bool; <code>auto</code>/<code>landscape</code>/<code>portrait</code>; <code>auto</code>/<code>sleep</code>/<code>film</code>; bool</td></tr>
             <tr><th scope="row"><code>has_light_sensor</code>, <code>auto_brightness</code></th><td>Live, repeated here for the Home Assistant switch.</td><td>bool</td></tr>
             <tr><th scope="row"><code>http_port</code>, <code>mqtt_host</code>, <code>mqtt_port</code></th><td>Where the panel listens and which broker it talks to. <b>Admin</b>: HTTP only.</td><td></td></tr>
@@ -807,7 +809,7 @@ Content-Type: application/json
 </footer>
 
 <script src="../assets/js/menu.js?v=1"></script>
-<script src="../assets/js/theme.js?v=5"></script>
+<script src="../assets/js/theme.js?v=6"></script>
 <script src="../assets/js/copy.js?v=1"></script>
 </body>
 </html>
