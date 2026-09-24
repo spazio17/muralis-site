@@ -24,8 +24,8 @@
  *
  * Without this file every panel is visible and every clip sits on its poster, so
  * the section degrades to a list of four stills with their text. Longer than
- * intended, but a section. That is the same bargain motion.js made, and it is
- * why the panels are NOT marked hidden in the markup: they were at first, and
+ * intended, but a section. That is why the panels are NOT marked hidden in the
+ * markup: they were at first, and
  * with scripting off that left three of the four clips unreachable behind tabs
  * that could not do anything. The script hides them on load instead.
  */

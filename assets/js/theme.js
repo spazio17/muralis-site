@@ -1,6 +1,6 @@
 /*
- * Theme pick, mirroring the web admin's own control: the page follows the
- * system by default and remembers an explicit choice in localStorage. The
+ * Theme pick: the page is light unless a reader chose Dark here, and the
+ * choice is remembered in localStorage. The
  * initial read is a separate inline snippet in each page's <head> so the
  * correct palette is applied before first paint; this file only wires the
  * buttons.
@@ -14,9 +14,7 @@
   if (!pick) return;
 
   function current() {
-    var explicit = document.documentElement.getAttribute('data-theme');
-    if (explicit) return explicit;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return document.documentElement.getAttribute('data-theme') || 'light';
   }
 
   function reflect() {
@@ -34,7 +32,5 @@
     reflect();
   });
 
-  // Follow the system while no explicit choice has been made.
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', reflect);
   reflect();
 })();

@@ -8,16 +8,17 @@ Plain static HTML and CSS. No Jekyll (`.nojekyll` is present), no dependencies, 
 
 ```
 index.html                product page
+api/index.html            the remote-control reference: HTTP, commands, settings, stats, MQTT
 setup/index.html          the device setup page: battery limits, WebView, what to turn off
 download/                 the Play-signed APK, and everything derived from it (see below)
 privacy/index.html        privacy policy, the public URL Play requires, in addition to the in-app copy
 terms/index.html          terms
 imprint/index.html        imprint
 legal/*.txt               the canonical privacy and terms texts the two pages are generated from
-assets/css/site.css       all styles; the palette is copied from the app (see below)
-assets/js/theme.js        light/dark toggle wiring
+assets/css/site.css       all styles (see the palette note below)
+assets/js/theme.js        light/dark toggle wiring; light unless a reader chose Dark
 assets/js/menu.js         the site menu behind the Menu button
-assets/js/motion.js       the roller pass that brings each block on, and the masthead rail
+assets/js/copy.js         the Copy button on every code block
 assets/js/waydeck.js      the two-way install tabs
 assets/js/clips.js        the demo clip deck
 assets/js/lightbox.js     opens a screenshot full size
@@ -31,13 +32,17 @@ scripts/                  the generators and the checks CI runs (legal text, blu
 .nojekyll                 serve the files as-is instead of running them through Jekyll
 ```
 
-## The palette is not independent
+## The palette
 
-`assets/css/site.css` carries the same Catppuccin custom properties as the app itself, Mocha for
-dark, Latte for light, accents pushed further towards saturation. The sources of truth are
-`KioskTheme.java` (tablet) and `PAGE_CSS` in `HttpAdminServer.java` (web admin) in
-[`spazio17/muralis`](https://github.com/spazio17/muralis). Change a colour there and change it here,
-or the site stops looking like the product.
+Since the rebrand of 2026-09-09 the site has its own palette: light first, a near-white page,
+violet-black text and one violet accent, the violet of the app icon. Dark is a choice a reader
+makes in the menu, not something inherited from the system, so every first visit sees the same
+page. The tablet UI and the web admin (`KioskTheme.java` and `PAGE_CSS` in `HttpAdminServer.java`
+in [`spazio17/muralis`](https://github.com/spazio17/muralis)) still carry the earlier Catppuccin
+palette; bringing them in line is app work, tracked there.
+
+No webfont and nothing from a third party: the privacy page promises that every byte comes from
+this domain, and the stylesheet keeps the promise with a system font stack.
 
 ## Legal text is a copy, not a source
 

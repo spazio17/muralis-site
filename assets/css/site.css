@@ -1,162 +1,72 @@
 /*
- * muralis.spazio17.org styles. This file used to be a byte-for-byte copy of
- * spazio17.github.io's, and is deliberately no longer: the umbrella site went
- * its own way on 2026-08-21. What must not change here is the palette.
+ * muralis.spazio17.org styles, rebranded 2026-09-09.
  *
- * The custom properties below are copied verbatim from the app's own palette
- * (KioskTheme.java on the tablet, PAGE_CSS in HttpAdminServer.java for the web
- * admin): Catppuccin Mocha for dark, Latte for light, accents pushed further
- * towards saturation. Same names, same values, same light/dark mechanism, so
- * the site, the tablet UI and the web admin read as one product. If a colour
- * changes in the app, change it here too.
- *
- * What is new is the motion, and its vocabulary is the name. Murales is
- * graffiti, so the page behaves like a painted wall: plaster grain, paint
- * patches that drift, a passe-partout around the copy, screenshots hung as
- * framed works, sections that get rollered on rather than faded in, and
- * pigment where a ruled border used to be. The complements to the app's mauve
- * come from the same two Catppuccin flavours, peach and teal, so nothing here
- * introduces a colour the app does not already own.
- *
- * The movement is mostly slow enough to be noticed only on the second look.
- * Twice a minute it is not: the wordmark slips out of register like a stencil
- * pulled too early, and a pass of spray drifts over the wall. Quiet, then
- * noise, then quiet.
+ * Light first. The page is white on a cool grey ground with one violet accent, the violet the
+ * app icon already carries, and dark is a choice made in the menu rather than inherited from
+ * the system, so every first visit sees the same page. No grain, no paint, no motion beyond
+ * hover and focus. No webfont either: every byte comes from this domain, which is what the
+ * privacy page promises.
  */
 :root {
-  color-scheme: light dark;
-  --base: #eff1f5;
-  --mantle: #e6e9ef;
-  --surface: #dce0e8;
-  --surface-alt: #ccd0da;
-  --border: #bcc0cc;
-  --text: #4c4f69;
-  --subtext: #6c6f85;
-  --accent: #8226ef;
-  --accent-alt: #1e66f5;
-  --ok: #2fa019;
-  --warn: #d68000;
-  --bad: #d20f39;
-  --radius: 14px;
-  --measure: 68ch;
+  color-scheme: light;
+  --bg: #f6f6fa;
+  --panel: #ffffff;
+  --panel-2: #f0eff7;
+  --line: #e2e0ec;
+  --line-strong: #cfcbe0;
+  --text: #1b1a2e;
+  --muted: #5f5d78;
+  --accent: #6b2fd9;
+  --accent-strong: #5622b6;
+  --accent-soft: #eee8fb;
+  --accent-text: #5a25c0;
+  --ok: #1f8a4c;
+  --warn: #a86400;
+  --bad: #c41e3a;
+  --code-bg: #1c1a2e;
+  --code-text: #ebe8f7;
+  --code-accent: #c9b1ff;
+  --shadow: 0 1px 2px rgba(27, 26, 46, .05), 0 12px 32px -20px rgba(27, 26, 46, .25);
+  --radius: 12px;
   --page: 1120px;
-  --hero-grid: rgba(76, 79, 105, .10);
+  --measure: 66ch;
   --mono: ui-monospace, SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, monospace;
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
-  /* Paint patches on the wall, and the two Catppuccin flavours that complement
-     the app's mauve. Every stop ends at zero alpha on its own hue rather than
-     at `transparent`, which is rgba(0,0,0,0) and drags a dark cast through the
-     ramp. See the note on banding above the hero. */
-  /* Which palette colour is the page and which is a panel on it, rather than a
-     new colour. Latte's base is lighter than its mantle, Mocha's is darker, so
-     the page and the panels swap roles between themes and both get separation
-     out of the palette the app already owns. Light mode had base on mantle, a
-     two percent difference, which is why every card looked like a rumour. */
-  --page-bg: var(--mantle);
-  --panel-bg: var(--base);
-  --panel-shadow: 0 1px 2px rgba(76, 79, 105, .06), 0 10px 24px -18px rgba(76, 79, 105, .35);
-  --node: rgba(136, 57, 239, .30);
-  --wall-1: rgba(136, 57, 239, .17);
-  --wall-2: rgba(254, 100, 11, .14);
-  --wall-3: rgba(23, 146, 153, .12);
-  --comp: #fe640b;
-  --comp-2: #179299;
-  --mat: rgba(76, 79, 105, .20);
-  --grain-alpha: .05;
-  --page-grain-alpha: .045;
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --base: #1e1e2e;
-    --mantle: #181825;
-    --surface: #313244;
-    --surface-alt: #45475a;
-    --border: #585b70;
-    --text: #cdd6f4;
-    --subtext: #a6adc8;
-    --accent: #c08cff;
-    --accent-alt: #7aa2ff;
-    --ok: #8ee88a;
-    --warn: #ffdf8f;
-    --bad: #ff6f91;
-    --hero-grid: rgba(205, 214, 244, .07);
-    --page-bg: var(--base);
-    --panel-bg: var(--mantle);
-    --panel-shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 14px 30px -20px rgba(0, 0, 0, .6);
-    --node: rgba(203, 166, 247, .32);
-    --wall-1: rgba(203, 166, 247, .15);
-    --wall-2: rgba(250, 179, 135, .11);
-    --wall-3: rgba(148, 226, 213, .10);
-    --comp: #fab387;
-    --comp-2: #94e2d5;
-    --mat: rgba(205, 214, 244, .18);
-    --grain-alpha: .075;
-    --page-grain-alpha: .03;
-  }
-}
-
-html[data-theme="light"] { color-scheme: light; }
 
 html[data-theme="dark"] {
   color-scheme: dark;
-  --base: #1e1e2e;
-  --mantle: #181825;
-  --surface: #313244;
-  --surface-alt: #45475a;
-  --border: #585b70;
-  --text: #cdd6f4;
-  --subtext: #a6adc8;
-  --accent: #c08cff;
-  --accent-alt: #7aa2ff;
-  --ok: #8ee88a;
-  --warn: #ffdf8f;
-  --bad: #ff6f91;
-  --hero-grid: rgba(205, 214, 244, .07);
-  --page-bg: var(--base);
-  --panel-bg: var(--mantle);
-  --panel-shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 14px 30px -20px rgba(0, 0, 0, .6);
-  --node: rgba(203, 166, 247, .32);
-  --wall-1: rgba(203, 166, 247, .15);
-  --wall-2: rgba(250, 179, 135, .11);
-  --wall-3: rgba(148, 226, 213, .10);
-  --comp: #fab387;
-  --comp-2: #94e2d5;
-  --mat: rgba(205, 214, 244, .18);
-  --grain-alpha: .075;
-  --page-grain-alpha: .03;
+  --bg: #121120;
+  --panel: #1a1929;
+  --panel-2: #211f34;
+  --line: #2d2a45;
+  --line-strong: #3d3960;
+  --text: #ecebf5;
+  --muted: #a9a6c2;
+  --accent: #b48cff;
+  --accent-strong: #c7a8ff;
+  --accent-soft: rgba(180, 140, 255, .14);
+  --accent-text: #c2a2ff;
+  --ok: #6fd39a;
+  --warn: #f0b24a;
+  --bad: #ff7a90;
+  --code-bg: #0e0d19;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 14px 32px -20px rgba(0, 0, 0, .7);
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
-/* Plaster under everything. Fixed rather than scrolling, because grain that
-   moves with the content reads as a pattern instead of a surface. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: var(--grain);
-  background-size: 200px 200px;
-  opacity: var(--page-grain-alpha);
-  mix-blend-mode: overlay;
-}
-/* Not the dialogs. A modal <dialog> is fixed to the viewport by the UA stylesheet, an author
-   rule beats a UA rule whatever its specificity, and `relative` left the lightbox anchored near
-   the top of the DOCUMENT instead: opening a screenshot scrolled the page up to it, and closing
-   it left the reader there. Nothing in the top layer needs lifting above the grain anyway. */
-body > *:not(dialog) { position: relative; z-index: 1; }
+html { scroll-padding-top: 4.5rem; }
 
 body {
   margin: 0;
-  /* Footer pinned to the bottom on pages shorter than the viewport. */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--page-bg);
+  background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--sans);
   line-height: 1.6;
   -webkit-text-size-adjust: 100%;
 }
@@ -165,1799 +75,790 @@ main { flex: 1 0 auto; }
 
 .wrap { max-width: var(--page); margin: 0 auto; padding: 0 1.25rem; }
 
-a { color: var(--accent-alt); text-decoration-thickness: 1px; text-underline-offset: .15em; }
-a:hover { color: var(--accent); }
+a { color: var(--accent-text); text-decoration-thickness: 1px; text-underline-offset: .15em; }
+a:hover { color: var(--accent-strong); }
 
-/* ---------------------------------------------------------------- masthead */
+h1, h2, h3 { line-height: 1.15; letter-spacing: -.015em; margin: 0; }
+h1 { font-size: clamp(2.2rem, 4.4vw, 3.2rem); font-weight: 750; letter-spacing: -.025em; text-wrap: balance; }
+h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 650; }
+p { margin: 0; }
 
+img, video { max-width: 100%; }
+
+code { font-family: var(--mono); font-size: .92em; }
+p code, li code, td code, th code, dd code {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  padding: .1em .4em;
+  border-radius: 6px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: .74rem;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  margin-bottom: .9rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .7rem 1.15rem;
+  border-radius: 10px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  font-size: .95rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.button:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
+.button.secondary { background: transparent; color: var(--accent-text); border-color: var(--line-strong); }
+.button.secondary:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-text); }
+.button:focus-visible, button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+html[data-theme="dark"] .button { color: #16142a; }
+html[data-theme="dark"] .button:hover { color: #16142a; }
+html[data-theme="dark"] .button.secondary, html[data-theme="dark"] .button.secondary:hover { color: var(--accent-text); }
+
+.tag {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: .15rem .6rem;
+  margin: 0 0 .6rem;
+}
+
+/* Masthead */
 .masthead {
-  border-bottom: 1px solid var(--border);
-  background: var(--mantle);
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 20;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
 }
-.masthead .wrap {
+.masthead > .wrap {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  min-height: 4rem;
-  flex-wrap: wrap;
+  gap: 1.5rem;
+  min-height: 3.75rem;
 }
 .brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: .6rem;
-  font-weight: 650;
+  font-weight: 700;
   font-size: 1.05rem;
   color: var(--text);
   text-decoration: none;
-  margin-right: auto;
+  letter-spacing: -.01em;
 }
 .brand:hover { color: var(--text); }
-.brand img { width: 28px; height: 28px; border-radius: 7px; display: block; }
-.masthead nav { display: flex; align-items: center; gap: 1.1rem; font-size: .9rem; }
-.masthead nav a { color: var(--subtext); text-decoration: none; white-space: nowrap; }
-.masthead nav a:hover { color: var(--accent); }
-/* The page you are on, named rather than merely current: the bar is identical on every
-   page now, so without this there is nothing in it that says where you are. */
-.masthead nav a[aria-current="page"] { color: var(--text); font-weight: 600; }
-
-/* ------------------------------------------------------------------- the menu
- *
- * One button and one panel, on every page and at every width. The bar carries the
- * pages, which are the site's structure and the same everywhere; the panel carries
- * this page's own sections, which only the front page has, and the theme, which is a
- * setting rather than a destination and used to spend bar space on all six pages.
- *
- * Below 60rem the pages leave the bar and join the panel, so a phone gets one button
- * instead of two rows of links that used to wrap. */
+.brand img { width: 28px; height: 28px; border-radius: 7px; }
+.masthead nav.pagenav { display: flex; gap: .25rem; margin-left: auto; }
+.masthead nav.pagenav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: .92rem;
+  font-weight: 500;
+  padding: .45rem .7rem;
+  border-radius: 8px;
+}
+.masthead nav.pagenav a:hover { color: var(--text); background: var(--panel-2); }
+.masthead nav.pagenav a[aria-current="page"] { color: var(--text); font-weight: 650; }
 .menubtn {
   display: inline-flex;
   align-items: center;
   gap: .5rem;
-  padding: .45rem .8rem .45rem .7rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
-  color: var(--accent);
   font: inherit;
-  font-size: .85rem;
+  font-size: .9rem;
   font-weight: 600;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  padding: .45rem .8rem;
   cursor: pointer;
-  transition: color .2s ease, border-color .2s ease, background .2s ease;
 }
-.menubtn:hover { background: color-mix(in srgb, var(--accent) 22%, var(--surface)); border-color: var(--accent); }
-.menubtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-/* Three bars drawn from one element: the middle is the box, the outer two are its
-   shadows, so there is no extra markup and nothing to keep in step. */
+.menubtn:hover { border-color: var(--accent); }
 .menubtn .bars {
-  width: 1rem;
-  height: 2px;
-  border-radius: 2px;
-  background: currentColor;
-  box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor;
+  width: 16px;
+  height: 12px;
+  background: linear-gradient(var(--text) 0 2px, transparent 2px 5px, var(--text) 5px 7px, transparent 7px 10px, var(--text) 10px 12px);
 }
-.menubtn[aria-expanded="true"] { background: var(--accent); color: var(--base); border-color: var(--accent); }
-
+.menubtn[aria-expanded="true"] { background: var(--accent-soft); border-color: var(--accent); }
+@media (max-width: 60rem) {
+  .masthead nav.pagenav { display: none; }
+  .menubtn { margin-left: auto; }
+}
 .sitemenu {
-  border-top: 1px solid var(--border);
-  background: var(--panel-bg);
-  box-shadow: 0 18px 30px -24px rgba(0, 0, 0, .55);
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
 }
-.sitemenu[hidden] { display: none; }
-/* `.masthead .menuwrap`, not `.menuwrap`: this div also carries .wrap and sits inside the
-   masthead, so `.masthead .wrap` reached it with align-items:center and a 4rem min-height,
-   and the Appearance group floated 50px below the sections heading. Equal specificity
-   here, later in the file, so these win. */
-.masthead .menuwrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.4rem 3.5rem;
-  padding-top: 1.1rem;
-  padding-bottom: 1.3rem;
-  min-height: 0;
-  align-items: flex-start;
-}
-/* align-items has to be said out loud: these groups are <nav> elements inside the
-   masthead, so `.masthead nav { align-items: center }` reaches them and centred every
-   link in its own column, which read as a staggered list rather than a menu. */
-/* `.masthead .menugroup` rather than `.menugroup`: these groups are <nav> elements inside
-   the masthead, so `.masthead nav` (one class and one element) outranks a lone class and
-   its align-items:center kept centring every link. It only showed on phones, because on a
-   wide screen the two-column rule below is more specific again and quietly won. */
-.masthead .menugroup {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: .1rem;
-  min-width: 9rem;
-}
-/* Eight sections in one column made the panel taller than it needed to be. Two columns
-   on a wide screen, one on a phone where there is no width to spend. */
-@media (min-width: 46rem) {
-  .sitemenu nav[aria-label="On this page"] {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(7rem, auto));
-    column-gap: 2.5rem;
-    align-content: start;
-  }
-  .sitemenu nav[aria-label="On this page"] .menuhead { grid-column: 1 / -1; }
+.menuwrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1.5rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1.5rem;
 }
 .menuhead {
   margin: 0 0 .5rem;
-  font-size: .7rem;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  color: var(--accent);
+  font-size: .72rem;
   font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 .menugroup a {
-  color: var(--subtext);
+  display: block;
+  color: var(--text);
   text-decoration: none;
-  font-size: .95rem;
   padding: .3rem 0;
-  border-bottom: 0;
-  background-image: none;
+  font-size: .95rem;
 }
-.menugroup a:hover { color: var(--accent); }
-.menugroup a[aria-current="page"] { color: var(--text); font-weight: 600; }
-
-/* Narrow screens: the pages move out of the bar and into the panel, leaving the bar
- * with a brand and one button. Before the menu existed the bar wrapped its links onto
- * a second row and squeezed labels until they broke mid-word ("What / it / does"). */
-@media (max-width: 60rem) {
-  .masthead .pagenav { display: none; }
-}
-@media (min-width: 60rem) {
-  /* On a wide screen the pages are already in the bar, so repeating them in the panel
-     would be the same list twice, one above the other. */
-  .sitemenu nav[aria-label="Pages"] { display: none; }
-}
-
-/* The same pill-shaped segmented control the web admin uses for its theme pick. */
+.menugroup a:hover { color: var(--accent-text); }
+.menugroup a[aria-current="page"] { font-weight: 650; color: var(--accent-text); }
 .themepick {
   display: inline-flex;
-  gap: .15rem;
-  padding: .2rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  overflow: hidden;
 }
 .themepick button {
-  margin: 0;
-  padding: .3rem .7rem;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--subtext);
   font: inherit;
-  font-size: .8rem;
+  font-size: .88rem;
+  padding: .4rem .9rem;
+  border: 0;
+  background: var(--panel);
+  color: var(--muted);
   cursor: pointer;
 }
-.themepick button[aria-pressed="true"] { background: var(--surface-alt); color: var(--text); }
+.themepick button + button { border-left: 1px solid var(--line-strong); }
+.themepick button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-text); font-weight: 650; }
 
-/* ---------------------------------------------------------------- downloads
- *
- * The file table was as wide as the page, which on a desktop left three short
- * columns stranded across 1100px and read as a directory listing rather than as
- * part of the site. Capped at the measure the prose uses, so the page has one
- * column of content down the middle like every other page here. */
-.downloads { padding-block: 3rem; max-width: 58rem; }
-.downloads h1 { margin-bottom: .4rem; }
-.downloads h2 { margin-top: 2.4rem; }
-.downloads .lede { margin-bottom: 2rem; }
-.downloads .note { margin-top: 2rem; font-size: .85rem; color: var(--subtext); }
-.filelist {
-  --chip: var(--accent);
-  position: relative;
-  border: 1px solid color-mix(in srgb, var(--chip) 34%, var(--border));
-  border-radius: var(--radius);
-  background:
-      radial-gradient(150% 130% at 0 0,
-                      color-mix(in srgb, var(--chip) 9%, transparent), transparent 62%),
-      var(--panel-bg);
-  box-shadow: var(--panel-shadow);
-  overflow: hidden;
-  margin: 0;
-  padding: .4rem 1.2rem;
-}
-.filelist::after {
-  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: var(--chip);
-}
-/* The one clip on this page is 1280x800; the shared figure box is 1280x1000 for the
-   front page's mixed deck, so it gets its own shape here and no letterbox. */
-.downloads figure.clip { margin: 0 0 2.4rem; }
-.downloads figure.clip .frame { aspect-ratio: 1280 / 800; }
-.downloads .clip-note { margin: .8rem 0 0; }
-/* Four files with one line each is a list, not a table: a table with two columns is a
-   list wearing a grid. Filename as the term in the mono face, what it is as the
-   definition, a hairline between entries. The shape a release page gives its assets. */
-.filelist dt {
-  margin: 0;
-  padding: .85rem 0 .1rem;
-  font-family: var(--mono);
-  font-size: .92rem;
-  font-weight: 600;
-}
-.filelist dt a { color: var(--text); text-decoration: none; border-bottom: 0; background-image: none; }
-.filelist dt a:hover { color: var(--accent); }
-.filelist dt small { margin-left: .6rem; font: inherit; font-size: .78rem; font-weight: 400; color: var(--subtext); }
-.filelist dd {
-  margin: 0;
-  padding: 0 0 .85rem;
-  color: var(--subtext);
-  font-size: .92rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
-}
-.filelist dd:last-child { border-bottom: 0; }
-.downloads .code-scroll { margin: .6rem 0 0; max-height: none; }
-.downloads .code-scroll code { color: var(--text); word-break: break-all; white-space: pre-wrap; }
-
-/* -------------------------------------------------------------------- hero
- *
- * A painted wall. Back to front: three paint patches drifting, the ruled grid
- * that stands in for a tiled wall and a dashboard's tiles, plaster grain over
- * both, an occasional pass of spray, a passe-partout around the copy, then the
- * copy. All gradients and transforms, so it costs no request and ships no
- * binary; the grain is an inline SVG turbulence in a data URI, which is not a
- * request either.
- *
- * ON THE BANDING THIS REPLACED. The two glows here used to fade to
- * `transparent`, over 38rem, from .10 alpha. Three things compounded: alpha is
- * 8 bit, the ramp was enormous so each step was 6 to 18 pixels wide, and the
- * mask multiplied a second 8 bit ramp over the first. Measured on a headless
- * render of the old hero: 24 flat plateaus across a 540px scan of the top right
- * glow, each a concentric arc, which is what read as "the glow repeated poorly
- * down the page". Reported 2026-08-21.
- *
- * Three parts to the fix, and all three matter: every stop now ends at zero
- * alpha *on its own hue* rather than at `transparent`, which is rgba(0,0,0,0)
- * and pulls the ramp towards black; the patches are smaller and steeper, so the
- * steps land closer together than the eye resolves; and the grain doubles as a
- * dither, breaking whatever contour survives. If a gradient ever bands here
- * again, the grain opacity is the first dial to reach for.
- */
-
-.hero {
-  position: relative;
-  overflow: hidden;
-  padding: 6.5rem 0 4rem;
-  isolation: isolate;
-}
-
-/* The base rule below gives every direct child position: relative, which the
-   decorative layers must escape to stack. */
-.hero > .spray,
-.hero > .grain,
-.hero > .tiles,
-.hero > .mat { position: absolute; pointer-events: none; }
-/* ::after is the element's last child, so the copy has to be lifted a step or
-   the grain lands on top of the headline. */
-.hero > .wrap { position: relative; z-index: 1; }
-
-/* Paint patches. Three, in mauve and its two complements, each drifting and
-   breathing on a different prime-ish period so the wall never repeats within a
-   reading. */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: -15%;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(22rem 15rem at 14% 8%, var(--wall-1), rgba(136, 57, 239, 0) 68%),
-    radial-gradient(19rem 13rem at 82% 14%, var(--wall-2), rgba(254, 100, 11, 0) 68%),
-    radial-gradient(17rem 12rem at 52% 62%, var(--wall-3), rgba(23, 146, 153, 0) 70%);
-  animation: patches 47s ease-in-out infinite alternate;
-}
-
-/* The tiled wall, plus the plaster it is painted on. Grain first in the stack
-   so it sits over the ruled lines rather than under them. */
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(circle at 1px 1px, var(--node) 1.5px, transparent 1.7px),
-    repeating-linear-gradient(to right, var(--hero-grid) 0 1px, transparent 1px 4.5rem),
-    repeating-linear-gradient(to bottom, var(--hero-grid) 0 1px, transparent 1px 4.5rem);
-  background-size: 4.5rem 4.5rem, auto, auto;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 94%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 94%);
-  animation: creep 60s linear infinite;
-}
-@keyframes creep {
-  to { background-position: 4.5rem 4.5rem, 4.5rem 0, 0 4.5rem; }
-}
-
-/* Tiles being painted. Six cell-aligned washes, each lit for about six seconds
-   of a fourteen second cycle and started at spread delays, so one to three of
-   them are glowing at any moment and the wall is never finished. Everything is
-   a multiple of 4.5rem, which is the lattice cell, so a wash always lands inside
-   the lines rather than across them. */
-/* Masked away from the left, where the copy is. A wash blooming directly behind
-   the headline reads as a highlighter accident rather than a painted tile, and
-   at 1440px the copy and the tile field otherwise overlap. */
-.hero > .tiles {
-  inset: 0;
-  z-index: 0;
-  -webkit-mask-image: linear-gradient(100deg, transparent 0 34%, #000 54%);
-  mask-image: linear-gradient(100deg, transparent 0 34%, #000 54%);
-}
-.hero > .tiles span {
-  position: absolute;
-  width: 4.5rem;
-  height: 4.5rem;
-  border-radius: 3px;
-  opacity: 0;
-  filter: blur(3px);
-  background: var(--accent);
-  animation: bloom 14s ease-in-out infinite;
-}
-.hero > .tiles span:nth-child(1) { left: 9rem;    top: 4.5rem;  animation-delay: 0s; }
-.hero > .tiles span:nth-child(2) { left: 27rem;   top: 13.5rem; width: 9rem; background: var(--comp); animation-delay: 2.4s; }
-.hero > .tiles span:nth-child(3) { left: 45rem;   top: 4.5rem;  background: var(--comp-2); animation-delay: 4.8s; }
-.hero > .tiles span:nth-child(4) { left: 18rem;   top: 18rem;   animation-delay: 7.1s; }
-.hero > .tiles span:nth-child(5) { left: 54rem;   top: 9rem;    height: 9rem; background: var(--comp-2); animation-delay: 9.5s; }
-.hero > .tiles span:nth-child(6) { left: 36rem;   top: 22.5rem; background: var(--comp); animation-delay: 11.8s; }
-
-@keyframes bloom {
-  0%, 100% { opacity: 0; transform: scale(.94); }
-  10% { opacity: .30; transform: scale(1); }
-  30% { opacity: .26; }
-  42% { opacity: 0; transform: scale(1.02); }
-}
-
-/* Plaster grain, on its own layer because it needs its own alpha. Sharing
-   ::after with the ruled grid meant an opacity there would have faded the grid
-   with it, so the grain went out at full strength and the hero looked like
-   television static. Its second job is dithering the paint patches, which is
-   why it sits above them. */
-.hero > .grain {
-  inset: 0;
-  z-index: 0;
-  background-image: var(--grain);
-  background-size: 180px 180px;
-  opacity: var(--grain-alpha);
-  mix-blend-mode: overlay;
-}
-
-/* Passe-partout. Two lines inset from the hero edge, the way a mat sits inside
-   a frame, drawn only on the two axes that read as a frame at this width. */
-.hero > .mat {
-  inset: 2.5rem 1.5rem 2rem;
-  z-index: 0;
-  border: 1px solid var(--mat);
-  border-radius: 2px;
-}
-.hero > .mat::before {
-  content: "";
-  position: absolute;
-  inset: .45rem;
-  border: 1px solid var(--mat);
-  border-radius: 1px;
-  opacity: .55;
-}
-
-/* Spray. Grain at a coarser frequency, held invisible for most of a 26s cycle
-   and drifting across for about four seconds of it. This is the noise. */
-.hero > .spray {
-  inset: 0;
-  z-index: 0;
-  background-image: var(--grain);
-  background-size: 340px 340px;
-  mix-blend-mode: overlay;
-  opacity: 0;
-  animation: spray 26s ease-in-out infinite;
-}
-
-@keyframes patches {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to { transform: translate3d(2.5%, -1.5%, 0) scale(1.05); }
-}
-@keyframes spray {
-  0%, 74% { opacity: 0; transform: translate3d(-6%, 2%, 0); }
-  82% { opacity: .13; }
-  90% { opacity: .08; }
-  100% { opacity: 0; transform: translate3d(6%, -2%, 0); }
-}
-
-.hero > * { position: relative; }
-.facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-  margin: 1.9rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-.facts li {
-  font-size: .8rem;
-  color: var(--subtext);
-  background: var(--panel-bg);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: .32rem .8rem;
-  white-space: nowrap;
-}
-
-.hero .status {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .3rem .8rem;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--subtext);
-  font-size: .8rem;
-  letter-spacing: .02em;
-}
-.hero .status .dot {
-  width: .5rem; height: .5rem; border-radius: 50%;
-  background: var(--warn);
-}
-.hero h1 {
-  font-size: clamp(2.4rem, 7vw, 3.6rem);
-  line-height: 1.1;
-  margin: 1.2rem 0 0;
-  color: var(--accent);
-  font-weight: 650;
-  letter-spacing: -.02em;
-}
-.hero .lede {
-  font-size: clamp(1.05rem, 2.4vw, 1.3rem);
-  color: var(--text);
-  max-width: var(--measure);
-  margin: 1rem 0 0;
-}
-/* ---------------------------------------------------------------- the hero QR */
-
-/* Copy and code side by side once there is room for both at a readable width, and stacked
-   before either has to shrink. minmax(0, ...) on both tracks and min-width: 0 on the items,
-   because a grid track's floor is otherwise its item's min-content width, and this one holds
-   a 320px image that would take the page's width with it. Same trap as the clip deck. */
+/* Hero */
+.hero { padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(2.5rem, 5vw, 4rem); }
 .hero > .wrap {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 2.5rem;
   align-items: center;
 }
-.hero > .wrap > * { min-width: 0; }
 @media (min-width: 62rem) {
-  .hero > .wrap {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
-    gap: 3rem;
-  }
+  .hero > .wrap { grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 3.5rem; }
 }
-
-.heroqr { text-align: center; }
-/* White, in both themes, and not a token. The card is the code's quiet zone: a QR scanner
-   needs light modules around the pattern, and letting the page's dark palette paint it would
-   invert the code for the one reader that matters, an Android setup wizard on a tablet nobody
-   can log into yet. */
-.qrcard {
-  display: inline-block;
-  background: #fff;
-  /* A hairline as well as the shadow: on the light theme a white card on a near-white
-     page has nothing but the shadow to hold its edge, and the shadow alone is too soft. */
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: .9rem;
-  box-shadow: var(--panel-shadow);
-  line-height: 0;
+.hero .lede {
+  margin-top: 1.25rem;
+  font-size: 1.15rem;
+  color: var(--muted);
+  max-width: 34rem;
 }
-/* An explicit width rather than a percentage: the card shrinks to fit its content, so a
-   content width given as a percentage of the card is a question with no answer. The card is
-   what bends on a narrow screen now, not the code. */
-.qrcard { max-width: 100%; }
-.qrcard img { display: block; width: 17rem; height: auto; max-width: 100%; }
-.qrcard.big img { width: 22rem; }
-.qrlabel {
-  margin: .9rem 0 0;
-  font-size: .95rem;
-  font-weight: 600;
-  color: var(--text);
-}
-.qrnote {
-  margin: .3rem 0 0;
-  font-size: .82rem;
-  color: var(--subtext);
-}
-.qrmore { margin-top: .8rem; }
-
-/* The page's one button shape, taken from the pills the recipe cards already use so a
-   button here is recognisably the same object as a button there. A link wearing it is
-   still a link: it navigates, and it keeps its own focus ring. */
-.button {
-  display: inline-block;
-  padding: .55rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: .87rem;
-  text-decoration: none;
-  transition: border-color .15s ease, color .15s ease;
-}
-.button:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
-/* The hero's one call to action, dressed like the Pro card rather than like the quiet
-   buttons elsewhere: the card's mauve, a tint of it behind, and its three-pigment stroke
-   as the top edge, so the two things on this page that ask for a click wear the same
-   paint. Kept a pill, so it is still recognisably a .button. */
-.button.qrmore {
-  --fill: color-mix(in srgb, var(--accent) 14%, var(--surface));
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--fill), var(--fill)) padding-box,
-    linear-gradient(90deg, var(--accent), var(--comp-2) 60%, var(--comp)) border-box;
-  color: var(--accent);
-  font-weight: 600;
-  transition: color .2s ease;
-}
-.button.qrmore:hover {
-  --fill: color-mix(in srgb, var(--accent) 26%, var(--surface));
-  color: var(--text);
-}
-
-/* ---------------------------------------------------------------- install */
-
-/* Google's own artwork, shown whole and unaltered as the badge guidelines require. The
-   transparent margin baked into the PNG is the clear space those rules ask for, one quarter
-   of the badge height, so nothing here adds or trims any. Sized well above the 28px minimum
-   height: at 15rem wide the badge inside the file is about 62px tall. */
-.playbadge { margin: 1.1rem 0 0; }
-/* inline-block so the link is exactly the artwork and nothing beside it; as a bare
-   inline element its line box ran the width of the column, and a click well clear of the
-   badge still opened Play (measured: a 480px link around a 240px image). line-height 0
-   and no underline because the page's default link rule would otherwise draw a rule
-   across the bottom of the badge, which the guidelines do not allow over the artwork. */
-/* inline-block so the link is exactly the artwork and nothing beside it; as a bare inline
-   element its line box ran the width of the column, and a click well clear of the badge
-   still opened Play (measured: a 480px link around a 240px image). The rest undoes the
-   painted underline `section p a` gives prose links: it was always being applied here,
-   and making the anchor inline-block is what finally made it visible, as a hairline
-   ruled across the bottom of Google's artwork. The badge guidelines do not allow
-   anything drawn over it. */
-.playbadge a {
-  display: inline-block;
-  max-width: 15rem;
-  line-height: 0;
-  text-decoration: none;
-  border-bottom: 0;
-  background-image: none;
-}
-.playbadge img { display: block; width: 100%; max-width: 15rem; height: auto; }
-.playbadge a:hover { opacity: .85; }
-
-/* The one callout on the page, and it is allowed to be loud: it is the door to the files a
-   careful reader wants to see before a tablet does. A stroke of the brand pigment down the
-   left edge and a wash of the same behind the text, which is the card treatment above with the
-   dial turned up, so it reads as a painted note rather than an alert box. */
-.callout {
+.hero .actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem; }
+.facts {
+  list-style: none;
+  margin: 1.75rem 0 0;
+  padding: 0;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem 1.5rem;
-  margin: 1.5rem 0 0;
-  padding: 1.1rem 1.4rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
-  border-left: 5px solid var(--accent);
-  border-radius: var(--radius);
-  background:
-    linear-gradient(90deg,
-                    color-mix(in srgb, var(--accent) 14%, var(--panel-bg)),
-                    color-mix(in srgb, var(--accent) 5%, var(--panel-bg)) 70%);
-  box-shadow: var(--panel-shadow);
+  gap: .5rem;
 }
-.callout > p {
-  flex: 1 1 26rem;
-  min-width: 0;
-  margin: 0;
-  color: var(--text);
-  font-size: .95rem;
+.facts li {
+  font-size: .82rem;
+  font-weight: 550;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .3rem .75rem;
 }
-.callout strong { color: var(--accent); font-weight: 650; }
-.callout .button {
-  flex: 0 0 auto;
-  border-color: var(--accent);
-  color: var(--accent);
+.device { margin: 0; }
+.device .bezel {
+  background: #17162a;
+  border-radius: 22px;
+  padding: 12px;
+  box-shadow: 0 30px 60px -30px rgba(27, 26, 46, .5), 0 0 0 1px rgba(27, 26, 46, .08);
 }
-.callout .button:hover { background: var(--accent); color: var(--base); }
+.device img { display: block; width: 100%; height: auto; border-radius: 12px; }
+.device figcaption { font-size: .85rem; color: var(--muted); text-align: center; margin-top: 1rem; }
 
-/* ---------------------------------------------------------------- sections */
-
-section { position: relative; padding: 4.25rem 0; border-top: 0; }
-/* The masthead is sticky, so a nav jump has to stop short of it or the section
-   heading lands underneath. The section's own 4.25rem of top padding absorbs
-   the 65px header on a wide screen with 3px to spare, which is luck, not
-   design; the moment the masthead wraps to two rows the heading is buried.
-   Measured: 65px wide, up to 83px mid, 104px once the nav wraps. The margins
-   below clear each of those with room, and overshooting only shows a sliver of
-   the section above, which is harmless. */
-section { scroll-margin-top: 1.5rem; }
-@media (max-width: 760px) { section { scroll-margin-top: 3rem; } }
-/* Pigment instead of a ruled border: mauve into blue into peach, smeared along
-   the join and drifting so the mix is never quite the same twice. */
-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg,
-      transparent,
-      var(--accent) 18%,
-      var(--accent-alt) 42%,
-      var(--comp-2) 62%,
-      var(--comp) 82%,
-      transparent);
-  background-size: 240% 100%;
-  opacity: .5;
-  animation: pigment 38s ease-in-out infinite alternate;
+/* Sections */
+section { padding: clamp(2.75rem, 6vw, 4.5rem) 0; border-top: 1px solid var(--line); }
+section > .wrap > h2 { max-width: 30rem; }
+section > .wrap > .intro {
+  margin-top: .9rem;
+  color: var(--muted);
+  max-width: var(--measure);
+  font-size: 1.02rem;
 }
-@keyframes pigment {
-  from { background-position: 0 0; }
-  to { background-position: 100% 0; }
-}
-section > .wrap > h2 {
-  font-size: 1.5rem;
-  margin: 0 0 .4rem;
-  font-weight: 650;
-  letter-spacing: -.01em;
-}
-section > .wrap > .intro { color: var(--subtext); max-width: var(--measure); margin: 0 0 2rem; }
+section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
 
 .cards {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  margin-top: 2rem;
 }
-/* ------------------------------------------------------------------ tiers
- *
- * Two adjacent cards, the way a shop puts them, because the only question a reader
- * has here is what the paid one adds. The paid card is marked with an accent border
- * rather than a bigger size or a "most popular" badge: there are two options, one of
- * which is free forever, so there is nothing to nudge anyone towards.
- */
-.tiers {
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.25rem 1.35rem;
+  box-shadow: var(--shadow);
+}
+.card h3 { margin-bottom: .45rem; }
+.card p { color: var(--muted); font-size: .95rem; }
+.card p + p { margin-top: .5rem; }
+
+.audience .cards { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.audience .card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
+.audience .card svg {
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  flex: none;
+}
+
+.remote > .wrap > .split {
   display: grid;
-  gap: 1.25rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
   align-items: start;
 }
-.tier {
-  background: var(--panel-bg);
-  box-shadow: var(--panel-shadow);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.4rem 1.5rem 1.5rem;
-}.tier h3 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 650;
-  letter-spacing: -.01em;
+@media (min-width: 60rem) {
+  .remote > .wrap > .split { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 3rem; }
 }
-.tier .price {
-  margin: .3rem 0 0;
-  color: var(--accent);
-  font-size: .95rem;
-  font-weight: 600;
+.remote .points { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; }
+.remote .points li { padding-left: 1.4rem; position: relative; color: var(--muted); font-size: .98rem; }
+.remote .points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .55em;
+  width: .6rem;
+  height: .6rem;
+  border-radius: 50%;
+  background: var(--accent);
 }
-/* The asterisk's other half. Smaller and quieter than the price it qualifies: the total a buyer
-   pays is this base plus their own country's tax rate, so no single figure here would be right
-   for everyone, and Play shows them the real one before they pay. */
-.tier .taxnote {
-  margin: .35rem 0 0;
-  color: var(--subtext);
-  font-size: .78rem;
-  line-height: 1.45;
-}
-.tier > p.what {
-  margin: .9rem 0 0;
-  color: var(--subtext);
-  font-size: .93rem;
-}
-.tier ul {
-  margin: 1.1rem 0 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: .55rem;
-}
-.tier li {
-  font-size: .93rem;
-  padding-left: 1.35rem;
+.remote .points li b { color: var(--text); font-weight: 600; }
+.remote .actions { margin-top: 1.5rem; display: flex; gap: .75rem; flex-wrap: wrap; }
+.remote .code-scroll + .code-scroll { margin-top: .75rem; }
+.remote .reply { font-size: .82rem; color: var(--muted); margin: .5rem 0 0; }
+
+/* Code blocks */
+.code-scroll {
   position: relative;
+  background: var(--code-bg);
+  color: var(--code-text);
+  border-radius: 10px;
+  overflow: auto;
+  border: 1px solid rgba(255, 255, 255, .06);
+}
+.code-scroll pre { margin: 0; padding: .9rem 1rem; font-family: var(--mono); font-size: .84rem; line-height: 1.55; }
+.code-scroll code { font-family: inherit; font-size: inherit; color: inherit; background: none; padding: 0; }
+.code-scroll .prompt { color: var(--code-accent); user-select: none; }
+.code-scroll .copy {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--code-text);
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 7px;
+  padding: .25rem .55rem;
+  cursor: pointer;
+}
+.code-scroll .copy:hover { background: rgba(255, 255, 255, .16); }
+.code-scroll.has-copy pre { padding-top: 2.4rem; }
+
+/* Clip deck */
+.clipdeck {
+  display: grid;
+  grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+  align-items: start;
+}
+.clipdeck-list { display: flex; flex-direction: column; gap: .5rem; }
+.clipdeck-list button {
+  font: inherit;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: .8rem .95rem;
+  cursor: pointer;
   color: var(--text);
 }
+.clipdeck-list button b { display: block; font-weight: 650; font-size: .95rem; }
+.clipdeck-list button span { display: block; color: var(--muted); font-size: .85rem; margin-top: .15rem; }
+.clipdeck-list button:hover { border-color: var(--line-strong); }
+.clipdeck-list button[aria-selected="true"] { border-color: var(--accent); background: var(--accent-soft); }
+figure.clip { margin: 0; min-width: 0; }
+figure.clip .frame {
+  aspect-ratio: 1280 / 1000;
+  border-radius: 14px;
+  overflow: hidden;
+  display: block;
+  background: #17162a;
+  border: 1px solid var(--line);
+}
+figure.clip video { width: 100%; height: 100%; object-fit: contain; display: block; }
+.clip-note { margin: .8rem 0 0; max-width: 62ch; color: var(--muted); font-size: .88rem; }
+.clipdeck-stage .code-scroll { margin-top: .75rem; }
+@media (max-width: 56rem) {
+  .clipdeck { grid-template-columns: minmax(0, 1fr); }
+  .clipdeck-list { flex-direction: row; overflow-x: auto; padding: 2px 2px .5rem; }
+  .clipdeck-list button { flex: 0 0 15rem; }
+}
+
+/* Screens */
+.shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+figure.shot { margin: 0; }
+figure.shot .frame {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  aspect-ratio: 16 / 10;
+  display: block;
+}
+figure.shot.contain .frame { background: var(--panel-2); }
+button.shot-open {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+figure.shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+figure.shot.contain img { object-fit: contain; }
+figure.shot figcaption { margin-top: .7rem; font-size: .9rem; color: var(--muted); }
+figure.shot figcaption b { color: var(--text); font-weight: 650; }
+
+dialog.lightbox {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  max-width: min(96vw, 1200px);
+  width: auto;
+}
+dialog.lightbox::backdrop { background: rgba(14, 13, 25, .72); }
+dialog.lightbox .sheet {
+  background: var(--panel);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .6);
+}
+dialog.lightbox img { display: block; max-width: 96vw; max-height: 82vh; width: auto; height: auto; }
+dialog.lightbox .bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .75rem 1rem;
+  border-top: 1px solid var(--line);
+}
+dialog.lightbox .bar p, dialog.lightbox .bar strong { margin: 0; flex: 1; font-size: .9rem; color: var(--muted); }
+dialog.lightbox .bar button {
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 600;
+  padding: .45rem .9rem;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+}
+dialog.lightbox .bar button:hover { border-color: var(--accent); }
+dialog.lightbox.blueprint .sheet { width: min(96vw, 900px); }
+dialog.lightbox.blueprint .code-scroll { border-radius: 0; border: 0; max-height: 72vh; }
+
+/* Recipes */
+.recipes .card .what { color: var(--muted); }
+.recipes .asks-label {
+  margin-top: 1rem;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.recipes .asks { margin: .4rem 0 0; padding-left: 1.1rem; color: var(--muted); font-size: .92rem; }
+.recipes .asks li + li { margin-top: .15rem; }
+.recipes .asks b { color: var(--text); font-weight: 600; }
+.recipe-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; margin-top: 1.1rem; }
+.ha-add {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .5rem .9rem;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #fff;
+  font-size: .88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.ha-add svg { width: 16px; height: 16px; fill: currentColor; }
+.ha-add:hover { background: var(--accent-strong); color: #fff; }
+html[data-theme="dark"] .ha-add, html[data-theme="dark"] .ha-add:hover { color: #16142a; }
+.read-yaml {
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  padding: .45rem .85rem;
+  cursor: pointer;
+}
+.read-yaml:hover { border-color: var(--accent); background: var(--accent-soft); }
+.recipe-actions .plain { font-size: .88rem; }
+.copy-yaml { cursor: pointer; }
+
+/* Pricing */
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+.tier {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.tier.paid { border-color: var(--accent); }
+.tier h3 { font-size: 1.15rem; }
+.tier .price { font-size: 2rem; font-weight: 750; letter-spacing: -.02em; margin-top: .5rem; }
+.tier .taxnote { font-size: .78rem; color: var(--muted); }
+.tier > p.what { margin-top: .75rem; color: var(--muted); font-size: .95rem; }
+.tier ul { margin: 1.25rem 0 0; padding: 0; list-style: none; display: grid; gap: .55rem; }
+.tier li { position: relative; padding-left: 1.5rem; font-size: .95rem; color: var(--muted); }
 .tier li::before {
   content: "";
   position: absolute;
   left: 0;
   top: .5em;
-  width: .45rem;
+  width: .85rem;
   height: .45rem;
-  border-radius: 50%;
-  background: var(--accent);
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(-45deg);
 }
-.tier.free li::before { background: var(--ok); }
-.tier li b { font-weight: 600; }
+.tier.free li::before { border-color: var(--ok); }
+.tier li b { color: var(--text); font-weight: 600; }
 
-/* For a section holding only one or two cards, so they don't stretch into slabs. */
-.cards.narrow { grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 26rem)); }
-
-.card {
-  background: var(--panel-bg);
-  box-shadow: var(--panel-shadow);
-  border: 1px solid var(--border);
+/* Install */
+.waydeck, .vendordeck {
+  margin-top: 2rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 1.1rem 1.15rem 1.2rem;
-}
-.card h3 {
-  margin: 0 0 .45rem;
-  font-size: 1rem;
-  font-weight: 650;
-  color: var(--text);
-}
-.card p { margin: 0; color: var(--subtext); font-size: .92rem; }
-.card p + p { margin-top: .6rem; }
-.card .tag {
-  display: inline-block;
-  margin-bottom: .55rem;
-  font-size: .7rem;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-/* -------------------------------------------------------------- screenshots
- *
- * Each figure is a fixed-ratio slot so the gallery keeps its shape whether the
- * real capture is in place or not. A slot still waiting for one carries
- * class="pending" and shows its caption inside the frame; to fill it, replace
- * the .placeholder div with <img src="..." alt="..."> and drop the class.
- */
-.shots {
-  display: grid;
-  gap: 1.4rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
-}
-figure.shot { margin: 0; }
-figure.shot .frame {
-  aspect-ratio: 16 / 10;
-  border-radius: 22px;
+  box-shadow: var(--shadow);
   overflow: hidden;
+}
+.waypick, .vendorpick {
   display: flex;
+  flex-wrap: wrap;
+  gap: .25rem;
+  padding: .5rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel-2);
 }
-figure.shot img { width: 100%; height: 100%; object-fit: cover; display: block; }figure.shot figcaption {
-  margin-top: .6rem;
-  color: var(--subtext);
-  font-size: .85rem;
+.waypick button, .vendorpick button {
+  font: inherit;
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: .5rem .95rem;
+  cursor: pointer;
 }
-figure.shot figcaption b { color: var(--text); font-weight: 600; }
-
-/* ------------------------------------------------------------------- clips
- *
- * "In motion" shows ONE clip at a time, chosen from a list beside it, because
- * this section has to sit at about the height of every other section on the
- * page. Four clips stacked, however they were arranged, made a section three
- * times the length of the gallery, and four panels looping at once was tiring to
- * look at whatever size they were.
- *
- * The stage keeps a fixed shape, taken from the tallest clip, so choosing a
- * different one never moves the page under the pointer. The two clips that carry
- * a command strip fill it; the two that are the panel alone sit letterboxed
- * inside it, which is why the stage has its own dark ground.
- */
-.clipdeck {
+.waypick button:hover, .vendorpick button:hover { color: var(--text); }
+.waypick button[aria-selected="true"], .vendorpick button[aria-selected="true"] {
+  background: var(--panel);
+  color: var(--accent-text);
+  border-color: var(--line);
+}
+.way-panel, .vendor-panel { padding: 1.5rem; }
+.way-split {
   display: grid;
-  grid-template-columns: minmax(0, 19rem) minmax(0, 1fr);
-  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
   align-items: start;
 }
-.clipdeck-list {
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-  /* Both children of the deck carry this. A grid item's automatic minimum size is
-     its min-content, and these hold a 1280px video and a long <pre>, so without
-     it the item overflows its own track and takes the page's width with it. The
-     minmax(0, ...) on the track is only half of the pair. */
-  min-width: 0;
-}
-.clipdeck-stage { min-width: 0; }
-.clip-panel { min-width: 0; }
-.clipdeck-list button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  font: inherit;
-  color: var(--subtext);
-  cursor: pointer;
-  padding: .7rem .9rem;
-  border: 1px solid var(--border);
-  border-left: 3px solid transparent;
-  border-radius: 12px;
-  background-color: var(--panel-bg);
-  transition: border-color .25s ease, color .25s ease, background-color .25s ease, box-shadow .25s ease;
-}
-.clipdeck-list button b {
-  display: block;
-  color: var(--text);
-  font-weight: 600;
-  font-size: .95rem;
-}
-.clipdeck-list button span {
-  display: block;
-  margin-top: .15rem;
-  font-size: .82rem;
-}
-.clipdeck-list button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-.clipdeck-list button[aria-selected="true"] {
-  border-left-color: var(--chip, var(--accent));
-  background-color: var(--surface);
-  color: var(--text);
-}
-.clipdeck-list button:nth-child(3n+2) { --chip: var(--comp); }
-.clipdeck-list button:nth-child(3n+3) { --chip: var(--comp-2); }
-
-figure.clip { margin: 0; min-width: 0; }
-figure.clip .frame {
-  /* The taller clip's shape exactly, which is what makes the panel itself the
-     same size in every clip. Both command clips are 1280x1000 and fill this box;
-     the two panel-only clips are 1280x800, so they fit the width and sit
-     letterboxed, and 800/1000 of this box is precisely the height a 16:10 panel
-     takes at that width. A stage set to anything in between, which is what this
-     was, scales the two groups differently and the panel changes size on every
-     switch. */
-  aspect-ratio: 1280 / 1000;
-  border-radius: 18px;
-  overflow: hidden;
-  display: block;
-  background: #10121b;
-  border: 1px solid rgba(255, 255, 255, .09);
-  box-shadow: 0 24px 44px -26px rgba(0, 0, 0, .6), var(--rim), var(--rim-glow);
-}
-figure.clip video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-.clip-note {
-  margin: .8rem 0 0;
-  max-width: 62ch;
-  color: var(--subtext);
-  font-size: .85rem;
-}
-.clipdeck-stage .code-scroll { margin-top: .7rem; }
-
-@media (max-width: 56rem) {
-  .clipdeck { grid-template-columns: minmax(0, 1fr); }
-  /* The chooser becomes a row that scrolls: a four-item vertical list above the
-     clip pushes the clip itself off a phone screen. */
-  .clipdeck-list {
-    flex-direction: row;
-    gap: .5rem;
-    overflow-x: auto;
-    /* Room for the focus ring: as a row this is a scroll container, which clips
-       its contents, and a 2px ring with a 2px offset reaches 4px past the
-       buttons. In the column layout nothing overflows and nothing clips. */
-    padding: 4px 4px .35rem;
-    scrollbar-width: thin;
-  }
-  .clipdeck-list button {
-    flex: 0 0 auto;
-    max-width: 14rem;
-    border-left-width: 1px;
-    border-bottom: 3px solid transparent;
-  }
-  .clipdeck-list button[aria-selected="true"] {
-    border-left-color: var(--border);
-    border-bottom-color: var(--chip, var(--accent));
-  }
-}
-
-/* ---------------------------------------------------------------- lightbox
- *
- * A <dialog> rather than a hand-rolled overlay: showModal() brings the focus trap,
- * the Escape key and the inert background with it, none of which is worth
- * reimplementing. The trigger is a real <button> so it is reachable by keyboard and
- * announced as a control; a bare <img> with a click handler is neither.
- */
-button.shot-open {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: zoom-in;
-  border-radius: var(--radius);
-  overflow: hidden;
-  font: inherit;
-  color: inherit;
-}
-button.shot-open:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
-dialog.lightbox {
-  padding: 0;
-  border: 0;
-  background: none;
-  max-width: 96vw;
-  max-height: 96vh;
-  width: min(96vw, 1600px);
-  color: var(--text);
-}
-dialog.lightbox::backdrop {
-  /* Deliberately a literal: ::backdrop does not inherit custom properties in every
-     engine, and a transparent backdrop is worse than a slightly-off one. */
-  background: rgba(10, 10, 16, .82);
-}
-dialog.lightbox .sheet {
-  background: var(--panel-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-dialog.lightbox img {
-  display: block;
-  width: 100%;
-  max-height: 84vh;
-  object-fit: contain;
-  background: var(--base);
-}
-dialog.lightbox .bar {
-  display: flex;
-  gap: 1rem;
-  align-items: baseline;
-  padding: .7rem .9rem;
-  border-top: 1px solid var(--border);
-}
-dialog.lightbox .bar p {
-  margin: 0;
-  font-size: .88rem;
-  color: var(--subtext);
-  flex: 1;
-}
-dialog.lightbox .bar button {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  border-radius: 999px;
-  padding: .3rem .8rem;
-  font: inherit;
-  font-size: .82rem;
-  cursor: pointer;
-}
-dialog.lightbox .bar button:hover { border-color: var(--accent); color: var(--accent); }
-
-/* Portrait captures (the tablet's own screens) want a taller slot. */
-/*
- * A capture whose own proportions are not 16:10, the web admin reflows into columns, so its
- * natural shape is nearly square. Letterbox it rather than cropping: the point of that shot is
- * that every setting is on one page, and `cover` would cut the columns off to prove the opposite.
- */
-figure.shot.contain img { object-fit: contain; background: var(--mantle); }
-
-/* --------------------------------------------------------------- spec table */
-
-.spec { width: 100%; border-collapse: collapse; font-size: .92rem; }
-.spec caption { text-align: left; color: var(--subtext); padding-bottom: .75rem; }
-.spec th.spec td {
-  text-align: left;
-  padding: .65rem .8rem;
-  border-bottom: 1px solid var(--border);
-  vertical-align: top;
-}
-.spec th { width: 15rem; font-weight: 600; color: var(--text); }
-.spec td { color: var(--subtext); }
-.spec tr:last-child th.spec tr:last-child td { border-bottom: 0; }
-.table-scroll { overflow-x: auto; }
-
-/* ----------------------------------------------------------------- notices */
-
-.notice {
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  padding: 1rem 1.1rem;
-  color: var(--subtext);
-  font-size: .92rem;
-}
-.notice strong { color: var(--text); }
-.notice.warn { border-color: var(--warn); }
-.notice.warn strong { color: var(--warn); }
-.notice p { margin: 0; }
-.notice p + p { margin-top: .6rem; }
-
-/* -------------------------------------------------------------------- prose
- *
- * Used by the privacy and terms pages, which are rendered from the same source
- * text the app bundles.
- */
-.prose { max-width: var(--measure); padding: 3rem 0 4rem; }
-.prose h1 { font-size: 2rem; margin: 0 0 .3rem; color: var(--accent); font-weight: 650; }
-.prose .updated { color: var(--subtext); font-size: .85rem; margin: 0 0 2rem; }
-.prose h2 {
-  font-size: .8rem;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 2.4rem 0 .6rem;
-}
-.prose p { margin: 0 0 1rem; }
-.prose ul { margin: 0 0 1rem; padding-left: 1.2rem; color: var(--subtext); }
-.prose li { margin-bottom: .35rem; }
-.prose .bullet-lead { color: var(--text); font-weight: 600; }
-
-/* ------------------------------------------------------------------- footer */
-
-footer {
-  margin-top: auto;
-  border-top: 1px solid var(--border);
-  background: var(--mantle);
-  padding: 2rem 0 3rem;
-  color: var(--subtext);
-  font-size: .88rem;
-}
-footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: baseline; }
-footer nav { display: flex; flex-wrap: wrap; gap: 1rem; margin-left: auto; }
-footer a { color: var(--subtext); }
-footer a:hover { color: var(--accent); }
-
-/* =========================================================== the painted page
- *
- * Enhancement over a page that already works without any of it. Two rules hold
- * for everything below: nothing may hide content when the scripting or the
- * property is unavailable, and nothing may move for a reader who asked for less
- * motion.
- */
-
-/* The wordmark, and the one piece of real noise on the page. Nearly all of the
-   cycle it is set solid in mauve. Then the stencil slips: the complements offset
-   a couple of pixels either side, the way a screen print pulled too early puts
-   the second colour off register, and it snaps back.
-
-   Every 7 and then every 9 seconds, Juri's call 2026-08-27, where it used to be
-   every 31. Two slips inside one 16s cycle rather than one inside a shorter
-   cycle, and deliberately at uneven positions, 6s and 15s: a single slip on a
-   fixed period starts to read as a clock, and a misprint is not on a schedule.
-   Both gaps stay inside the 5 to 10 seconds he asked for.
-
-   The slip itself is quicker than it was, three offsets of 0.25s rather than
-   0.31s, so it lands and is gone instead of being watched. Everything here is a
-   percentage of the duration rather than a time, which is why changing the
-   duration alone would rescale the slip too: 0.25s is 1.5625% of 16s, and each
-   slip is three of those steps plus the step that clears it. */
-.hero h1 { position: relative; }
-.hero h1::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.hero h1 {
-  animation: misregister 16s steps(1, end) infinite;
-}
-@keyframes misregister {
-  /* first slip, 6.00s in */
-  0%, 37.4% { text-shadow: none; }
-  37.5% { text-shadow: -2px 0 var(--comp), 2px 0 var(--comp-2); }
-  39.06% { text-shadow: 3px 1px var(--comp-2), -3px -1px var(--comp); }
-  40.63% { text-shadow: -1px 0 var(--comp); }
-  42.19% { text-shadow: none; }
-  /* second slip, 15.00s in, so the gaps are 9s and then 7s */
-  93.75% { text-shadow: -2px 0 var(--comp-2), 2px 0 var(--comp); }
-  95.31% { text-shadow: -3px 1px var(--comp), 3px -1px var(--comp-2); }
-  96.88% { text-shadow: 1px 0 var(--comp-2); }
-  98.44%, 100% { text-shadow: none; }
-}
-
-/* Fact pills as a paint palette: a dab of colour on each, cycling through the
-   app's mauve and its two complements. */
-.hero .facts li {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  transition: border-color .3s ease, transform .3s ease, color .3s ease;
-}
-.hero .facts li::before {
-  content: "";
-  width: .55rem;
-  height: .55rem;
-  border-radius: 2px;
-  transform: rotate(-8deg);
-  background: var(--accent);
-}
-.hero .facts li:nth-child(3n+2)::before { background: var(--comp); }
-.hero .facts li:nth-child(3n+3)::before { background: var(--comp-2); }
-.hero .facts li:hover { transform: translateY(-2px) rotate(-.5deg); color: var(--text); }
-.hero .facts li:nth-child(3n+1):hover { border-color: var(--accent); }
-.hero .facts li:nth-child(3n+2):hover { border-color: var(--comp); }
-.hero .facts li:nth-child(3n+3):hover { border-color: var(--comp-2); }
-
-/* Masthead: a pigment rail appears under it once the page has scrolled, rather
-   than a frosted panel. motion.js sets the class. */
-.masthead { transition: box-shadow .3s ease; }
-.scrolled .masthead {
-  box-shadow: 0 1px 0 0 var(--accent), 0 10px 24px -18px rgba(0, 0, 0, .5);
-}
-
-/* Body copy links get a stroke of pigment rather than an underline slide: a bar
-   in the warm complement, drawn from the left along the hairline the link
-   already carries.
- *
- * It is a background on the link itself, and that is the third attempt at this
- * edge. The first two were an absolutely positioned ::before, which is fine
- * until the link breaks across two lines, and then it is the bug Juri kept
- * seeing: a small orange dash orphaned in the empty space below the text.
- *
- * The reason is that an absolutely positioned child of a wrapped inline has no
- * sensible box to live in. Its containing block is built from the first
- * fragment's left edge and the last fragment's right edge, and when the link
- * wraps, the last fragment starts back at the left margin, so that right edge is
- * to the LEFT of that left edge. The box collapses to nothing, the -.15em insets
- * on each side are all that is left of it, and those few pixels get painted at
- * the bottom of a box spanning both lines. Hence a dash, below the text, near
- * where the first line ended. Neither the colour nor the height was ever the
- * problem: any pseudo-element positioned that way lands there.
- *
- * A background has no such trouble. box-decoration-break: clone gives every line
- * fragment its own background box, so a link that wraps gets a stroke under each
- * of its pieces, each starting at that piece's own left edge, which is what a
- * hand would do. Nothing is positioned, nothing is absolute, and there is no
- * stacking context left to keep the paint off the letters. */
-.prose p a,
-section p a,
-.tier a {
-  text-decoration: none;
-  border-bottom: 1px solid var(--mat);
-  background-image: linear-gradient(var(--comp), var(--comp));
-  background-repeat: no-repeat;
-  /* Against the bottom of the border box, so the paint covers the hairline
-     rather than sitting a pixel above it. */
-  background-position: 0 100%;
-  background-size: 0% 2px;
-  transition: background-size .3s cubic-bezier(.2, .7, .2, 1);
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-}
-.prose p a:hover,
-section p a:hover,
-.tier a:hover { background-size: 100% 2px; }
-
-/* Cards as paint chips, and the same treatment on the two install boxes and the free
-   tier, so a panel on this page is a painted chip wherever it appears rather than a grey
-   box in some sections and a coloured one in others. Which pigment a feature card uses
-   cycles across the grid, so a row of nine is not one colour nine times; the other boxes
-   name theirs, because there are two or three of them and a cycle would be arbitrary. It
-   is set once as --chip rather than repeated per property: every rule below reads that one
-   variable.
-
-   The colour is on the card at rest, not only under a pointer. Nine panels in
-   nothing but mantle and a grey hairline read as nine dark boxes until you touch
-   one, and on a phone there is no hover to touch them with. So at rest each card
-   carries a tinted border, a wash of its own pigment out of the top-left corner,
-   and a short stub of that pigment on the top edge. Pointer, keyboard focus and
-   tap then do what they did before, only more so: the stub draws itself the whole
-   way across, the border comes up to strength, and the shadow gains a coloured
-   half. Nothing here moves except the transitions that were already here.
-
-   The mixes use color-mix(), which is the only way to take a themed hex and give
-   it an alpha. Where it is unsupported the whole declaration is dropped and the
-   card falls back to the grey hairline it had before, which is the old design
-   rather than a broken one. */
-.card,
-.waydeck,
-.tier.free,
-.tier.paid,
-.clipdeck-list button,
-.whycard {
-  --chip: var(--accent);
-  position: relative;
-  overflow: hidden;
-  border-color: color-mix(in srgb, var(--chip) 34%, var(--border));
-  background-image:
-      radial-gradient(150% 130% at 0 0,
-                      color-mix(in srgb, var(--chip) 7%, transparent),
-                      transparent 62%);
-  transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
-}
-.cards .card:nth-child(3n+2) { --chip: var(--comp); }
-.cards .card:nth-child(3n+3) { --chip: var(--comp-2); }
-/* The deck is the path that turns a tablet into a panel, so it takes the brand's own
-   mauve rather than the calm pigment the ordinary cards cycle through. */
-.waydeck { --chip: var(--accent); }
-/* The green the free tier already spends on its own bullets, so the box agrees with its
-   own list instead of introducing a fourth pigment into that row. */
-.tier.free { --chip: var(--ok); }
-/* The Pro card is one of the few things on the page that gets the brand's mauve at full
-   strength, so its border stays the solid accent the 34% mix above would have diluted.
-   The glow it gains from the shared rule is the part Juri noticed it was missing. */
-.tier.paid { --chip: var(--accent); border-color: var(--accent); }.card::after,
-.waydeck::after,
-.tier.free::after,
-.whycard::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--chip);
-  transform: scaleX(.22);
-  transform-origin: left;
-  transition: transform .45s cubic-bezier(.2, .7, .2, 1);
-}
-.card:hover,
-.card:focus-within,
-.card:active {
-  transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--chip) 72%, var(--border));
-  box-shadow: 0 16px 34px -20px rgba(0, 0, 0, .45),
-              0 14px 30px -20px color-mix(in srgb, var(--chip) 55%, transparent),
-              inset 0 22px 44px -34px color-mix(in srgb, var(--chip) 60%, transparent);
-}
-.card:hover::after,
-.card:focus-within::after,
-.card:active::after { transform: scaleX(1); }
-.clipdeck-list button:hover,
-.clipdeck-list button:focus-visible {
-  border-color: color-mix(in srgb, var(--chip) 72%, var(--border));
-  box-shadow: 0 10px 24px -18px color-mix(in srgb, var(--chip) 55%, transparent),
-              inset 0 18px 36px -30px color-mix(in srgb, var(--chip) 55%, transparent);
-}
-
-/* No pointer, so the resting state is all most readers will ever see: the stub
-   is longer and the border a little stronger, and a tap still does the rest. */
-@media (hover: none) {
-  .card,
-  .waydeck,
-  .tier.free,
-  .clipdeck-list button,
-  .whycard { border-color: color-mix(in srgb, var(--chip) 46%, var(--border)); }
-  .card::after,
-  .waydeck::after,
-  .tier.free::after,
-  .whycard::after { transform: scaleX(.4); }
-}
-
-/* The paid tier, with wet paint along its top edge and a drip below it. */
-.tier.paid { position: relative; overflow: hidden; }
-.tier.paid::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--comp-2) 60%, var(--comp));
-}
-.tier.paid::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 22%;
-  width: 3px;
-  height: 1.6rem;
-  border-radius: 0 0 3px 3px;
-  background: linear-gradient(to bottom, var(--accent), rgba(136, 57, 239, 0));
-  animation: drip 19s ease-in-out infinite;
-  transform-origin: top;
-}
-@keyframes drip {
-  0%, 70% { transform: scaleY(.35); opacity: .9; }
-  88% { transform: scaleY(1); opacity: .75; }
-  100% { transform: scaleY(.35); opacity: .9; }
-}
-
-/* Screenshots shown as the hardware they were taken on: the device shots sit
-   inside a tablet bezel with a camera in the left edge, the two desktop shots
-   inside a small browser window. The screenshot then reads as a thing on a
-   wall or a desk rather than as an image in a box.
-
-   The bezel is deliberately the same near-black in both themes: a tablet does
-   not change colour with the website, and committing to it is what makes the
-   frame read as an object instead of a border. */
-/* The bezel is near-black and so is the page in dark mode, so the frame had
-   nothing to stand on: at a glance the screenshot floated with no device around
-   it. It now sits inside a ring of the same pigment the cards carry, one pixel of
-   it plus a halo spread around all four sides, and both come up to strength on
-   hover along with the outline that was already there.
-
-   Note this is an OUTSET shadow, outside the border box. The failed attempts
-   recorded below were an *inset* shadow and a border colour, both of which live
-   on the padding edge where the gallery light sits. This cannot be wiped by that
-   light, because it is not in the same place.
-
-   Cycling three pigments across six figures ties the gallery to the card grid
-   above it. For one colour throughout, delete the two nth-child lines. */
-figure.shot,
-figure.clip {
-  --chip: var(--accent);
-  --rim: 0 0 0 1px color-mix(in srgb, var(--chip) 44%, transparent);
-  /* Two shadows, and the first is the one you see: a spread-out halo on all four
-     sides, where a single downward shadow only lit the bottom edge and read as a
-     hairline. The second keeps the device sitting on something. A custom property
-     may hold a comma-separated list, so both arrive through one var(). */
-  --rim-glow: 0 0 34px -6px color-mix(in srgb, var(--chip) 30%, transparent),
-              0 16px 40px -22px color-mix(in srgb, var(--chip) 42%, transparent);
-  --rim-lit: 0 0 0 1px color-mix(in srgb, var(--chip) 75%, transparent);
-  --rim-glow-lit: 0 0 42px -2px color-mix(in srgb, var(--chip) 45%, transparent),
-                  0 20px 46px -20px color-mix(in srgb, var(--chip) 60%, transparent);
-}
-.shots figure.shot:nth-child(3n+2) { --chip: var(--comp); }
-.shots figure.shot:nth-child(3n+3) { --chip: var(--comp-2); }
-figure.shot .frame {
-  --bezel: .7rem;
-  --bezel-cam: 1.15rem;
-  --screen-radius: 10px;
-  position: relative;
-  padding: var(--bezel) var(--bezel) var(--bezel) var(--bezel-cam);
-  background: linear-gradient(160deg, #262a38, #10121b 60%);
-  border: 1px solid rgba(255, 255, 255, .09);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 24px 44px -26px rgba(0, 0, 0, .7),
-              var(--rim), var(--rim-glow);
-  transition: box-shadow .35s ease;
-}
-/* The camera, centred in the wider left bezel, which is how the real panel
-   hangs in landscape. Drawn, not an image: a dot with a darker pupil. */
-figure.shot .frame::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: .42rem;
-  transform: translateY(-50%);
-  width: .3rem;
-  height: .3rem;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #707a99, #10121b 72%);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, .55);
-}
-/* The glass. A sheen that comes up on hover, angled like light across a screen.
-   Positioned on the padding box with the same insets as the padding itself
-   (via the shared custom properties), because an absolutely positioned child
-   resolves inset against the PADDING box: at inset 0 an earlier version of
-   this gradient painted over the frame's own hover edge. Reported 2026-08-22. */
-figure.shot .frame::after {
-  content: "";
-  position: absolute;
-  inset: var(--bezel) var(--bezel) var(--bezel) var(--bezel-cam);
-  border-radius: var(--screen-radius);
-  pointer-events: none;
-  background: linear-gradient(115deg, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, .05) 26%, rgba(255, 255, 255, 0) 44%);
-  opacity: 0;
-  transition: opacity .35s ease;
-}
-/* The screen itself: the button clips the screenshot to the glass. */
-figure.shot .shot-open { border-radius: var(--screen-radius); }
-
-/* The two desktop captures are not tablets and must not pretend to be: they get
-   a browser window instead, title bar, three window dots, theme-coloured chrome. */
-figure.shot.contain .frame {
-  --bezel: .55rem;
-  --bezel-cam: .55rem;
-  --screen-radius: 7px;
-  padding-top: 1.9rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: 0 24px 44px -26px rgba(0, 0, 0, .5), var(--rim), var(--rim-glow);
-}
-figure.shot.contain .frame::before {
-  top: .68rem;
-  left: .8rem;
-  transform: none;
-  width: .5rem;
-  height: .5rem;
-  background: #e5484d;
-  box-shadow: .85rem 0 0 #e9a13b, 1.7rem 0 0 #46a758;
-}
-figure.shot.contain .frame::after {
-  inset: 1.9rem var(--bezel) var(--bezel) var(--bezel);
-}
-/* The hover pigment is an OUTLINE, and that is the third attempt at this edge.
- *
- * First it was an inset box-shadow, which paints on the padding edge, exactly
- * where the gallery light sat at inset: 0, so the light wiped the top of it.
- * Then it was the border colour, which the light can no longer reach, but a 1px
- * border on this element is still fragile: the frame carries aspect-ratio, so
- * its height is usually fractional, and lifting it 3px puts that 1px edge on a
- * half device pixel where it antialiases down to nothing. On the top edge, over
- * a bright screenshot, "nothing" is what you see.
- *
- * An outline is painted above the element and its descendants, is not clipped by
- * the element's own overflow: hidden, and at 2px survives landing between device
- * pixels. Offset inwards so it reads as pigment on the frame rather than a
- * selection ring around it. */
-/* THE LIFT IS ON THE FIGURE, NOT ON THE FRAME, and that is the whole point.
- *
- * .frame owns a rounded overflow: hidden. Transforming the same element that
- * owns the clip means the content is moved while the clip stays where it was,
- * so the screenshot rides up past the top of its own box and gets shaved there,
- * exactly as reported: a 4x4 square sliding up inside a 5x5 one, sides and
- * bottom intact, top gone. Lifting the figure instead moves the frame, its clip
- * and its content as one thing, and there is no longer a clip to disagree with.
- *
- * So: keep the transform and the overflow on different elements here. */
-/* Hung on the wall, not pasted to it: each device sits a fraction of a degree
-   off level, alternating down the grid, and levels itself as it lifts on hover.
-   Small enough to be felt rather than seen; delete these two lines to hang them
-   straight. */
-figure.shot { transition: transform .3s ease; }
-figure.shot:nth-child(odd) { transform: rotate(-.4deg); }
-figure.shot:nth-child(even) { transform: rotate(.35deg); }
-figure.shot:hover,
-figure.shot:focus-within { transform: translateY(-3px) rotate(0deg); }
-
-figure.shot .frame { transition: box-shadow .35s ease, outline-color .35s ease; }
-figure.shot .frame { outline: 2px solid transparent; outline-offset: -2px; }
-figure.shot:hover .frame,
-figure.shot:focus-within .frame {
-  outline-color: var(--chip);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 32px 52px -26px rgba(0, 0, 0, .8),
-              var(--rim-lit), var(--rim-glow-lit);
-}
-figure.shot.contain:hover .frame,
-figure.shot.contain:focus-within .frame {
-  box-shadow: 0 32px 52px -26px rgba(0, 0, 0, .6), var(--rim-lit), var(--rim-glow-lit);
-}
-figure.shot:hover .frame::after,
-figure.shot:focus-within .frame::after { opacity: 1; }
-figure.shot figcaption {
-  font-family: var(--mono);
-  font-size: .76rem;
-  letter-spacing: .01em;
-}
-figure.shot figcaption b {
-  display: block;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  font-size: .68rem;
-  color: var(--accent);
-  margin-bottom: .15rem;
-}
-
-/* Rollered on, not faded in: a clip-path travelling left to right with the
-   element sliding a few pixels behind it, which reads as a roller pass rather
-   than an opacity ramp.
- *
- * THE BASE STATE IS VISIBLE, and that is the whole point of this shape. The
- * first version hid every block and waited for motion.js to reveal it, so one
- * observer callback that never arrived took most of the page with it, which is
- * exactly what happened on 2026-08-21. Here the clipped state exists only
- * inside the keyframes, so it can only ever be reached by an element that is
- * already being animated. No script, no observer, a thrown exception, an engine
- * without IntersectionObserver: every one of those now means a page that simply
- * does not animate. */
-.stroke.on {
-  animation: roller .85s cubic-bezier(.2, .7, .2, 1) both;
-}
-@keyframes roller {
-  from { clip-path: inset(0 100% 0 0); transform: translateY(10px); }
-  to { clip-path: inset(0 0 0 0); transform: none; }
-}
-
-/* The recipes: blueprints as paint chips, and the blueprint itself in the
-   overlay the screenshots already open in.
- *
- * The section invents no vocabulary of its own. A recipe is a .card, the same
- * chip the feature grid is made of, so the pigment stub, the tinted border and
- * the lift arrive without being written a second time, and a recipe reads as
- * one more thing on this wall rather than as a panel bolted onto it.
- *
- * The YAML is deliberately NOT inside the chip. A blueprint is seventy columns
- * of text and a chip is about twenty rem wide, so printed in one nearly every
- * line would scroll sideways, and on a phone every one of them would. It opens
- * in the lightbox instead, where it has the width of the window. The chip keeps
- * the height of its neighbour, and nothing on the page grows or jumps because a
- * reader asked to see the code. */
-.recipes {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
-  gap: 1.25rem;
-}
-/* A column, so the actions can be pushed to the bottom of it: two recipes whose
-   descriptions differ by a line still line their buttons up with each other. */
-.recipes .card {
-  display: flex;
-  flex-direction: column;
-  padding: 1.3rem 1.35rem 1.35rem;
-}
-/* Blockified by the flex column otherwise, which stretches it the width of the
-   card and puts a lot of empty underline-height beside three words. */
-.recipes .card .tag { align-self: flex-start; }
-.recipes .card h3 {
-  margin: 0 0 .5rem;
-  font-size: 1.08rem;
-}
-.recipes .what {
-  margin: 0 0 1rem;
-  line-height: 1.55;
-}
-.recipes .asks-label {
-  margin: 0 0 .3rem;
-  font-size: .74rem;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--accent);
-  font-weight: 650;
-}
-.recipes .asks {
-  margin: 0 0 1.1rem;
-  padding-left: 1.05rem;
-  color: var(--subtext);
-  font-size: .88rem;
-  line-height: 1.6;
-}
-.recipes .asks b { color: var(--text); font-weight: 600; }
-
-.recipe-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: .55rem;
-  margin-top: auto;
-  padding-top: 1.05rem;
-}
-/* The one loud control in the section, because it is the one that does the
-   thing the section exists for. Pressed, it travels down onto its own shadow. */
-.ha-add {
-  display: inline-flex;
-  align-items: center;
-  gap: .45rem;
-  padding: .5rem .85rem;
-  border-radius: 999px;
-  background: var(--accent-alt);
-  color: var(--base);
-  font-size: .87rem;
-  font-weight: 600;
-  text-decoration: none;
-  box-shadow: 0 2px 0 0 color-mix(in srgb, var(--accent-alt) 70%, black 25%);
-  transition: transform .08s ease, box-shadow .08s ease;
-}
-.ha-add svg { width: 17px; height: 17px; fill: currentColor; }
-.ha-add:hover { text-decoration: none; }
-.ha-add:active {
-  transform: translateY(2px);
-  box-shadow: 0 0 0 0 transparent;
-}
-/* Quieter, and styled rather than left to the browser: an unstyled button next
-   to a painted one is the only widget on the page still wearing the operating
-   system's clothes. Same pill as the lightbox bar's own controls. */
-.read-yaml,
-.copy-yaml {
-  padding: .5rem .85rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-size: .87rem;
-  cursor: pointer;
-}
-.read-yaml:hover,
-.copy-yaml:hover { border-color: var(--accent); color: var(--accent); }
-.recipe-actions .plain {
-  margin-left: auto;
-  font-size: .82rem;
-  color: var(--subtext);
-}
-/* Selector matched to the .intro rule this overrides, which is
-   section > .wrap > .intro and therefore wins over a bare .footnote: the margin
-   below was being dropped, and the note sat directly under the cards. */
-section > .wrap > .intro.footnote { font-size: .88rem; margin-top: 1.9rem; }
-
-/* The blueprint, in the same dialog the screenshots use. It is the same gesture,
-   so it is the same object, only carrying text instead of a capture: the sheet,
-   the bar and the backdrop are all inherited from dialog.lightbox above.
- *
- * Narrower than a screenshot on purpose. A blueprint is a column of text and a
- * line of it stretched across a wide monitor is harder to read, not easier. */
-dialog.lightbox.blueprint { width: min(94vw, 860px); }
-dialog.lightbox.blueprint .code-scroll:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
-}
-dialog.lightbox.blueprint .code-scroll {
-  border: 0;
-  border-radius: 0;
-  max-height: min(74vh, 40rem);
-  background: var(--base);
-}
-/* Four things in the bar rather than the screenshot's two, so on a phone it
-   wraps instead of squeezing the copy button to nothing. */
-dialog.lightbox.blueprint .bar { flex-wrap: wrap; }
-/* In a card the code was a patch of texture and subtext was right for it. Here it
-   is the only thing on the screen and it is meant to be read, so it comes up to
-   the body colour and a size that survives a phone. */
-dialog.lightbox.blueprint .code-scroll code {
-  color: var(--text);
-  font-size: .8rem;
-}
-dialog.lightbox.blueprint .bar strong {
-  color: var(--text);
-  font-weight: 650;
-  font-size: .88rem;
-}
-/* The code panel. Its own scroll on both axes, so a long line moves the code and
-   nothing else: a blueprint must never be able to widen the page it sits on. */
-.code-scroll {
-  overflow: auto;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--page-bg);
-  max-height: 21rem;
-  overscroll-behavior: contain;
-}
-.code-scroll pre {
-  margin: 0;
-  padding: .85rem .95rem;
-}
-.code-scroll code {
-  font-family: var(--mono);
-  font-size: .78rem;
-  line-height: 1.55;
-  color: var(--subtext);
-  white-space: pre;
-}
-
-/* Snapping was tried here and taken out again. It suits pages built as equal-height
-   slides; these sections are content of every height, and a snap point that does not
-   match where the eye wants to rest reads as the page grabbing the scroll. Gliding to an
-   anchor stays, and scroll-padding-top is what keeps that landing clear of the bar. */
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 4.6rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation: none !important; }
-  /* Gliding and snapping are both motion the reader did not ask for. */
-  html { scroll-behavior: auto; }
-  /* The spray and the drip exist only to move, so they go entirely. The patches,
-     grain, mat and pigment all hold their first frame and still look painted. */
-  .hero > .spray,
-  .hero > .tiles,
-  .tier.paid::after { display: none; }
-  /* The grain is texture rather than movement, so it stays. */
-  .stroke.on { animation: none !important; }
-}
-
-/* ---------------------------------------------------- setup: the maker switcher
- *
- * The setup page is instructions, so it is built as a picker over a list of
- * steps rather than as another /privacy/-shaped column of prose. Buttons choose
- * the maker and one panel shows at a time, driven by assets/js/setup.js. Without
- * that file every panel stays visible: a longer page, still a correct one, which
- * is the same bargain the clip deck makes.
- *
- * Colour note: text on an accent background is var(--base), never a literal.
- * --accent and --base swap lightness between the themes (dark purple on near
- * white in light, light purple on near black in dark), so the one pairing reads
- * correctly in both and a hardcoded white would fail the dark theme.
- */
-
-.setup { padding: 2.6rem 0 4rem; }
-.setup h1 { font-size: 2.1rem; margin: 0 0 .4rem; color: var(--accent); font-weight: 650; }
-.setup .lede { color: var(--subtext); margin: 0 0 2rem; max-width: 42rem; }
-/* The page carries two numbered sections now, the battery limits and the brightness
-   permission, so each needs a heading. Sized between the h1 and the small uppercase
-   labels inside the cards: it names a step in a sequence, not a card. */
-.setup h2.sectionhead { margin: 2.8rem 0 1rem; font-size: 1.15rem; font-weight: 650; color: var(--text); }
-.setup h2.sectionhead + .lede { margin-bottom: 1.4rem; }
-.setup h1 + .sectionhead { margin-top: 1.6rem; }
-
-.why { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 1rem; margin: 0 0 2.2rem; }
-.whycard {
-  border-width: 1px;
-  border-style: solid;
-  border-left: 3px solid var(--chip, var(--accent));
-  border-radius: var(--radius);
-  background-color: var(--panel-bg);
-  padding: 1rem 1.1rem;
-}
-.whycard:nth-child(2) { --chip: var(--comp-2); }
-.whycard h2 { margin: 0 0 .35rem; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
-.whycard p { margin: 0; color: var(--subtext); font-size: .92rem; }
-
-.vendordeck,
-.waydeck { border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel-bg); overflow: hidden; }
-.vendorpick,
-.waypick {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .3rem;
-  padding: .7rem;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-}
-.vendorpick button,
-.waypick button {
-  font: inherit;
-  font-size: .85rem;
-  padding: .4rem .9rem;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--subtext);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background .2s ease, color .2s ease, border-color .2s ease;
-}
-.vendorpick button:hover,
-.waypick button:hover { color: var(--text); border-color: var(--border); }
-.vendorpick button:focus-visible,
-.waypick button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.vendorpick button[aria-selected="true"],
-.waypick button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--base); font-weight: 600; }
-
-.vendor-panel,
-.way-panel { padding: 1.3rem; }
-.vendor-panel[hidden],
-.way-panel[hidden] { display: none; }
-.vendor-panel:focus-visible,
-.way-panel:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
-
-/* The QR panel puts its words and its code side by side, because stacked they made the
-   panel twice the height of the other one and pushed the code below the fold. Under
-   46rem there is no room for two columns and it stacks again, code last. */
-.way-split { display: grid; gap: 1.4rem; align-items: start; }
 @media (min-width: 46rem) {
-  .way-split { grid-template-columns: minmax(0, 1fr) auto; }
-  .way-split .qrcard { margin-top: 0; }
+  .way-split { grid-template-columns: minmax(0, 1fr) auto; gap: 2.5rem; }
 }
-.way-panel .lead { margin: 0 0 1rem; color: var(--subtext); font-size: .95rem; }
-.way-panel .note { margin-top: 1rem; font-size: .85rem; }
-.way-panel .steps { font-size: .92rem; }
-/* On a phone the two labels wrapped onto separate rows and stopped reading as a choice
-   between two things. Below 34rem they split the row evenly instead, which is the
-   segmented control the deck was always trying to be. Short labels are what make that
-   fit: the distinction they used to carry is the bold opening line of each panel now. */
-@media (max-width: 34rem) {
-  .waypick { gap: .35rem; }
-  .waypick button { flex: 1 1 0; min-width: 0; text-align: center; padding: .45rem .5rem; }
-}
-
-.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; display: grid; gap: 1rem; }
-.steps li { counter-increment: step; display: grid; grid-template-columns: 1.7rem minmax(0, 1fr); gap: .8rem; align-items: start; }
+.way-panel .lead { font-size: 1.02rem; }
+.way-panel .lead strong { font-weight: 650; }
+.way-panel .note, .deck-note { margin-top: 1rem; color: var(--muted); font-size: .9rem; }
+.steps { margin: 1rem 0 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: .75rem; }
+.steps li { position: relative; padding-left: 2.4rem; counter-increment: step; }
 .steps li::before {
   content: counter(step);
-  display: grid;
-  place-items: center;
+  position: absolute;
+  left: 0;
+  top: .05rem;
   width: 1.7rem;
   height: 1.7rem;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--base);
-  font-size: .8rem;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: .82rem;
   font-weight: 700;
+  display: grid;
+  place-items: center;
 }
-.path { display: block; color: var(--text); font-weight: 600; font-size: .95rem; }
-/* The separator is decorative: it must not be read out as a word between steps. */
-.path i { font-style: normal; color: var(--subtext); padding: 0 .35rem; }
-.act { display: block; margin-top: .2rem; color: var(--subtext); font-size: .9rem; }
-.act b { color: var(--accent); font-weight: 600; }
-.deck-note { margin: 1.1rem 0 0; color: var(--subtext); font-size: .85rem; }
+.steps li > span { display: block; }
+.path { display: block; font-size: .85rem; color: var(--muted); }
+.path i { font-style: normal; margin: 0 .25rem; opacity: .7; }
+.act { display: block; margin-top: .15rem; }
+.act b { font-weight: 650; }
+.qrcard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  width: fit-content;
+}
+.qrcard img { display: block; width: 240px; height: 240px; }
+.qrcard.big img { width: 280px; height: 280px; }
+@media (max-width: 34rem) {
+  .qrcard img, .qrcard.big img { width: 220px; height: 220px; }
+}
+.playbadge { margin: 1.25rem 0 0; }
+.playbadge a { display: inline-block; line-height: 0; }
+.playbadge img { width: 200px; height: auto; }
 
-.verify { margin: 2.2rem 0 0; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 1rem 1.1rem; }
-.verify h2 { margin: 0 0 .3rem; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
-.verify p { margin: 0; color: var(--subtext); font-size: .92rem; }
+.callout {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+}
+.callout > p { color: var(--muted); }
+.callout strong { color: var(--text); font-weight: 650; }
 
-@media (max-width: 560px) {
-  .setup h1 { font-size: 1.8rem; }
-  .vendorpick button { font-size: .8rem; padding: .35rem .7rem; }
-  .vendor-panel { padding: 1.1rem; }
+/* Tables */
+.table-scroll { overflow-x: auto; margin-top: 2rem; }
+table.spec {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-size: .95rem;
+}
+table.spec th, table.spec td { padding: .8rem 1rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+table.spec tr:last-child th, table.spec tr:last-child td { border-bottom: 0; }
+table.spec th { font-weight: 650; white-space: nowrap; width: 12rem; }
+table.spec thead th { background: var(--panel-2); font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); width: auto; }
+table.spec td { color: var(--muted); }
+
+.notice {
+  margin-top: 1.5rem;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: 1rem 1.25rem;
+  color: var(--muted);
+  font-size: .95rem;
+}
+.notice.warn { border-left-color: var(--warn); }
+.notice strong { color: var(--text); font-weight: 650; }
+.notice p + p { margin-top: .5rem; }
+
+/* Prose pages: privacy, terms, imprint */
+.prose { padding: 3rem 1.25rem 4rem; max-width: 46rem; }
+.prose h1 { font-size: clamp(1.9rem, 3.5vw, 2.6rem); }
+.prose .updated { margin-top: 1rem; color: var(--muted); }
+.prose h2 { font-size: 1.25rem; margin-top: 2.25rem; }
+.prose p, .prose ul { margin-top: .75rem; color: var(--text); }
+.prose li + li { margin-top: .35rem; }
+.prose .bullet-lead { font-weight: 600; }
+
+/* Setup page */
+.setup { padding: 3rem 1.25rem 4rem; }
+.setup h1 { max-width: 30rem; }
+.setup .lede { margin-top: 1rem; color: var(--muted); font-size: 1.1rem; max-width: var(--measure); }
+.setup h2.sectionhead { margin-top: 3rem; padding-top: 3rem; border-top: 1px solid var(--line); }
+.setup h2.sectionhead + .lede { font-size: 1rem; }
+.why {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.whycard {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.whycard h2 { font-size: 1rem; font-weight: 650; }
+.whycard p { margin-top: .4rem; color: var(--muted); font-size: .95rem; }
+.verify {
+  margin-top: 1.5rem;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--ok);
+  border-radius: var(--radius);
+  background: var(--panel);
+  padding: 1rem 1.25rem;
+}
+.verify h2 { font-size: 1rem; font-weight: 650; }
+.verify p { margin-top: .35rem; color: var(--muted); font-size: .95rem; }
+.setup > .deck-note { max-width: var(--measure); }
+
+/* Download page */
+.downloads { padding: 3rem 1.25rem 4rem; max-width: 52rem; }
+.downloads h2 { font-size: 1.35rem; margin-top: 2.5rem; }
+.downloads .lede { margin-top: 1rem; color: var(--muted); font-size: 1.1rem; }
+.downloads p { margin-top: .75rem; color: var(--muted); }
+.downloads .note { font-size: .88rem; }
+.downloads figure.clip { margin-top: 2rem; }
+.downloads figure.clip .frame { aspect-ratio: 1280 / 800; }
+.filelist {
+  margin: 2rem 0 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.filelist dt { padding: .9rem 1.1rem 0; font-family: var(--mono); font-size: .92rem; }
+.filelist dt small { margin-left: .5rem; font-family: var(--sans); color: var(--muted); font-size: .8rem; }
+.filelist dd { margin: 0; padding: .2rem 1.1rem .9rem; color: var(--muted); font-size: .92rem; border-bottom: 1px solid var(--line); }
+.filelist dd:last-child { border-bottom: 0; }
+.downloads .code-scroll { margin-top: .5rem; }
+
+/* Reference page */
+.docs { padding: 2.5rem 1.25rem 4rem; }
+.docs > .intro { margin-top: 1rem; color: var(--muted); font-size: 1.1rem; max-width: var(--measure); }
+.docs-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+  align-items: start;
+}
+@media (min-width: 60rem) {
+  .docs-grid { grid-template-columns: 14rem minmax(0, 1fr); gap: 3.5rem; }
+  .docs-nav { position: sticky; top: 4.75rem; }
+}
+@media (max-width: 60rem) {
+  .docs-nav { display: none; }
+}
+.docs-nav { font-size: .9rem; }
+.docs-nav p { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .5rem; }
+.docs-nav a { display: block; color: var(--muted); text-decoration: none; padding: .28rem 0 .28rem .75rem; border-left: 2px solid var(--line); }
+.docs-nav a:hover { color: var(--text); border-left-color: var(--line-strong); }
+.docs-nav a.sub { padding-left: 1.5rem; font-size: .85rem; }
+.docs-body > h2 { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--line); font-size: 1.6rem; }
+.docs-body > h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.docs-body > p { margin-top: .9rem; color: var(--muted); max-width: var(--measure); }
+.docs-body > p b, .docs-body > p strong { color: var(--text); font-weight: 600; }
+.docs-body h3 { margin-top: 2rem; font-size: 1.15rem; }
+.docs-body .code-scroll { margin-top: .9rem; }
+.docs-body .table-scroll { margin-top: 1rem; }
+.docs-body table.spec th { width: auto; white-space: normal; }
+.docs-body table.spec td, .docs-body table.spec th { font-size: .9rem; padding: .65rem .85rem; }
+.docs-body .notice { margin-top: 1rem; }
+.docs-body table.spec tr.group th { background: var(--panel-2); font-size: .76rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: .45rem .85rem; }
+.entry header h3 + h3::before { content: "/ "; color: var(--muted); font-weight: 400; }
+.entry {
+  margin-top: 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+.entry header { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.entry header h3 { margin: 0; font-family: var(--mono); font-size: 1rem; font-weight: 650; }
+.entry header .tag { margin: 0; }
+.method {
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  border-radius: 6px;
+  padding: .15rem .45rem;
+  color: #fff;
+  background: var(--accent);
+}
+.method.get { background: var(--ok); }
+html[data-theme="dark"] .method { color: #16142a; }
+.entry > p { margin-top: .6rem; color: var(--muted); font-size: .95rem; }
+.entry > p b { color: var(--text); font-weight: 600; }
+.entry .code-scroll { margin-top: .75rem; }
+.entry .reply { margin-top: .6rem; font-size: .78rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; font-weight: 650; }
+.entry .reply + .code-scroll { margin-top: .35rem; }
+.entry .reply code { text-transform: none; letter-spacing: 0; }
+.entry .args { margin-top: .75rem; }
+.entry table.spec { box-shadow: none; }
+
+/* Footer */
+footer { border-top: 1px solid var(--line); padding: 2rem 0 2.5rem; background: var(--panel); }
+footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: .9rem;
+  color: var(--muted);
+}
+footer nav { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--text); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
 }

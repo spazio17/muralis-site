@@ -186,15 +186,15 @@ def index_page(found):
 <meta name="description" content="The Play-signed Muralis APK, its checksum, the signing fingerprint, and the provisioning QR, published so anyone can check them.">
 <link rel="canonical" href="https://muralis.spazio17.org/download/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=27">
+<link rel="stylesheet" href="../assets/css/site.css?v=28">
 <script>
   /* The same bootstrap every page carries: a theme chosen anywhere on the site holds
      here too, applied before first paint so an explicit choice never flashes the other
      palette. */
   try {{
     var t = localStorage.getItem('muralis-theme');
-    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  }} catch (e) {{ /* private mode: fall through to prefers-color-scheme */ }}
+    if (t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  }} catch (e) {{ /* private mode: light */ }}
 </script>
 </head>
 <body>
@@ -207,6 +207,7 @@ def index_page(found):
     </a>
     <nav class="pagenav" aria-label="Pages">
       <a href="../">Overview</a>
+      <a href="../api/">API</a>
       <a href="../setup/">Setup</a>
       <a href="../download/" aria-current="page">Download</a>
     </nav>
@@ -215,17 +216,12 @@ def index_page(found):
       <span class="menubtn-label">Menu</span>
     </button>
   </div>
-  <!-- One menu for the whole site, at every width. The bar carries the pages, which is
-       the site's structure and is the same everywhere; the menu carries this page's own
-       sections, which only the front page has, and the theme, which is a setting rather
-       than a destination and was taking bar space on every page for it. Hidden here in
-       the markup rather than by CSS alone, so it is closed before the script runs and a
-       reader with no JavaScript is not given a panel that can never be shut. -->
   <div class="sitemenu" id="sitemenu" hidden>
     <div class="wrap menuwrap">
       <nav class="menugroup" aria-label="Pages">
         <p class="menuhead">Pages</p>
         <a href="../">Overview</a>
+        <a href="../api/">API</a>
         <a href="../setup/">Setup</a>
         <a href="../download/" aria-current="page">Download</a>
       </nav>
@@ -241,32 +237,32 @@ def index_page(found):
 </header>
 
 <main class="wrap downloads">
-  <h1 class="stroke">Download</h1>
-  <p class="lede stroke">Everything the provisioning QR installs, published so you can check it before a tablet does.</p>
+  <h1>Download</h1>
+  <p class="lede">Everything the provisioning QR installs, published so you can check it before a tablet does.</p>
 
-  <figure class="clip stroke">
+  <figure class="clip">
     <div class="frame"><video src="../assets/video/qr-provisioning.mp4" poster="../assets/video/poster/qr-provisioning.jpg" preload="none" controls muted playsinline width="1280" height="800"></video></div>
     <p class="clip-note">Thirty seconds, from the welcome screen of a wiped tablet to the panel on the wall. Drawn rather than filmed, so no real tablet and no real home is in it.</p>
   </figure>
 
-  <dl class="filelist stroke">
+  <dl class="filelist">
 {chr(10).join(row(*item) for item in rows)}
   </dl>
 
-  <h2 class="stroke">Authenticity</h2>
-  <p class="stroke">SHA-256 of the APK:</p>
-  <div class="code-scroll stroke" tabindex="0" role="region" aria-label="The APK checksum"><pre><code>{found['apk_sha256']}</code></pre></div>
-  <p class="stroke">SHA-256 of the certificate it is signed with, which is Google&#8217;s app signing key for
+  <h2>Authenticity</h2>
+  <p>SHA-256 of the APK:</p>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="The APK checksum"><pre><code>{found['apk_sha256']}</code></pre></div>
+  <p>SHA-256 of the certificate it is signed with, which is Google&#8217;s app signing key for
   Muralis and does not change between releases:</p>
-  <div class="code-scroll stroke" tabindex="0" role="region" aria-label="The signing certificate fingerprint"><pre><code>{found['certificate_sha256']}</code></pre></div>
-  <p class="stroke">Read it back off the file yourself:</p>
-  <div class="code-scroll stroke" tabindex="0" role="region" aria-label="The command that prints the certificate"><pre><code>apksigner verify --print-certs muralis-latest.apk</code></pre></div>
-  <p class="note stroke">Generated from the APK in this directory by <code>scripts/generate-download.py</code>.</p>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="The signing certificate fingerprint"><pre><code>{found['certificate_sha256']}</code></pre></div>
+  <p>Read it back off the file yourself:</p>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="The command that prints the certificate"><pre><code>apksigner verify --print-certs muralis-latest.apk</code></pre></div>
+  <p class="note">Generated from the APK in this directory by <code>scripts/generate-download.py</code>.</p>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project.</span>
+    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project. Made in Vienna, Austria.</span>
     <nav>
       <a href="../privacy/">Privacy</a>
       <a href="../terms/">Terms</a>
@@ -277,8 +273,7 @@ def index_page(found):
 </footer>
 
 <script src="../assets/js/menu.js?v=1"></script>
-<script src="../assets/js/theme.js?v=4"></script>
-<script src="../assets/js/motion.js?v=5"></script>
+<script src="../assets/js/theme.js?v=5"></script>
 </body>
 </html>
 """
