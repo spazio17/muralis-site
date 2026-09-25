@@ -130,7 +130,10 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
-main { flex: 1 0 auto; }
+/* A main that is also a .wrap has auto side margins, and in this column flexbox those size it to
+   its content: one unbreakable line (a checksum on /download/) then widened the page past a
+   phone's screen. The full width, capped by the wrap's max-width, keeps it inside. */
+main { flex: 1 0 auto; width: 100%; }
 
 .wrap { max-width: var(--page); margin: 0 auto; padding: 0 1.25rem; }
 

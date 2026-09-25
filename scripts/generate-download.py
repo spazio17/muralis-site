@@ -186,15 +186,15 @@ def index_page(found):
 <meta name="description" content="The Play-signed Muralis APK, its checksum, the signing fingerprint, and the provisioning QR, published so anyone can check them.">
 <link rel="canonical" href="https://muralis.spazio17.org/download/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=28">
+<link rel="stylesheet" href="../assets/css/site.css?v=34">
 <script>
   /* The same bootstrap every page carries: a theme chosen anywhere on the site holds
      here too, applied before first paint so an explicit choice never flashes the other
      palette. */
   try {{
     var t = localStorage.getItem('muralis-theme');
-    if (t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  }} catch (e) {{ /* private mode: light */ }}
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  }} catch (e) {{ /* private mode: follow the system */ }}
 </script>
 </head>
 <body>
@@ -228,6 +228,7 @@ def index_page(found):
       <div class="menugroup">
         <p class="menuhead">Appearance</p>
         <div class="themepick" role="group" aria-label="Colour theme">
+          <button type="button" data-theme="auto" aria-pressed="false">Auto</button>
           <button type="button" data-theme="light" aria-pressed="false">Light</button>
           <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
         </div>
@@ -273,7 +274,7 @@ def index_page(found):
 </footer>
 
 <script src="../assets/js/menu.js?v=1"></script>
-<script src="../assets/js/theme.js?v=5"></script>
+<script src="../assets/js/theme.js?v=6"></script>
 </body>
 </html>
 """
