@@ -429,7 +429,7 @@ Content-Type: application/json
         <div class="code-scroll" tabindex="0" role="region" aria-label="display.visual_off"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=display.visual_off</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
-        <p>The status document then shows <code>display.screen_on: false</code>, <code>display.source: "display_off"</code>, <code>display.brightness_percent: null</code>, and under <code>display.off_method_effective</code> which of the two happened.</p>
+        <p>The status document then shows <code>display.source: "display_off"</code>, <code>display.brightness_percent: 0</code>, and under <code>display.off_method_effective</code> which of the two happened. <code>display.screen_on</code> is <code>false</code> after a sleep and stays <code>true</code> under the film, since the screen is still awake behind it.</p>
       </article>
 
       <article class="entry" id="display-brightness">
@@ -516,7 +516,7 @@ Content-Type: application/json
           <thead><tr><th>Key</th><th>Values</th><th>Effect</th></tr></thead>
           <tbody>
             <tr><th scope="row"><code>stats_overlay</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Draws or hides the live stats block on the panel.</td></tr>
-            <tr><th scope="row"><code>display_off_method</code></th><td><code>auto</code>, <code>sleep</code>, <code>film</code></td><td>Same as the command <code>display.off_method</code>.</td></tr>
+            <tr><th scope="row"><code>display_off_method</code></th><td><code>auto</code>, <code>sleep</code>, <code>film</code></td><td>Same as the command <code>display.off_method</code>. An ordinary install has the film alone.</td></tr>
             <tr><th scope="row"><code>screensaver_mode</code></th><td><code>off</code>, <code>dim</code>, <code>film</code>, <code>url</code>, <code>pictures</code></td><td>Same as <code>screensaver.mode</code>.</td></tr>
             <tr><th scope="row"><code>screensaver_idle_s</code>, <code>screensaver_off_s</code>, <code>screensaver_picture_s</code></th><td>whole seconds</td><td>Same as <code>screensaver.idle_seconds</code>, <code>screensaver.off_seconds</code> and <code>screensaver.picture_seconds</code>.</td></tr>
             <tr><th scope="row"><code>screensaver_dim_percent</code></th><td><code>1</code> to <code>100</code></td><td>Same as <code>screensaver.dim_percent</code>.</td></tr>
@@ -577,7 +577,7 @@ Content-Type: application/json
       <p><code>GET /api/stats</code> returns it; the MQTT state topic carries the same document without the three lines marked <b>admin</b>. Times are milliseconds. A value the tablet cannot provide is <code>null</code>, never missing and never zero.</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="A status document"><pre><code>{
   "schema": 1,
-  "app_version": "0.5.0",
+  "app_version": "0.6.0",
   "uptime_ms": 79535237,
   "app_uptime_ms": 28207013,
   "battery": {"present": true, "percent": 84, "status": 2, "health": 2, "plugged": 2, "charge_state": "charging",
@@ -671,7 +671,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>off_method_warning</code></th><td>A sleep ended badly and the method was switched to the film. Painted red on both admin surfaces.</td><td>bool</td></tr>
             <tr><th scope="row"><code>auto</code>, <code>has_light_sensor</code></th><td>Automatic brightness on, and whether a light sensor exists.</td><td>bool</td></tr>
             <tr><th scope="row"><code>source</code></th><td>Where the brightness comes from.</td><td><code>auto</code>, <code>manual</code>, <code>display_off</code></td></tr>
-            <tr><th scope="row"><code>brightness_percent</code></th><td>The level.</td><td>0 to 100; <code>null</code> while dark</td></tr>
+            <tr><th scope="row"><code>brightness_percent</code></th><td>The level.</td><td>0 to 100, and 0 while dark; <code>null</code> only when the system setting cannot be read</td></tr>
             <tr><th scope="row"><code>system_raw</code>, <code>system_scale_assumed</code></th><td>Android&#8217;s raw brightness value and the scale assumed for it, so a wrong percentage can be diagnosed.</td><td>int, 255</td></tr>
             <tr class="group"><th colspan="3"><code>screensaver</code></th></tr>
             <tr><th scope="row"><code>active</code></th><td>Whether the screensaver is showing right now.</td><td>boolean</td></tr>
@@ -686,7 +686,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>dashboard_url</code>, <code>device_id</code></th><td>The stored page and the panel&#8217;s id, which is also its MQTT client id.</td><td>string</td></tr>
             <tr><th scope="row"><code>settings_sequence</code>, <code>launcher_sequence</code></th><td>The corner-tap combinations. <b>Admin</b>: HTTP only, never on MQTT.</td><td><code>TL,TR,BL,BR</code> strings</td></tr>
             <tr><th scope="row"><code>escape_pin_set</code></th><td>Whether a PIN is asked after a combination; the PIN itself is never reported. <b>Admin</b>: HTTP only.</td><td>bool</td></tr>
-            <tr><th scope="row"><code>stats_overlay</code>, <code>orientation</code>, <code>display_off_method</code>, <code>web_admin_enabled</code></th><td>Stored settings.</td><td>bool; <code>auto</code>/<code>landscape</code>/<code>portrait</code>; <code>auto</code>/<code>sleep</code>/<code>film</code>; bool</td></tr>
+            <tr><th scope="row"><code>stats_overlay</code>, <code>orientation</code>, <code>display_off_method</code>, <code>web_admin_enabled</code></th><td>Stored settings; <code>display_off_method</code> reads <code>film</code> on an ordinary install whatever is stored, since the film is the only method it has.</td><td>bool; <code>auto</code>/<code>landscape</code>/<code>portrait</code>; <code>auto</code>/<code>sleep</code>/<code>film</code>; bool</td></tr>
             <tr><th scope="row"><code>has_light_sensor</code>, <code>auto_brightness</code></th><td>Live, repeated here for the Home Assistant switch.</td><td>bool</td></tr>
             <tr><th scope="row"><code>http_port</code>, <code>mqtt_host</code>, <code>mqtt_port</code></th><td>Where the panel listens and which broker it talks to. <b>Admin</b>: HTTP only.</td><td></td></tr>
             <tr><th scope="row"><code>http_tls</code>, <code>http_certificate_sha256</code></th><td>Whether the web admin speaks HTTPS, and the fingerprint of its certificate, to compare with the browser&#8217;s. <b>Admin</b>: HTTP only.</td><td>bool, string</td></tr>
@@ -757,7 +757,7 @@ Content-Type: application/json
             <tr><th scope="row">Brightness</th><td>number, 0 to 100</td><td><code>display.brightness_percent</code></td><td><code>display.brightness</code></td></tr>
             <tr><th scope="row">Automatic brightness</th><td>switch, only with a light sensor</td><td><code>config.auto_brightness</code></td><td><code>display.auto_brightness</code></td></tr>
             <tr><th scope="row">Orientation</th><td>select</td><td><code>config.orientation</code></td><td><code>display.orientation</code></td></tr>
-            <tr><th scope="row">Display off method</th><td>select, <code>sleep</code> offered to a device owner only</td><td><code>config.display_off_method</code></td><td><code>display.off_method</code></td></tr>
+            <tr><th scope="row">Display off method</th><td>select, <code>auto</code> and <code>sleep</code> offered to a device owner only; an ordinary install offers <code>film</code> alone</td><td><code>config.display_off_method</code></td><td><code>display.off_method</code></td></tr>
             <tr><th scope="row">Web admin</th><td>switch</td><td><code>config.web_admin_enabled</code></td><td><code>webadmin.enabled</code></td></tr>
             <tr><th scope="row">Dashboard URL</th><td>text</td><td><code>config.dashboard_url</code></td><td><code>kiosk.set_url</code></td></tr>
             <tr><th scope="row">Open URL once</th><td>text</td><td><code>runtime.last_page_url</code></td><td><code>kiosk.open_url</code></td></tr>
