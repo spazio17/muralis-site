@@ -151,6 +151,10 @@ Unauthorized</code></pre></div>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/setting</code></td><td>Applies one instant setting. <a href="#instant">Instant settings</a>.</td><td><code>200</code> or <code>400</code> JSON</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/check</code></td><td>Tests a value from the panel&#8217;s side. <a href="#checks">Checks</a>.</td><td><code>200</code> JSON, the verdict inside</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/privacy</code>, <code>/terms</code></td><td>The legal texts the app carries.</td><td><code>200</code> HTML</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/sensors</code>, <code>/sensor?id=</code>, <code>/automations</code>, <code>/automation?id=</code>, <code>/stats</code>, <code>/screensaver</code></td><td>The web admin&#8217;s pages below the settings: the sensors and one sensor, the automations and one rule&#8217;s editor, the stats and log, the screensaver.</td><td><code>200</code> HTML</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/automations/save</code>, <code>/api/automations/delete</code></td><td>The editor&#8217;s Save and Delete, form-encoded: <code>id</code> (empty for a new rule), <code>name</code>, <code>sensor</code>, <code>event_&lt;sensor&gt;</code>, <code>level</code>, <code>minutes</code>, <code>tag</code>, <code>action</code>, <code>argument</code>, <code>only</code>, <code>only_from</code>, <code>only_to</code>, and <code>baseline</code>, the stored rule as JSON (see the stale rule under <a href="#boxes">settings boxes</a>).</td><td><code>303</code> to <code>/automations?id=</code>; the editor again with the reason when refused</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/log</code></td><td>The app&#8217;s own log lines, plain text. <code>?level=E|W|I|V</code>, <code>?own=1</code> for Muralis&#8217;s tags alone, <code>?q=</code> to filter.</td><td><code>200</code> text</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/camera/stream</code>, <code>/camera/snapshot.jpg</code></td><td>The camera as an IP camera while its sensor is on: an MJPEG stream (<code>multipart/x-mixed-replace</code>, one part per frame) and the last frame as one JPEG.</td><td><code>200</code>; <code>503</code> while the camera is off or has no frame yet</td></tr>
             <tr><th scope="row">any</th><td>anything else</td><td></td><td><code>404</code></td></tr>
           </tbody>
         </table>
@@ -474,6 +478,63 @@ Content-Type: application/json
         <p>Refused with <code>value must be auto, sleep or film</code>, or <code>a real screen-off needs the device-owner install</code> for <code>sleep</code> on an ordinary install.</p>
       </article>
 
+      <h3 id="cmd-sensors">The sensors</h3>
+      <p>The panel&#8217;s sensors (see the <code>sensors</code> block of the <a href="#status">status document</a>) and its own automations. A sensor this device lacks, or one still waiting for a permission on the panel, refuses with the reason.</p>
+
+      <article class="entry" id="sensor-enabled">
+        <header><h3>sensor.enabled</h3></header>
+        <p>Switches one sensor on or off: <code>value</code> names it (<code>proximity</code>, <code>light</code>, <code>movement</code>, <code>bluetooth</code>, <code>nfc</code>, <code>audio</code>, <code>camera</code>, <code>microphone</code>, <code>pressure</code>, <code>temperature</code>, <code>humidity</code>), <code>enabled</code> says which way. The panel&#8217;s own values (display, screensaver, battery, power, network, memory, processor) are always reported and cannot be switched.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="sensor.enabled"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=sensor.enabled -d value=proximity -d enabled=1</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+        <p>Refused with <code>enabled must be true or false</code>, <code>value must name a sensor</code>, <code>no sensor is called &hellip;</code>, <code>this device has no &hellip; sensor</code> or <code>the &hellip; needs a permission first</code>.</p>
+      </article>
+
+      <article class="entry" id="automation-enabled">
+        <header><h3>automation.enabled</h3></header>
+        <p>Pauses or resumes one automation: <code>value</code> is the rule&#8217;s id from the <code>automations</code> array, <code>enabled</code> says which way. Rules are made on the panel or the web admin, not over the API.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="automation.enabled"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=automation.enabled -d value=wake -d enabled=0</code></pre></div>
+        <p>Refused with <code>no automation is called &hellip;</code>.</p>
+      </article>
+
+      <article class="entry" id="camera-motion">
+        <header><h3>camera.motion</h3> <h3>camera.snapshot</h3></header>
+        <p><code>camera.motion</code> with <code>enabled</code> switches the camera&#8217;s motion detection. <code>camera.snapshot</code> publishes the camera&#8217;s last frame on <code>kiosk/&lt;id&gt;/camera</code> now, refused with <code>the camera is off</code>, <code>the camera has not delivered a picture yet</code> or the broker&#8217;s state when nothing could be published.</p>
+      </article>
+
+      <article class="entry" id="proximity-calibrate">
+        <header><h3>proximity.calibrate</h3></header>
+        <p>The proximity sensor&#8217;s calibration in steps, for a device whose driver never moves Android&#8217;s distance: <code>value=covered</code> with a hand over the sensor, then <code>value=clear</code> with nothing in front of it; the panel keeps the value that changed the most and reads near from it. <code>value=reset</code> returns to Android&#8217;s rule. Refused with <code>cover the sensor first</code>, <code>the sensor has not reported in the last seconds</code> or <code>the sensor read the same covered and clear</code>.</p>
+      </article>
+
+      <article class="entry" id="sensor-sleep-test">
+        <header><h3>sensor.sleep_test</h3></header>
+        <p>Puts the panel to sleep for twenty seconds and notes whether the sensor named by <code>value</code> reported meanwhile; some devices stop every sensor an app holds once the display sleeps. The verdict is <code>asleep</code> in the sensor&#8217;s block, <code>reports</code> or <code>silent</code>. Refused with <code>this panel darkens with the black film, which keeps its sensors awake</code> where Display off is the film, <code>only the panel's own sensors can be tested</code> for the camera, the microphone and the beacons, or <code>a test is already running</code>. A wake before the twenty seconds ends the test without a verdict.</p>
+      </article>
+
+      <h3 id="cmd-sound">Sound</h3>
+
+      <article class="entry" id="audio-volume">
+        <header><h3>audio.volume</h3></header>
+        <p>Sets the media volume: <code>percent</code>, 0 to 100. Refused with <code>percent must be between 0 and 100</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="audio.volume"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=audio.volume -d percent=40</code></pre></div>
+      </article>
+
+      <article class="entry" id="audio-play">
+        <header><h3>audio.play</h3> <h3>audio.stop</h3></header>
+        <p><code>audio.play</code> plays the sound at <code>url</code>, <code>http://</code> or <code>https://</code>, through the panel&#8217;s speaker; <code>audio.stop</code> stops it. Refused with <code>url is required</code> or <code>url must start with http:// or https://</code>.</p>
+      </article>
+
+      <article class="entry" id="audio-say">
+        <header><h3>audio.say</h3></header>
+        <p>Speaks <code>value</code> through the device&#8217;s text-to-speech engine. Refused with <code>value must hold the sentence to say</code> or <code>the text-to-speech engine is not ready</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="audio.say"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=audio.say -d 'value=The door is open'</code></pre></div>
+      </article>
+
       <h3 id="cmd-panel">The panel</h3>
 
       <article class="entry" id="webadmin-enabled">
@@ -523,6 +584,10 @@ Content-Type: application/json
             <tr><th scope="row"><code>screensaver_url</code></th><td>an address, or empty</td><td>Same as <code>screensaver.url</code>.</td></tr>
             <tr><th scope="row"><code>screensaver_on_wake</code>, <code>screensaver_source</code>, <code>screensaver_transition</code>, <code>screensaver_picture_fit</code>, <code>screensaver_credit_corner</code></th><td>the same words as the commands</td><td>Same as the command of the same name.</td></tr>
             <tr><th scope="row"><code>screensaver_shuffle</code>, <code>screensaver_one_per_cycle</code>, <code>screensaver_credit</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Same as the commands with <code>enabled</code>.</td></tr>
+            <tr><th scope="row"><code>sensor_&lt;id&gt;</code></th><td>on/off words as above</td><td>Same as <code>sensor.enabled</code>. An unknown id is refused.</td></tr>
+            <tr><th scope="row"><code>sensor_option_&lt;key&gt;</code></th><td>as the sensor&#8217;s page offers</td><td>One setting of a sensor&#8217;s page: <code>movement_sensitivity</code> (<code>light</code>, <code>normal</code>, <code>heavy</code>), <code>movement_still_s</code>, <code>beacons_reach_s</code>, <code>camera_still_s</code> (seconds from 1), <code>beacons_transmit</code>, <code>beacons_uuid</code>, <code>beacons_major</code>, <code>beacons_minor</code> (0 to 65535), <code>camera_name</code> (up to 40), <code>camera_lens</code> (<code>front</code>, <code>back</code>), <code>camera_size</code>, <code>camera_fps</code> (the offered ones), <code>camera_mirror</code>, <code>camera_flip</code>, <code>camera_watermark</code>, <code>camera_motion</code>, <code>camera_sensitivity</code> (<code>low</code>, <code>normal</code>, <code>high</code>), <code>camera_mqtt</code>, <code>beacon_&lt;uuid:major:minor&gt;</code> (a beacon&#8217;s name, up to 40). Anything else is refused with the rule.</td></tr>
+            <tr><th scope="row"><code>automation_&lt;id&gt;</code></th><td>on/off words</td><td>Same as <code>automation.enabled</code>.</td></tr>
+            <tr><th scope="row"><code>nfc_tag_&lt;id&gt;</code></th><td>a name up to 40 characters, empty to forget it</td><td>Names a tag the panel has read; the id is the tag&#8217;s hex identifier as the panel reports it.</td></tr>
           </tbody>
         </table>
       </div>
@@ -682,6 +747,12 @@ Content-Type: application/json
             <tr><th scope="row"><code>playlist</code>, <code>playlists</code></th><td>The playlist in use, and how many there are.</td><td>string or <code>null</code>, number</td></tr>
             <tr><th scope="row"><code>picture</code></th><td>The picture on screen: its title and its credit line.</td><td><code>{"title","credit"}</code> or <code>null</code></td></tr>
             <tr><th scope="row"><code>problem</code>, <code>summary</code></th><td>Why the screensaver cannot run as set, and the settings in one sentence, the same sentence both surfaces show.</td><td>string or <code>null</code>, string</td></tr>
+            <tr class="group"><th colspan="3"><code>sensors</code></th></tr>
+            <tr><th scope="row">one object per sensor, by id</th><td>Every sensor the app knows, on this device or not: <code>name</code>, <code>kind</code> (<code>switch</code>, <code>permission</code>, <code>panel</code>), <code>page</code>, <code>glyph</code>, <code>available</code>, <code>permitted</code>, <code>enabled</code>, <code>active</code> (on and permitted), <code>value</code>, <code>attributes</code> where the sensor has them (the beacons in reach, the camera&#8217;s name, viewers and detection, the last tag, the audio state), and <code>reading</code>, the sentence both surfaces show.</td><td>object</td></tr>
+            <tr><th scope="row"><code>near</code>, <code>calibrated</code></th><td>The proximity sensor&#8217;s verdict and whether a person calibrated it.</td><td>bool</td></tr>
+            <tr><th scope="row"><code>asleep</code></th><td>What the test while asleep found for a hardware sensor.</td><td><code>reports</code>, <code>silent</code>, or empty</td></tr>
+            <tr class="group"><th colspan="3"><code>automations</code></th></tr>
+            <tr><th scope="row">one object per rule</th><td><code>id</code>, <code>name</code>, <code>sensor</code>, <code>event</code>, <code>level</code> (absent where the event has none), <code>minutes</code>, <code>tag</code>, <code>action</code>, <code>argument</code>, <code>enabled</code>, <code>only_from</code>, <code>only_to</code> (minutes of the day, -1 for the whole day) and <code>sentence</code>, the rule in words.</td><td>array</td></tr>
             <tr class="group"><th colspan="3"><code>config</code></th></tr>
             <tr><th scope="row"><code>dashboard_url</code>, <code>device_id</code></th><td>The stored page and the panel&#8217;s id, which is also its MQTT client id.</td><td>string</td></tr>
             <tr><th scope="row"><code>settings_sequence</code>, <code>launcher_sequence</code></th><td>The corner-tap combinations. <b>Admin</b>: HTTP only, never on MQTT.</td><td><code>TL,TR,BL,BR</code> strings</td></tr>
@@ -719,6 +790,8 @@ Content-Type: application/json
             <tr><th scope="row"><code>kiosk/&lt;id&gt;/state</code></th><td>panel</td><td>The <a href="#status">status document</a> without the admin lines, retained</td><td>Every 60 s; at once when battery level, charging state, low memory or thermal status change; 400 ms after every accepted command; on reconnect.</td></tr>
             <tr><th scope="row"><code>kiosk/&lt;id&gt;/command</code></th><td>you</td><td>A bare command name, or a JSON envelope</td><td>Whenever you like. Not retained.</td></tr>
             <tr><th scope="row"><code>kiosk/&lt;id&gt;/command/result</code></th><td>panel</td><td><code>{"id","status","detail","timestamp_ms"}</code></td><td>One per command received.</td></tr>
+            <tr><th scope="row"><code>kiosk/&lt;id&gt;/tag</code></th><td>panel</td><td><code>{"tag_id"}</code>, QoS 1, not retained</td><td>A tag held to the panel while the NFC sensor is on; Home Assistant&#8217;s tag scanned event, through <code>homeassistant/tag/&lt;id&gt;/config</code>.</td></tr>
+            <tr><th scope="row"><code>kiosk/&lt;id&gt;/camera</code></th><td>panel</td><td>The last frame as raw JPEG, retained; an empty payload clears it</td><td>On motion while the camera&#8217;s picture-to-MQTT option is on, and on <code>camera.snapshot</code>. Cleared when the camera or the option goes off.</td></tr>
             <tr><th scope="row"><code>homeassistant/device/&lt;id&gt;/config</code></th><td>panel</td><td>The <a href="#discovery">discovery bundle</a>, retained</td><td>On connect, and when Home Assistant comes back.</td></tr>
             <tr><th scope="row"><code>homeassistant/binary_sensor/&lt;id&gt;_mqtt_state/config</code></th><td>panel</td><td>The <a href="#liveness">liveness entity</a>, retained</td><td>Same.</td></tr>
           </tbody>
@@ -774,6 +847,9 @@ Content-Type: application/json
             <tr><th scope="row">Screensaver shuffle, one picture per cycle, credit line</th><td>switch</td><td><code>screensaver.shuffle</code>, <code>one_per_cycle</code>, <code>credit</code></td><td>the command of the same name with <code>enabled</code></td></tr>
             <tr><th scope="row">Screensaver page</th><td>text</td><td><code>screensaver.url</code></td><td><code>screensaver.url</code></td></tr>
             <tr><th scope="row">Screensaver picture</th><td>sensor</td><td><code>screensaver.picture.title</code></td><td></td></tr>
+            <tr><th scope="row">Proximity, Light, Movement, Bluetooth beacons, NFC, Audio, Camera, Microphone, Pressure, Ambient temperature, Humidity</th><td>sensor or binary sensor, one each, announced while the sensor is on and this device has it, withdrawn otherwise</td><td><code>sensors.&lt;id&gt;.value</code>, with <code>attributes</code> for the beacons, NFC, audio and the camera</td><td></td></tr>
+            <tr><th scope="row">Camera motion detection, Camera snapshot, Camera picture</th><td>switch, button, camera, only while the camera is on</td><td><code>sensors.camera.attributes.detecting</code>; the picture from <code>kiosk/&lt;id&gt;/camera</code></td><td><code>camera.motion</code>, <code>camera.snapshot</code></td></tr>
+            <tr><th scope="row">One switch per automation, named after the rule</th><td>switch</td><td><code>automations[].enabled</code></td><td><code>automation.enabled</code></td></tr>
 </tbody>
         </table>
       </div>
