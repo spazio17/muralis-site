@@ -91,6 +91,7 @@
       <a href="#settings">Settings</a>
       <a class="sub" href="#instant">Instant settings</a>
       <a class="sub" href="#boxes">Settings boxes</a>
+      <a class="sub" href="#documents">Automations and sensor settings</a>
       <a href="#checks">Checks</a>
       <a href="#status">Status document</a>
       <a href="#mqtt">MQTT</a>
@@ -153,6 +154,8 @@ Unauthorized</code></pre></div>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/privacy</code>, <code>/terms</code></td><td>The legal texts the app carries.</td><td><code>200</code> HTML</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/sensors</code>, <code>/sensor?id=</code>, <code>/automations</code>, <code>/automation?id=</code>, <code>/stats</code>, <code>/screensaver</code></td><td>The web admin&#8217;s pages below the settings: the sensors and one sensor, the automations and one rule&#8217;s editor, the stats and log, the screensaver.</td><td><code>200</code> HTML</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/automations/save</code>, <code>/api/automations/delete</code></td><td>The editor&#8217;s Save and Delete, form-encoded: <code>id</code> (empty for a new rule), <code>name</code>, <code>sensor</code>, <code>event_&lt;sensor&gt;</code>, <code>level</code>, <code>minutes</code>, <code>tag</code>, <code>action</code>, <code>argument</code>, <code>only</code>, <code>only_from</code>, <code>only_to</code>, and <code>baseline</code>, the stored rule as JSON (see the stale rule under <a href="#boxes">settings boxes</a>).</td><td><code>303</code> to <code>/automations?id=</code>; the editor again with the reason when refused</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/automations</code>, <code>/api/sensors/settings</code>, <code>/api/beacons/names</code></td><td>Every automation, every sensor setting, every beacon name, each as one JSON document. <a href="#documents">Automations and sensor settings</a>.</td><td><code>200</code> JSON</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/automations</code>, <code>/api/sensors/settings</code>, <code>/api/beacons/names</code></td><td>Writes the same documents back, <code>application/json</code>.</td><td><code>200</code> with the document as stored; <code>400</code> JSON with the reason, nothing written</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/log</code></td><td>The app&#8217;s own log lines, plain text. <code>?level=E|W|I|V</code>, <code>?own=1</code> for Muralis&#8217;s tags alone, <code>?q=</code> to filter.</td><td><code>200</code> text</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/camera/stream</code>, <code>/camera/snapshot.jpg</code></td><td>The camera as an IP camera while its sensor is on: an MJPEG stream (<code>multipart/x-mixed-replace</code>, one part per frame) and the last frame as one JPEG.</td><td><code>200</code>; <code>503</code> while the camera is off or has no frame yet</td></tr>
             <tr><th scope="row">any</th><td>anything else</td><td></td><td><code>404</code></td></tr>
@@ -624,6 +627,24 @@ Content-Type: application/json
      -d 'baseline=https://old.example.net/|hallway-panel'</code></pre></div>
       <p class="reply">Reply when the baseline is stale, HTTP 400, on the page</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="The stale refusal"><pre><code>Not saved: these settings were changed elsewhere after this page loaded. Reload and try again.</code></pre></div>
+
+      <h3 id="documents">Automations and sensor settings</h3>
+      <p>Three documents hold what you set on the Sensors and Automations pages. GET one, change it, POST it back as <code>application/json</code>. Every entry says when it last changed, in <code>changed_at</code> (milliseconds, <code>0</code> when it has not changed since the panel started keeping the time), and a removed rule or beacon name leaves a marker in <code>deleted</code> with its <code>deleted_at</code>, the newest 100 kept. The panel writes those times itself: the copies in a POST are ignored. A POST is checked in full before anything is written, so a refusal leaves everything as it was.</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th>Path</th><th>Document</th><th>A POST</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>/api/automations</code></th><td><code>{"rules": [...], "deleted": [...]}</code>, each rule with the fields of <code>automations</code> in the <a href="#status">status document</a> plus <code>changed_at</code>.</td><td>Replaces the whole list: a rule left out is deleted. Each rule is checked as the editor checks it; a rule without an <code>id</code> gets a new one. At most 64 rules.</td></tr>
+            <tr><th scope="row"><code>/api/sensors/settings</code></th><td><code>{"switches": {"&lt;id&gt;": {"on", "changed_at"}}, "shared": {"&lt;key&gt;": {"value", "changed_at"}}, "this_panel": {...}}</code>. <code>shared</code> holds the settings that mean the same on any panel, <code>this_panel</code> the ones that depend on the panel&#8217;s own hardware: the camera&#8217;s name, lens, size, orientation, mirror and flip, the beacon this panel sends, the calibrations, the sleep tests and the tags it has read.</td><td>Sets the switches and <code>shared</code> settings it names, each checked as the sensor&#8217;s page checks it; the rest stay. <code>this_panel</code> is ignored, set those on the panel; a <code>this_panel</code> key under <code>shared</code> is refused.</td></tr>
+            <tr><th scope="row"><code>/api/beacons/names</code></th><td><code>{"names": [{"id", "name", "changed_at"}], "deleted": [...]}</code>, the names given to beacons heard, <code>id</code> as <code>uuid:major:minor</code>.</td><td>Sets the names it lists, up to 40 characters; a blank name takes it away. A beacon left out keeps its name.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Turning the microphone on"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/sensors/settings \
+     -H 'Content-Type: application/json' \
+     -d '{"switches": {"microphone": {"on": true}}}'</code></pre></div>
+      <p class="reply">With <code>{"shared": {"camera_size": {"value": "640x480"}}}</code>, HTTP 400</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Reply to a setting of this panel alone"><pre><code>{"status":"rejected","detail":"camera_size belongs to this panel alone"}</code></pre></div>
 
       <h2 id="checks">Checks</h2>
       <p><code>POST /api/check</code> tests a value from the panel&#8217;s own point of view before you save it: does that URL answer, is that port free, does that broker accept a connection. It is advice, not a gate; the save paths keep their own refusals. Always <code>200</code>, the verdict is inside.</p>
