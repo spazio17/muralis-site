@@ -153,11 +153,11 @@ Unauthorized</code></pre></div>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/check</code></td><td>Tests a value from the panel&#8217;s side. <a href="#checks">Checks</a>.</td><td><code>200</code> JSON, the verdict inside</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/privacy</code>, <code>/terms</code></td><td>The legal texts the app carries.</td><td><code>200</code> HTML</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/sensors</code>, <code>/sensor?id=</code>, <code>/automations</code>, <code>/automation?id=</code>, <code>/stats</code>, <code>/screensaver</code></td><td>The web admin&#8217;s pages below the settings: the sensors and one sensor, the automations and one rule&#8217;s editor, the stats and log, the screensaver.</td><td><code>200</code> HTML</td></tr>
-            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/automations/save</code>, <code>/api/automations/delete</code></td><td>The editor&#8217;s Save and Delete, form-encoded: <code>id</code> (empty for a new rule), <code>name</code>, <code>sensor</code>, <code>event_&lt;sensor&gt;</code>, <code>level</code>, <code>minutes</code>, <code>tag</code>, <code>action</code>, <code>argument</code>, <code>only</code>, <code>only_from</code>, <code>only_to</code>, and <code>baseline</code>, the stored rule as JSON (see the stale rule under <a href="#boxes">settings boxes</a>).</td><td><code>303</code> to <code>/automations?id=</code>; the editor again with the reason when refused</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/automations/save</code>, <code>/api/automations/delete</code></td><td>The editor&#8217;s Save and Delete, form-encoded: <code>id</code> (empty for a new rule), <code>name</code>, <code>sensor</code>, <code>event_&lt;sensor&gt;</code>, <code>level</code>, <code>minutes</code>, <code>tag</code>, <code>action</code>, <code>argument</code>, <code>only</code>, <code>only_from</code>, <code>only_to</code>, and <code>baseline</code>, the stored rule as JSON (see the stale rule under <a href="#boxes">settings boxes</a>).</td><td>Save: <code>303</code> to <code>/automations?id=</code>; Delete: <code>303</code> to <code>/automations</code>; the editor again with the reason when refused</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/automations</code>, <code>/api/sensors/settings</code>, <code>/api/beacons/names</code></td><td>Every automation, every sensor setting, every beacon name, each as one JSON document. <a href="#documents">Automations and sensor settings</a>.</td><td><code>200</code> JSON</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/automations</code>, <code>/api/sensors/settings</code>, <code>/api/beacons/names</code></td><td>Writes the same documents back, <code>application/json</code>.</td><td><code>200</code> with the document as stored; <code>400</code> JSON with the reason, nothing written</td></tr>
-            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/log</code></td><td>The app&#8217;s own log lines, plain text. <code>?level=E|W|I|V</code>, <code>?own=1</code> for Muralis&#8217;s tags alone, <code>?q=</code> to filter.</td><td><code>200</code> text</td></tr>
-            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/camera/stream</code>, <code>/camera/snapshot.jpg</code></td><td>The camera as an IP camera while its sensor is on: an MJPEG stream (<code>multipart/x-mixed-replace</code>, one part per frame) and the last frame as one JPEG.</td><td><code>200</code>; <code>503</code> while the camera is off or has no frame yet</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/log</code></td><td>The app&#8217;s own log lines, plain text, the newest 200 at most. <code>?level=</code> one of <code>V D I W E F</code>, <code>?own=1</code> for Muralis&#8217;s tags alone, <code>?q=</code> to keep the lines holding that text.</td><td><code>200</code> text</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/camera/stream</code>, <code>/camera/snapshot.jpg</code></td><td>The camera as an IP camera while its sensor is on: an MJPEG stream (<code>multipart/x-mixed-replace</code>, one part per frame) and the last frame as one JPEG. Two streams at a time; a stream ends when the camera stops, sends no frame for 15 seconds, or a frame is not read within 10 seconds.</td><td><code>200</code>; <code>503</code> while the camera is off or has no frame yet, or with <code>Retry-After</code> when two streams are already open</td></tr>
             <tr><th scope="row">any</th><td>anything else</td><td></td><td><code>404</code></td></tr>
           </tbody>
         </table>
@@ -174,7 +174,7 @@ Content-Type: application/json
       <div class="table-scroll">
         <table class="spec">
           <tbody>
-            <tr><th scope="row">Request body</th><td>16 384 bytes. A larger body closes the connection without a reply.</td></tr>
+            <tr><th scope="row">Request body</th><td>16 384 bytes; 65 536 for the three documents under <a href="#documents">Automations and sensor settings</a>. A larger body is refused with <code>413</code>, naming the size and the limit.</td></tr>
             <tr><th scope="row">Request line</th><td>4096 bytes, then <code>400</code>.</td></tr>
             <tr><th scope="row">Time</th><td>8 seconds for the whole request.</td></tr>
             <tr><th scope="row">Connections</th><td>One request per connection (<code>Connection: close</code> on every reply), 6 at a time per address, 8 in total.</td></tr>
@@ -496,7 +496,7 @@ Content-Type: application/json
 
       <article class="entry" id="automation-enabled">
         <header><h3>automation.enabled</h3></header>
-        <p>Pauses or resumes one automation: <code>value</code> is the rule&#8217;s id from the <code>automations</code> array, <code>enabled</code> says which way. Rules are made on the panel or the web admin, not over the API.</p>
+        <p>Pauses or resumes one automation: <code>value</code> is the rule&#8217;s id from the <code>automations</code> array, <code>enabled</code> says which way. Rules are made on the panel or the web admin, or posted whole to <a href="#documents"><code>/api/automations</code></a>.</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="automation.enabled"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
      -d cmnd=automation.enabled -d value=wake -d enabled=0</code></pre></div>
         <p>Refused with <code>no automation is called &hellip;</code>.</p>
@@ -504,7 +504,7 @@ Content-Type: application/json
 
       <article class="entry" id="camera-motion">
         <header><h3>camera.motion</h3> <h3>camera.snapshot</h3></header>
-        <p><code>camera.motion</code> with <code>enabled</code> switches the camera&#8217;s motion detection. <code>camera.snapshot</code> publishes the camera&#8217;s last frame on <code>kiosk/&lt;id&gt;/camera</code> now, refused with <code>the camera is off</code>, <code>the camera has not delivered a picture yet</code> or the broker&#8217;s state when nothing could be published.</p>
+        <p><code>camera.motion</code> with <code>enabled</code> switches the camera&#8217;s motion detection. <code>camera.snapshot</code> publishes the camera&#8217;s last frame on <code>kiosk/&lt;id&gt;/camera</code> now, only while the camera&#8217;s <code>camera_mqtt</code> setting (Picture to MQTT) is on; refused with <code>the camera is off</code>, <code>pictures to MQTT are off</code>, <code>the camera has not delivered a picture yet</code>, <code>MQTT is not configured</code> or the broker&#8217;s state when nothing could be published.</p>
       </article>
 
       <article class="entry" id="proximity-calibrate">
@@ -519,7 +519,7 @@ Content-Type: application/json
 
       <article class="entry" id="sensor-sleep-test">
         <header><h3>sensor.sleep_test</h3></header>
-        <p>Puts the panel to sleep for twenty seconds and notes whether the sensor named by <code>value</code> reported a changed reading meanwhile; some devices stop every sensor an app holds once the display sleeps. The sensor is asked again three seconds in and only a change after that counts, so someone has to change what it measures: a hand over the proximity or light sensor, a tap on the panel for movement. The verdict is <code>asleep</code> in the sensor&#8217;s block, <code>reports</code> or <code>silent</code>, which both surfaces show as Running and Not running. Refused with <code>this panel darkens with the black film, which keeps its sensors awake</code> where Display off is the film, <code>only the panel's own sensors can be tested</code> for the camera, the microphone and the beacons, or <code>a test is already running</code>. A wake before the twenty seconds ends the test without a verdict.</p>
+        <p>Puts the panel to sleep for twenty seconds and notes whether the sensor named by <code>value</code> reported a changed reading meanwhile; some devices stop every sensor an app holds once the display sleeps. The sensor is asked again three seconds in and only a change after that counts, so someone has to change what it measures: a hand over the proximity or light sensor, a tap on the panel for movement. The verdict is <code>asleep</code> in the sensor&#8217;s block, <code>reports</code> or <code>silent</code>, which both surfaces show as Running and Not running. Refused with <code>no sensor is called &hellip;</code>, <code>not on this device: &hellip;</code>, <code>only the panel&#8217;s own sensors can be tested</code>, <code>&hellip; is off</code>, <code>a test is already running</code>, <code>the display did not go off</code>, or <code>this panel darkens with the black film, which keeps its sensors awake</code> where Display off is the film, <code>only the panel's own sensors can be tested</code> for the camera, the microphone and the beacons, or <code>a test is already running</code>. A wake before the twenty seconds ends the test without a verdict.</p>
       </article>
 
       <h3 id="cmd-sound">Sound</h3>
@@ -538,7 +538,7 @@ Content-Type: application/json
 
       <article class="entry" id="audio-say">
         <header><h3>audio.say</h3></header>
-        <p>Speaks <code>value</code> through the device&#8217;s text-to-speech engine. Refused with <code>value must hold the sentence to say</code> or <code>the text-to-speech engine is not ready</code>.</p>
+        <p>Speaks <code>value</code> through the device&#8217;s text-to-speech engine. Refused with <code>value must hold the sentence to say</code>, <code>the sentence is longer than the speech engine takes (4000 characters)</code> or <code>the text-to-speech engine is not ready</code>.</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="audio.say"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
      -d cmnd=audio.say -d 'value=The door is open'</code></pre></div>
       </article>
@@ -612,7 +612,8 @@ Content-Type: application/json
         <table class="spec">
           <thead><tr><th><code>section</code></th><th>Fields</th><th>Baseline</th><th>Refused when</th></tr></thead>
           <tbody>
-            <tr><th scope="row"><code>dashboard</code></th><td><code>dashboard_url</code>, <code>device_id</code></td><td><code>baseline</code> = url<code>|</code>id</td><td>The URL does not start with <code>http://</code> or <code>https://</code>; the id is empty or uses anything but letters, digits, dot, underscore and hyphen, or is longer than 64.</td></tr>
+            <tr><th scope="row"><code>dashboard</code></th><td><code>dashboard_url</code></td><td><code>baseline</code> = url</td><td>The URL does not start with <code>http://</code> or <code>https://</code>.</td></tr>
+            <tr><th scope="row"><code>panel</code></th><td><code>device_id</code>, the panel&#8217;s name</td><td><code>baseline</code> = id</td><td>The name is empty or uses anything but letters, digits, dot, underscore and hyphen, or is longer than 64. With scripting, the web admin stores the name the moment its box loses the focus, through <code>device_id</code> under <a href="#instant">instant settings</a>.</td></tr>
             <tr><th scope="row"><code>mqtt</code></th><td><code>mqtt_host</code>, <code>mqtt_port</code>, <code>mqtt_username</code>, <code>mqtt_password</code> (blank keeps the stored one)</td><td><code>baseline</code> = host<code>|</code>port<code>|</code>username</td><td>The port is not between 1 and 65535.</td></tr>
             <tr><th scope="row"><code>webadmin</code></th><td><code>http_port</code>, <code>http_admin_password</code> (blank keeps)</td><td><code>baseline</code> = port</td><td>The port is not a number, not between 1024 and 65535, or already in use; the password is shorter than 8 characters, because a shorter one would switch the page off with only the tablet able to switch it back on.</td></tr>
             <tr><th scope="row"><code>sequences</code></th><td><code>settings_sequence</code>, <code>launcher_sequence</code></td><td><code>sequence_baseline</code> = settings<code>|</code>launcher</td><td>Both fields are empty, or both hold the same combination. Format <code>TL,TR,BL,BR</code>, 3 to 12 taps.</td></tr>
@@ -623,8 +624,7 @@ Content-Type: application/json
       <div class="code-scroll" tabindex="0" role="region" aria-label="Saving the dashboard box"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/ \
      -d section=dashboard \
      -d dashboard_url=https://grafana.example.net/d/wall \
-     -d device_id=hallway-panel \
-     -d 'baseline=https://old.example.net/|hallway-panel'</code></pre></div>
+     -d baseline=https://old.example.net/</code></pre></div>
       <p class="reply">Reply when the baseline is stale, HTTP 400, on the page</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="The stale refusal"><pre><code>Not saved: these settings were changed elsewhere after this page loaded. Reload and try again.</code></pre></div>
 
@@ -634,12 +634,35 @@ Content-Type: application/json
         <table class="spec">
           <thead><tr><th>Path</th><th>Document</th><th>A POST</th></tr></thead>
           <tbody>
-            <tr><th scope="row"><code>/api/automations</code></th><td><code>{"rules": [...], "deleted": [...]}</code>, each rule with the fields of <code>automations</code> in the <a href="#status">status document</a> plus <code>changed_at</code>.</td><td>Replaces the whole list: a rule left out is deleted. Each rule is checked as the editor checks it; a rule without an <code>id</code> gets a new one. At most 64 rules.</td></tr>
-            <tr><th scope="row"><code>/api/sensors/settings</code></th><td><code>{"switches": {"&lt;id&gt;": {"on", "changed_at"}}, "shared": {"&lt;key&gt;": {"value", "changed_at"}}, "this_panel": {...}}</code>. <code>shared</code> holds the settings that mean the same on any panel, <code>this_panel</code> the ones that depend on the panel&#8217;s own hardware: the camera&#8217;s name, lens, size, orientation, mirror and flip, the beacon this panel sends, the calibrations, the sleep tests and the tags it has read.</td><td>Sets the switches and <code>shared</code> settings it names, each checked as the sensor&#8217;s page checks it; the rest stay. <code>this_panel</code> is ignored, set those on the panel; a <code>this_panel</code> key under <code>shared</code> is refused.</td></tr>
+            <tr><th scope="row"><code>/api/automations</code></th><td><code>{"rules": [...], "deleted": [...]}</code>, each rule with the fields of <code>automations</code> in the <a href="#status">status document</a> without <code>sentence</code>.</td><td>Replaces the whole list: a rule left out is deleted. Each rule is checked as the editor checks it (<a href="#rules">the rule&#8217;s words</a>); a rule without an <code>id</code> gets a new one, and an id is lowercase letters and digits, 24 at most. At most 64 rules.</td></tr>
+            <tr><th scope="row"><code>/api/sensors/settings</code></th><td><code>{"switches": {"&lt;id&gt;": {"on", "changed_at"}}, "shared": {"&lt;key&gt;": {"value", "changed_at"}}, "this_panel": {...}}</code>. <code>shared</code> holds the settings that mean the same on any panel, <code>this_panel</code> the ones that depend on the panel&#8217;s own hardware: the camera&#8217;s name, lens, size, orientation, mirror and flip, the calibrations, the sleep tests and the tags it has read.</td><td>Sets the switches and <code>shared</code> settings it names, each checked as the sensor&#8217;s page checks it; the rest stay. <code>this_panel</code> is ignored, set those on the panel; a <code>this_panel</code> key under <code>shared</code> is refused, and so is a <code>beacon_</code> key, which belongs to <code>/api/beacons/names</code>. <code>switches</code> lists every sensor as it stands, the panel&#8217;s own readings on with nothing stored.</td></tr>
             <tr><th scope="row"><code>/api/beacons/names</code></th><td><code>{"names": [{"id", "name", "changed_at"}], "deleted": [...]}</code>, the names given to beacons heard, <code>id</code> as <code>uuid:major:minor</code>.</td><td>Sets the names it lists, up to 40 characters; a blank name takes it away. A beacon left out keeps its name.</td></tr>
           </tbody>
         </table>
       </div>
+      <h4 id="rules">A rule</h4>
+      <p><code>sensor</code> and <code>event</code> name what the rule waits for, <code>action</code> what it does; <code>level</code> goes with an event that compares, <code>minutes</code> (0 to 1440, 0 for at once) with one that must hold, <code>tag</code> (64 characters at most) with the NFC event, <code>argument</code> (500 at most) with an action that needs one. <code>name</code> is 60 characters at most and, left blank, becomes the rule in words. A rule&#8217;s condition is read again from the start when it is edited, so a rule whose condition already holds when saved does not run on the spot.</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th><code>sensor</code></th><th><code>event</code></th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>proximity</code></th><td><code>near</code>, <code>far</code></td></tr>
+            <tr><th scope="row"><code>light</code></th><td><code>darker</code> (level in lx, holds for minutes), <code>brighter</code> (level)</td></tr>
+            <tr><th scope="row"><code>movement</code></th><td><code>picked_up</code>, <code>still</code></td></tr>
+            <tr><th scope="row"><code>bluetooth</code></th><td><code>in_reach</code>, <code>out_of_reach</code></td></tr>
+            <tr><th scope="row"><code>nfc</code></th><td><code>tag</code> (<code>tag</code> names which, empty for any)</td></tr>
+            <tr><th scope="row"><code>audio</code></th><td><code>playing</code>, <code>stopped</code></td></tr>
+            <tr><th scope="row"><code>camera</code></th><td><code>motion</code>, <code>no_motion</code> (holds for minutes)</td></tr>
+            <tr><th scope="row"><code>microphone</code></th><td><code>louder</code> (level, 0 to 100)</td></tr>
+            <tr><th scope="row"><code>display</code></th><td><code>on</code>, <code>off</code></td></tr>
+            <tr><th scope="row"><code>screensaver</code></th><td><code>started</code>, <code>ended</code></td></tr>
+            <tr><th scope="row"><code>battery</code></th><td><code>below</code> (level in percent), <code>plugged</code>, <code>unplugged</code></td></tr>
+            <tr><th scope="row"><code>network</code></th><td><code>connected</code>, <code>lost</code></td></tr>
+            <tr><th scope="row"><code>processor</code></th><td><code>hotter</code> (level in &deg;C)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><code>action</code>: <code>display_on</code>, <code>display_off</code>, <code>dashboard</code>, <code>screensaver</code>, <code>play_sound</code> (<code>argument</code> an <code>http://</code> or <code>https://</code> address), <code>say</code> (<code>argument</code> the sentence), <code>reload</code>. The editor&#8217;s <code>baseline</code> is the stored rule without <code>enabled</code> and <code>changed_at</code>, so a switch flipped beside an open editor never makes its Save stale.</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="Turning the microphone on"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/sensors/settings \
      -H 'Content-Type: application/json' \
      -d '{"switches": {"microphone": {"on": true}}}'</code></pre></div>
@@ -664,7 +687,7 @@ Content-Type: application/json
       <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"ok":false,"detail":"no TCP answer on port 1883","reason":"failed to connect to /192.0.2.10 (port 1883) from /192.0.2.42 (port 37568) after 3000ms: isConnected failed: ECONNREFUSED"}</code></pre></div>
 
       <h2 id="status">Status document</h2>
-      <p><code>GET /api/stats</code> returns it; the MQTT state topic carries the same document without the three lines marked <b>admin</b>. Times are milliseconds. A value the tablet cannot provide is <code>null</code>, never missing and never zero.</p>
+      <p><code>GET /api/stats</code> returns it; the MQTT state topic carries the same document without the five lines marked <b>Admin</b>. Times are milliseconds. A value the tablet cannot provide is <code>null</code>, never missing and never zero; inside <code>sensors</code>, a sensor&#8217;s reading fields are there only while it is on.</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="A status document"><pre><code>{
   "schema": 1,
   "app_version": "0.6.0",
@@ -779,7 +802,7 @@ Content-Type: application/json
             <tr class="group"><th colspan="3"><code>lists</code></th></tr>
             <tr><th scope="row"><code>sensors_home</code>, <code>sensors_page</code>, <code>automations_home</code>, <code>automations_page</code></th><td>Short hashes of what each list of the web page is drawn from, so the page draws a list again when another surface changed it. Compare them, never read them. <b>Admin</b>: HTTP only, never on MQTT.</td><td>strings</td></tr>
             <tr class="group"><th colspan="3"><code>automations</code></th></tr>
-            <tr><th scope="row">one object per rule</th><td><code>id</code>, <code>name</code>, <code>sensor</code>, <code>event</code>, <code>level</code> (absent where the event has none), <code>minutes</code>, <code>tag</code>, <code>action</code>, <code>argument</code>, <code>enabled</code>, <code>only_from</code>, <code>only_to</code> (minutes of the day, -1 for the whole day) and <code>sentence</code>, the rule in words.</td><td>array</td></tr>
+            <tr><th scope="row">one object per rule</th><td><code>id</code>, <code>name</code>, <code>sensor</code>, <code>event</code>, <code>level</code> (absent where the event has none), <code>minutes</code>, <code>tag</code>, <code>action</code>, <code>argument</code>, <code>enabled</code>, <code>only_from</code>, <code>only_to</code> (minutes of the day, -1 for the whole day), <code>changed_at</code> and <code>sentence</code>, the rule in words.</td><td>array</td></tr>
             <tr class="group"><th colspan="3"><code>config</code></th></tr>
             <tr><th scope="row"><code>dashboard_url</code>, <code>device_id</code></th><td>The stored page and the panel&#8217;s id, which is also its MQTT client id.</td><td>string</td></tr>
             <tr><th scope="row"><code>settings_sequence</code>, <code>launcher_sequence</code></th><td>The corner-tap combinations. <b>Admin</b>: HTTP only, never on MQTT.</td><td><code>TL,TR,BL,BR</code> strings</td></tr>
