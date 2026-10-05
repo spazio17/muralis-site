@@ -42,6 +42,7 @@
         <a href="#http">HTTP</a>
         <a href="#commands">Commands</a>
         <a href="#settings">Settings</a>
+        <a href="#pictures">Pictures and playlists</a>
         <a href="#checks">Checks</a>
         <a href="#status">Status document</a>
         <a href="#mqtt">MQTT</a>
@@ -92,6 +93,7 @@
       <a class="sub" href="#instant">Instant settings</a>
       <a class="sub" href="#boxes">Settings boxes</a>
       <a class="sub" href="#documents">Automations and sensor settings</a>
+      <a href="#pictures">Pictures and playlists</a>
       <a href="#checks">Checks</a>
       <a href="#status">Status document</a>
       <a href="#mqtt">MQTT</a>
@@ -157,6 +159,7 @@ Unauthorized</code></pre></div>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/setting</code></td><td>Applies one instant setting. <a href="#instant">Instant settings</a>.</td><td><code>200</code> or <code>400</code> JSON</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/certificate</code></td><td>Keeps and serves a certificate of your own, <code>multipart/form-data</code> with the files <code>certificate</code> and <code>key</code>. <a href="#tls">HTTPS and the certificate</a>.</td><td><code>200</code> or <code>400</code> JSON with the reason</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/certificate/delete</code></td><td>Deletes the uploaded certificate and its key; the panel serves its own again. With <code>sha256</code>, the fingerprint of the upload meant (as <code>config.http_certificate_upload</code> has it; colons and case do not count), a newer one is left alone.</td><td><code>200</code> JSON; <code>400</code> <code>Not deleted: no certificate is uploaded.</code> or <code>Not deleted: the uploaded certificate was replaced since this was asked; nothing was deleted.</code></td></tr>
+            <tr><th scope="row"><span class="method get">GET</span> <span class="method">POST</span></th><td><code>/api/playlists</code>, <code>/api/pictures</code> and their family</td><td>The screensaver&#8217;s playlists and the panel&#8217;s pictures, as the web admin&#8217;s pages use them. <a href="#pictures">Pictures and playlists</a>.</td><td><code>200</code> or <code>400</code>, JSON with <code>?fragment=1</code></td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/check</code></td><td>Tests a value from the panel&#8217;s side. <a href="#checks">Checks</a>.</td><td><code>200</code> JSON, the verdict inside</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/privacy</code>, <code>/terms</code></td><td>The legal texts the app carries.</td><td><code>200</code> HTML</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/sensors</code>, <code>/sensor?id=</code>, <code>/automations</code>, <code>/automation?id=</code>, <code>/stats</code>, <code>/screensaver</code></td><td>The web admin&#8217;s pages below the settings: the sensors and one sensor, the automations and one rule&#8217;s editor, the stats and log, the screensaver.</td><td><code>200</code> HTML</td></tr>
@@ -181,10 +184,10 @@ Content-Type: application/json
       <div class="table-scroll">
         <table class="spec">
           <tbody>
-            <tr><th scope="row">Request body</th><td>16 384 bytes; 163 840 for the three documents under <a href="#documents">Automations and sensor settings</a>; 65 536 for a certificate upload. A larger body is refused with <code>413</code>, naming the size and the limit.</td></tr>
+            <tr><th scope="row">Request body</th><td>16 384 bytes; 163 840 for the three documents under <a href="#documents">Automations and sensor settings</a>; 65 536 for a certificate upload; 262 144 for a playlist&#8217;s order; 25 165 824 for a picture upload. A larger body is refused with <code>413</code>, naming the size and the limit.</td></tr>
             <tr><th scope="row">Request line</th><td>4096 bytes, then <code>400</code>.</td></tr>
             <tr><th scope="row">Time</th><td>8 seconds for the whole request.</td></tr>
-            <tr><th scope="row">Connections</th><td>One request per connection (<code>Connection: close</code> on every reply), 6 at a time per address, 8 in total.</td></tr>
+            <tr><th scope="row">Connections</th><td>A GET or POST of HTTP/1.1 keeps its connection open for the next request (<code>Connection: keep-alive</code>), for 3 seconds of quiet and up to 100 requests; a request refused before its body is read, a HEAD, HTTP/1.0, a chunked body, a malformed <code>Content-Length</code>, <code>Connection: close</code>, the camera stream and a change of the web admin&#8217;s certificate end it. 12 at a time per address, 16 served at once and 8 waiting.</td></tr>
           </tbody>
         </table>
       </div>
@@ -600,6 +603,7 @@ Content-Type: application/json
           <tbody>
             <tr><th scope="row"><code>device_id</code></th><td>the panel&#8217;s name, letters, digits, dot, underscore and hyphen, 64 at most</td><td>Same as the <a href="#boxes"><code>panel</code> box</a>, without its baseline: the web admin stores the name this way the moment its box loses the focus. Refused with <code>Not saved: the name &hellip;</code>.</td></tr>
             <tr><th scope="row"><code>stats_overlay</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Draws or hides the live stats block on the panel.</td></tr>
+            <tr><th scope="row"><code>volume_buttons_disabled</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Disable volume buttons: whether the panel&#8217;s volume buttons do nothing while Muralis is on screen. Off by default, so the buttons change the volume; on, a press does nothing, except while a dropdown or a page&#8217;s own popup is open over Muralis, or the display is asleep. Commands still set the volume.</td></tr>
             <tr><th scope="row"><code>display_off_method</code></th><td><code>auto</code>, <code>sleep</code>, <code>film</code></td><td>Same as the command <code>display.off_method</code>. An ordinary install has the film alone.</td></tr>
             <tr><th scope="row"><code>appearance_colour</code></th><td><code>purple</code>, <code>blue</code>, <code>orange</code></td><td>The colour of this panel and its web admin, chosen on This panel: each names a Material 3 scheme built from that seed with Google&#8217;s own Material colour library. Purple is the default. This panel&#8217;s alone. Refused with <code>Not saved: appearance colour must be purple, blue or orange.</code></td></tr>
             <tr><th scope="row"><code>http_certificate</code></th><td><code>own</code>, <code>uploaded</code></td><td>Which certificate the web admin serves: the panel&#8217;s own or the one uploaded (<a href="#tls">HTTPS and the certificate</a>), from the next connection on. Refused with <code>Not saved: the certificate must be own or uploaded.</code>, and with <code>Not saved: no certificate is uploaded.</code> while none is kept.</td></tr>
@@ -635,7 +639,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>mqtt</code></th><td><code>mqtt_host</code>, <code>mqtt_port</code>, <code>mqtt_username</code>, <code>mqtt_password</code> (blank keeps the stored one)</td><td><code>baseline</code> = host<code>|</code>port<code>|</code>username</td><td>The port is not between 1 and 65535.</td></tr>
             <tr><th scope="row"><code>webadmin</code></th><td><code>http_port</code>, <code>http_admin_password</code> (blank keeps)</td><td><code>baseline</code> = port</td><td>The port is not a number, not between 1024 and 65535, or already in use; the password is shorter than 8 characters, because a shorter one would switch the page off with only the tablet able to switch it back on.</td></tr>
             <tr><th scope="row"><code>sequences</code></th><td><code>settings_sequence</code>, <code>launcher_sequence</code></td><td><code>sequence_baseline</code> = settings<code>|</code>launcher</td><td>Both fields are empty, or both hold the same combination. Format <code>TL,TR,BL,BR</code>, 3 to 12 taps.</td></tr>
-            <tr><th scope="row"><code>behaviour</code></th><td><code>stats_overlay</code>, <code>display_off_method</code>, <code>appearance_colour</code>, <code>separators</code>, <code>http_certificate</code>, every <code>screensaver_*</code> key</td><td>none</td><td>As under <a href="#instant">instant settings</a>.</td></tr>
+            <tr><th scope="row"><code>behaviour</code></th><td><code>stats_overlay</code>, <code>volume_buttons_disabled</code>, <code>display_off_method</code>, <code>appearance_colour</code>, <code>separators</code>, <code>http_certificate</code>, every <code>screensaver_*</code> key</td><td>none</td><td>As under <a href="#instant">instant settings</a>.</td></tr>
           </tbody>
         </table>
       </div>
@@ -686,6 +690,36 @@ Content-Type: application/json
      -d '{"switches": {"microphone": {"on": true}}}'</code></pre></div>
       <p class="reply">With <code>{"shared": {"camera_size": {"value": "640x480"}}}</code>, HTTP 400</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="Reply to a setting of this panel alone"><pre><code>{"status":"rejected","detail":"camera_size belongs to this panel alone"}</code></pre></div>
+
+      <h2 id="pictures">Pictures and playlists</h2>
+      <p>The routes the web admin&#8217;s Screensaver and playlist pages use, for the Pictures screensaver with this panel as the source. A picture is named by its address, as the panel stores it: <code>content://media/external/images/media/186</code> for one of the panel&#8217;s own pictures, a <code>file://</code> address inside Muralis for an upload. A playlist is named by its <code>id</code>, which <code>GET /api/playlists</code> gives. Every POST below is form-encoded, the upload aside, and is answered as the page needs it: add <code>?fragment=1</code> to get <code>{"ok": true, "message": "..."}</code>, with <code>400</code> and <code>"ok": false</code> and the reason for a refusal; without it the answer is the page again. The panel&#8217;s own pictures need Android&#8217;s permission to read them, which the panel asks for on its Screensaver settings; uploads need none.</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <thead><tr><th>Method</th><th>Path</th><th>Fields</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/playlists</code></td><td></td><td>Every playlist: <code>{"active": id, "playlists": [{"id", "name", "count", "updatedAt", "active"}]}</code>.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists</code></td><td><code>name</code></td><td>Makes an empty playlist. Names are unique without regard to case, 60 characters at most, 32 playlists at most.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/activate</code></td><td><code>id</code></td><td>Makes it the one that plays. <code>screensaver.playlist</code> does the same by name, and its <code>None</code> leaves none in use.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/rename</code></td><td><code>id</code>, <code>name</code></td><td>Renames it, with the rules of a new name.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/delete</code></td><td><code>id</code></td><td>Deletes the playlist, never its pictures. Without <code>?fragment=1</code> it answers <code>303</code> to <code>/screensaver</code> when done or when the playlist was already gone.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/order</code></td><td><code>id</code>, <code>order</code></td><td>The order the screensaver shows: every address the playlist holds, one per line. Refused whole unless it is exactly the playlist&#8217;s pictures, so an order made from a page opened before another change cannot scramble it.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/select</code></td><td><code>playlist</code>, <code>uri</code>, <code>selected</code></td><td>Puts a picture in a playlist or takes it out (<code>true</code> or <code>false</code>). Taking it out never deletes the file. 1000 pictures a playlist at most.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures</code></td><td><code>picture</code>, one file or many, <code>multipart/form-data</code>; <code>?playlist=</code> to add them to one</td><td>Uploads pictures into Muralis&#8217;s own store: JPEG, PNG or WebP, checked by their bytes, 12 MB each and 24 MB a request, one upload at a time (<code>503</code> with <code>Retry-After</code> otherwise).</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/delete</code></td><td><code>uri</code></td><td>Deletes an uploaded picture, and it leaves every playlist that held it. The panel&#8217;s own pictures are never deleted, only taken out of a playlist.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/caption</code></td><td><code>name</code> (the address), <code>caption</code></td><td>The name the screensaver&#8217;s credit line shows for the picture, 200 characters at most; empty shows the file&#8217;s name.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/credit</code></td><td><code>name</code> (the address), <code>shown</code></td><td>Switches the picture&#8217;s credit line off or back on, keeping its name.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/view</code></td><td><code>view</code></td><td>How a folder is shown on both surfaces: <code>list</code>, <code>details</code>, <code>small</code> or <code>big</code>.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/refresh</code></td><td></td><td>Fetches an online source&#8217;s pictures again.</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/pictures/thumb</code></td><td><code>?uri=</code></td><td>A picture&#8217;s thumbnail, a 256 px JPEG, for the panel&#8217;s own pictures and uploads only.</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/playlists/table</code>, <code>/api/playlists/items?playlist=</code>, <code>/api/pictures/folders</code>, <code>/api/pictures/content</code></td><td><code>?playlist=</code>, <code>?at=</code> (a folder), <code>?n=</code> (10, 25, 50 or 100)</td><td>The pages&#8217; parts as HTML fragments, which the pages swap in place; not a data format to build on.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="Uploading pictures into a playlist"><pre><code>curl -k --proto =https -u :your-admin-password \
+     -F picture=@sunset.jpg -F picture=@harbour.png \
+     'https://192.0.2.42:8080/api/pictures?playlist=mtvmf24q-1&amp;fragment=1'</code></pre></div>
+      <p class="reply">Reply</p>
+      <div class="code-scroll" tabindex="0" role="region" aria-label="The reply to an upload"><pre><code>{"ok":true,"message":"2 pictures stored."}</code></pre></div>
 
       <h2 id="checks">Checks</h2>
       <p><code>POST /api/check</code> tests a value from the panel&#8217;s own point of view before you save it: does that URL answer, is that port free, does that broker accept a connection. It is advice, not a gate; the save paths keep their own refusals. Always <code>200</code>, the verdict is inside.</p>
@@ -745,7 +779,7 @@ Content-Type: application/json
                   "summary": "Pictures from this panel after 2 min without a touch, display off 15 min later."},
   "config": {"dashboard_url": "https://grafana.example.net/d/wall", "device_id": "hallway-panel",
              "settings_sequence": "TL,TL,TL,TL", "launcher_sequence": "BR,BR,BR,BR",
-             "stats_overlay": true, "orientation": "auto", "display_off_method": "auto",
+             "stats_overlay": true, "volume_buttons_disabled": false, "orientation": "auto", "display_off_method": "auto",
              "appearance_colour": "purple", "separators": "lines",
              "has_light_sensor": false, "auto_brightness": false, "web_admin_enabled": true,
              "http_port": 8080, "http_tls": true,
@@ -827,7 +861,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>dashboard_url</code>, <code>device_id</code></th><td>The stored page and the panel&#8217;s id, which is also its MQTT client id.</td><td>string</td></tr>
             <tr><th scope="row"><code>settings_sequence</code>, <code>launcher_sequence</code></th><td>The corner-tap combinations. <b>Admin</b>: HTTP only, never on MQTT.</td><td><code>TL,TR,BL,BR</code> strings</td></tr>
             <tr><th scope="row"><code>escape_pin_set</code></th><td>Whether a PIN is asked after a combination; the PIN itself is never reported. <b>Admin</b>: HTTP only.</td><td>bool</td></tr>
-            <tr><th scope="row"><code>stats_overlay</code>, <code>orientation</code>, <code>display_off_method</code>, <code>appearance_colour</code>, <code>separators</code>, <code>web_admin_enabled</code></th><td>Stored settings; <code>display_off_method</code> reads <code>film</code> on an ordinary install whatever is stored, since the film is the only method it has.</td><td>bool; <code>auto</code>/<code>landscape</code>/<code>portrait</code>; <code>auto</code>/<code>sleep</code>/<code>film</code>; the look&#8217;s two words as under <a href="#instant">instant settings</a>; bool</td></tr>
+            <tr><th scope="row"><code>stats_overlay</code>, <code>volume_buttons_disabled</code>, <code>orientation</code>, <code>display_off_method</code>, <code>appearance_colour</code>, <code>separators</code>, <code>web_admin_enabled</code></th><td>Stored settings; <code>display_off_method</code> reads <code>film</code> on an ordinary install whatever is stored, since the film is the only method it has.</td><td>bool; bool; <code>auto</code>/<code>landscape</code>/<code>portrait</code>; <code>auto</code>/<code>sleep</code>/<code>film</code>; the look&#8217;s two words as under <a href="#instant">instant settings</a>; bool</td></tr>
             <tr><th scope="row"><code>has_light_sensor</code>, <code>auto_brightness</code></th><td>Live, repeated here for the Home Assistant switch.</td><td>bool</td></tr>
             <tr><th scope="row"><code>http_port</code>, <code>mqtt_host</code>, <code>mqtt_port</code></th><td>Where the panel listens and which broker it talks to. <b>Admin</b>: HTTP only.</td><td></td></tr>
             <tr><th scope="row"><code>http_tls</code>, <code>http_certificate_sha256</code></th><td>Whether the web admin speaks HTTPS, and the fingerprint of its certificate, to compare with the browser&#8217;s. <b>Admin</b>: HTTP only.</td><td>bool, string</td></tr>
