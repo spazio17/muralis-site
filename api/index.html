@@ -108,7 +108,7 @@
     <div class="docs-body">
 
       <h2 id="start">Before you start</h2>
-      <p>The web admin and MQTT are <b>Muralis Pro</b>. Everything else on this page describes what those two surfaces do once Pro is active.</p>
+      <p>The web admin and MQTT are free on every panel. Everything on this page describes what those two surfaces do.</p>
       <p><b>The web admin</b> starts once an admin password of at least 8 characters is stored and the Web admin switch is on. Default port 8080; any port from 1024 to 65535. <b>MQTT</b> starts as soon as a broker host is stored; username and password are optional, the connection is plain TCP without TLS, so use it on a network you trust.</p>
       <p><b>One command set.</b> HTTP and MQTT hand every command to the same code, so a command behaves the same and is refused with the same words on both. After an accepted command the panel republishes its MQTT state within half a second, so a Home Assistant control does not snap back.</p>
       <p><b>Device owner.</b> Three things need the device-owner install (by QR at setup, or <code>dpm set-device-owner</code> over adb): <code>system.reboot</code>, the real screen-off, and CPU and temperature readings on stock Android. Everything else works on an ordinary install.</p>
