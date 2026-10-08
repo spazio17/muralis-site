@@ -108,7 +108,7 @@
     <div class="docs-body">
 
       <h2 id="start">Before you start</h2>
-      <p>The web admin and MQTT are <b>Muralis Pro</b>. Everything else on this page describes what those two surfaces do once Pro is active.</p>
+      <p>The web admin and MQTT are free on every panel. Everything on this page describes what those two surfaces do.</p>
       <p><b>The web admin</b> starts once an admin password of at least 8 characters is stored and the Web admin switch is on. Default port 8080; any port from 1024 to 65535. <b>MQTT</b> starts as soon as a broker host is stored; username and password are optional, the connection is plain TCP without TLS, so use it on a network you trust.</p>
       <p><b>One command set.</b> HTTP and MQTT hand every command to the same code, so a command behaves the same and is refused with the same words on both. After an accepted command the panel republishes its MQTT state within half a second, so a Home Assistant control does not snap back.</p>
       <p><b>Device owner.</b> Three things need the device-owner install (by QR at setup, or <code>dpm set-device-owner</code> over adb): <code>system.reboot</code>, the real screen-off, and CPU and temperature readings on stock Android. Everything else works on an ordinary install.</p>
@@ -884,7 +884,7 @@ Content-Type: application/json
             <tr><th scope="row">Transport</th><td>MQTT 3.1.1 over plain TCP, default port 1883, no TLS. Clean session, keepalive 30 s.</td></tr>
             <tr><th scope="row">Client id</th><td>The device id.</td></tr>
             <tr><th scope="row">Last will</th><td><code>kiosk/&lt;id&gt;/availability</code> = <code>offline</code>, retained.</td></tr>
-            <tr><th scope="row">On connect</th><td>Publishes <code>online</code>, subscribes to its command topic and to <code>homeassistant/status</code>, publishes discovery. When Home Assistant announces itself as back online, discovery is published again.</td></tr>
+            <tr><th scope="row">On connect</th><td>Publishes <code>online</code>, subscribes to its command topic, to <code>homeassistant/status</code> and to its own <code>homeassistant/device/&lt;id&gt;/config</code>, whose retained copy says what it announced before, then publishes discovery. It waits up to five seconds for that copy, so a broker with access lists must let the panel read its own discovery topic as well as write it. When Home Assistant announces itself as back online, discovery is published again.</td></tr>
             <tr><th scope="row">Reconnect</th><td>Automatic after a lost connection. A broker that was unreachable when the panel started is retried when the MQTT settings are saved or at the nightly restart.</td></tr>
           </tbody>
         </table>
@@ -923,7 +923,7 @@ Content-Type: application/json
       <p>Two more rules. A payload over 16 384 bytes is refused with <code>payload exceeds 16384 bytes</code>. A command the broker had <b>stored as retained</b> and delivers when the panel connects is refused with <code>retained commands are refused; publish without the retain flag</code>, and the panel clears it from the broker: a retained command would otherwise run again on every reconnect.</p>
 
       <h3 id="discovery">Home Assistant discovery</h3>
-      <p>One retained bundle on <code>homeassistant/device/&lt;id&gt;/config</code> creates the whole device: name <code>Muralis &lt;id&gt;</code>, manufacturer and model from the hardware, software version from the app. Every entity reads the state topic and sends to the command topic, so nothing has to be declared in YAML. An entity the panel cannot serve is not announced at all: no battery sensors without a battery, no automatic brightness without a light sensor, no <code>auto</code> orientation without an accelerometer, no reboot button and no <code>sleep</code> option without the device-owner install.</p>
+      <p>One retained bundle on <code>homeassistant/device/&lt;id&gt;/config</code> creates the whole device: name <code>Muralis &lt;id&gt;</code>, manufacturer and model from the hardware, software version from the app. Every entity reads the state topic and sends to the command topic, so nothing has to be declared in YAML. An entity the panel cannot serve is not announced at all: no battery sensors without a battery, no automatic brightness without a light sensor, no <code>auto</code> orientation without an accelerometer, no reboot button and no <code>sleep</code> option without the device-owner install. An entity the panel announced and then stops announcing, a sensor switched off, a deleted rule, is removed from Home Assistant; the panel removes only what it announced itself, so a new panel sends no removal at all. A removal Home Assistant misses because it is offline at that moment leaves the entity unavailable until you delete it, as with other MQTT devices.</p>
       <div class="table-scroll">
         <table class="spec">
           <thead><tr><th>Entity</th><th>Type</th><th>Reads</th><th>Sends</th></tr></thead>
@@ -956,8 +956,8 @@ Content-Type: application/json
             <tr><th scope="row">Screensaver shuffle, one picture per cycle, credit line</th><td>switch</td><td><code>screensaver.shuffle</code>, <code>one_per_cycle</code>, <code>credit</code></td><td>the command of the same name with <code>enabled</code></td></tr>
             <tr><th scope="row">Screensaver page</th><td>text</td><td><code>screensaver.url</code></td><td><code>screensaver.url</code></td></tr>
             <tr><th scope="row">Screensaver picture</th><td>sensor</td><td><code>screensaver.picture.title</code></td><td></td></tr>
-            <tr><th scope="row">Proximity, Light, Movement, Bluetooth beacons, NFC, Audio, Camera, Microphone, Pressure, Ambient temperature, Humidity</th><td>sensor or binary sensor, one each, announced while the sensor is on and this device has it, withdrawn otherwise</td><td><code>sensors.&lt;id&gt;.value</code>, with <code>attributes</code> for the beacons, NFC, audio and the camera</td><td></td></tr>
-            <tr><th scope="row">Camera motion detection, Camera snapshot, Camera picture</th><td>switch, button, camera, only while the camera is on</td><td><code>sensors.camera.attributes.detecting</code>; the picture from <code>kiosk/&lt;id&gt;/camera</code></td><td><code>camera.motion</code>, <code>camera.snapshot</code></td></tr>
+            <tr><th scope="row">Proximity, Light, Movement, Bluetooth beacons, NFC, Audio, Camera, Microphone, Pressure, Ambient temperature, Humidity</th><td>sensor or binary sensor, one each, announced while the sensor is on and this device has it, removed when it is switched off</td><td><code>sensors.&lt;id&gt;.value</code>, with <code>attributes</code> for the beacons, NFC, audio and the camera</td><td></td></tr>
+            <tr><th scope="row">Camera motion detection, Camera snapshot, Camera picture</th><td>switch, button, camera: motion detection while the camera is on, the snapshot and the picture only while Picture to MQTT is on too</td><td><code>sensors.camera.attributes.detecting</code>; the picture from <code>kiosk/&lt;id&gt;/camera</code></td><td><code>camera.motion</code>, <code>camera.snapshot</code></td></tr>
             <tr><th scope="row">One switch per automation, named after the rule</th><td>switch</td><td><code>automations[].enabled</code></td><td><code>automation.enabled</code></td></tr>
 </tbody>
         </table>
