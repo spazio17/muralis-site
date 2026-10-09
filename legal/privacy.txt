@@ -6,7 +6,9 @@ Nothing. Muralis has no analytics, no crash reporting, no advertising identifier
 
 WHAT THE APP SENDS ELSEWHERE, AND WHERE
 
-Nothing, until you configure a destination yourself. Two optional features publish data, and both stay off until you set them up: MQTT stays off until you enter a broker address, and the local web administration stays off until you set a password. A third optional feature fetches data rather than publishing it: the screensaver can show pictures from the internet, and it does so only if you pick that source.
+Nothing beyond your local network, until you configure a destination yourself. On your local network, each panel announces itself so your other Muralis panels can find it; you can switch that off. Two optional features publish data, and both stay off until you set them up: MQTT stays off until you enter a broker address, and the local web administration stays off until you set a password. A third optional feature fetches data rather than publishing it: the screensaver can show pictures from the internet, and it does so only if you pick that source.
+
+• The announcement on your network. Each panel announces itself on your local network with Android's own service discovery (mDNS), the way printers and speakers do: its device identifier, the port other panels use to reach it, and a fingerprint of its public key. The announcement does not leave your local network and carries nothing about you; it stops when you switch off "Announce this panel on the network" in the Fleet settings.
 
 • MQTT. If you enter a broker address, Muralis publishes a status snapshot to that broker, about once a minute and sooner when something changes. It contains device status and diagnostics: battery, memory, storage, network state, the device's own address on your network, processor load and temperatures, screen state, the panel's settings including the device identifier it generates for itself, the app version, the health of the dashboard: which page is loaded, whether it loaded, how often the view crashed or was rebuilt, and, if you use the Pictures screensaver, the name of the playlist in use and of the picture on screen.
 
