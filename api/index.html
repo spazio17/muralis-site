@@ -592,6 +592,15 @@ Content-Type: application/json
      -d cmnd=audio.say -d 'value=The door is open'</code></pre></div>
       </article>
 
+      <article class="entry" id="light-on">
+        <header><h3>light.on</h3> <h3>light.off</h3></header>
+        <p>The status light, a coloured frame around the edge of the screen for a panel with no light of its own, drawn over the page, Ambient and the parking screen and never in the way of a touch. <code>light.on</code> switches it on, with the colour in <code>value</code> as <code>r,g,b</code> and the brightness in <code>percent</code>, 1 to 100, both optional and kept when left out; <code>light.off</code> takes it away. The state is kept across a restart. Refused with <code>colour must be three numbers from 0 to 255, like 255,0,0</code> or <code>brightness must be a whole number from 1 to 100</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="light.on"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=light.on -d value=255,160,0 -d percent=60</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+      </article>
+
       <h3 id="cmd-panel">The panel</h3>
 
       <article class="entry" id="webadmin-enabled">
@@ -643,6 +652,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>alert_webhook_url</code></th><td>an address starting with <code>http://</code> or <code>https://</code>, or empty for off</td><td>Where alerts are POSTed as JSON.</td></tr>
             <tr><th scope="row"><code>fleet_follows</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Whether this panel follows what the whole fleet shares (<code>everyone</code> in the sharing settings). Off, it keeps its own values for those sections and still follows its groups.</td></tr>
             <tr><th scope="row"><code>display_off_method</code></th><td><code>auto</code>, <code>sleep</code>, <code>film</code></td><td>Same as the command <code>display.off_method</code>. An ordinary install has the film alone.</td></tr>
+            <tr><th scope="row"><code>status_light</code>, <code>status_light_color</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code>; a colour as <code>r,g,b</code></td><td>The status light on or off, and its colour, kept while the light is off. The same checks as <code>light.on</code>.</td></tr>
             <tr><th scope="row"><code>appearance_colour</code></th><td><code>purple</code>, <code>blue</code>, <code>orange</code></td><td>The colour of this panel and its web admin, chosen on the Appearance page under This panel: each names a Material 3 scheme built from that seed with Google&#8217;s own Material colour library. Purple is the default. This panel&#8217;s alone. Refused with <code>Not saved: appearance colour must be purple, blue or orange.</code></td></tr>
             <tr><th scope="row"><code>http_certificate</code></th><td><code>own</code>, <code>uploaded</code></td><td>Which certificate the web admin serves: the panel&#8217;s own or the one uploaded (<a href="#tls">HTTPS and the certificate</a>), from the next connection on. Refused with <code>Not saved: the certificate must be own or uploaded.</code>, and with <code>Not saved: no certificate is uploaded.</code> while none is kept.</td></tr>
             <tr><th scope="row"><code>separators</code></th><td><code>lines</code>, <code>segments</code>, <code>none</code></td><td>How the rows of a list are kept apart on both surfaces: a hairline, each row its own rounded segment as Android&#8217;s settings draw them, or nothing. This panel&#8217;s alone. Refused with <code>Not saved: separators must be lines, segments or none.</code></td></tr>
@@ -678,7 +688,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>webadmin</code></th><td><code>http_port</code>, <code>http_admin_password</code> (blank keeps)</td><td><code>baseline</code> = port</td><td>The port is not a number, not between 1024 and 65535, the member port, or already in use; the password is shorter than 8 characters, because a shorter one would switch the page off with only the tablet able to switch it back on.</td></tr>
             <tr><th scope="row"><code>fleet</code></th><td><code>fleet_port</code></td><td><code>baseline</code> = member port</td><td>The port is not a number, not between 1024 and 65535, the web admin&#8217;s port, or already in use. The member port is where the panel&#8217;s fleet endpoint listens, 8081 until changed; the web admin and the member endpoint never share a port.</td></tr>
             <tr><th scope="row"><code>sequences</code></th><td><code>settings_sequence</code>, <code>launcher_sequence</code></td><td><code>sequence_baseline</code> = settings<code>|</code>launcher</td><td>Both fields are empty, or both hold the same combination. Format <code>TL,TR,BL,BR</code>, 3 to 12 taps.</td></tr>
-            <tr><th scope="row"><code>behaviour</code></th><td><code>stats_overlay</code>, <code>volume_buttons_disabled</code>, <code>display_off_method</code>, <code>appearance_colour</code>, <code>separators</code>, <code>http_certificate</code>, every <code>ambient_*</code> key</td><td>none</td><td>As under <a href="#instant">instant settings</a>.</td></tr>
+            <tr><th scope="row"><code>behaviour</code></th><td><code>stats_overlay</code>, <code>volume_buttons_disabled</code>, <code>display_off_method</code>, <code>status_light</code>, <code>status_light_color</code>, <code>appearance_colour</code>, <code>separators</code>, <code>http_certificate</code>, every <code>ambient_*</code> key</td><td>none</td><td>As under <a href="#instant">instant settings</a>.</td></tr>
           </tbody>
         </table>
       </div>
@@ -723,7 +733,7 @@ Content-Type: application/json
           </tbody>
         </table>
       </div>
-      <p><code>action</code>: <code>display_on</code>, <code>display_off</code>, <code>dashboard</code>, <code>ambient</code>, <code>play_sound</code> (<code>argument</code> an <code>http://</code> or <code>https://</code> address), <code>say</code> (<code>argument</code> the sentence), <code>reload</code>. The editor&#8217;s <code>baseline</code> is the stored rule without <code>enabled</code> and <code>changed_at</code>, so a switch flipped beside an open editor never makes its Save stale.</p>
+      <p><code>action</code>: <code>display_on</code>, <code>display_off</code>, <code>dashboard</code>, <code>ambient</code>, <code>play_sound</code> (<code>argument</code> an <code>http://</code> or <code>https://</code> address), <code>say</code> (<code>argument</code> the sentence), <code>reload</code>, <code>light_on</code> (<code>argument</code> the colour as <code>r,g,b</code>), <code>light_off</code>. The editor&#8217;s <code>baseline</code> is the stored rule without <code>enabled</code> and <code>changed_at</code>, so a switch flipped beside an open editor never makes its Save stale.</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="Turning the microphone on"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/sensors/settings \
      -H 'Content-Type: application/json' \
      -d '{"switches": {"microphone": {"on": true}}}'</code></pre></div>
@@ -809,6 +819,7 @@ Content-Type: application/json
               "off_method_reason": "Display off turns the screen off. A remote wake or the power button turns it back on.",
               "off_method_warning": false, "auto": false, "has_light_sensor": false,
               "source": "manual", "brightness_percent": 40, "system_raw": 102, "system_scale_assumed": 255},
+  "light": {"on": false, "color": "255,0,0", "brightness": 100},
   "ambient": {"active": false, "mode": "pictures", "idle_s": 120, "off_s": 900, "dim_percent": 20,
               "on_wake": "ambient", "url": "", "picture_s": 20, "transition": "fade",
               "picture_fit": "fit", "shuffle": false, "one_per_cycle": false, "credit": true,
@@ -881,6 +892,8 @@ Content-Type: application/json
             <tr><th scope="row"><code>source</code></th><td>Where the brightness comes from.</td><td><code>auto</code>, <code>manual</code>, <code>display_off</code>, <code>ambient</code></td></tr>
             <tr><th scope="row"><code>brightness_percent</code></th><td>The level.</td><td>0 to 100, and 0 while dark; <code>null</code> only when the system setting cannot be read</td></tr>
             <tr><th scope="row"><code>system_raw</code>, <code>system_scale_assumed</code></th><td>Android&#8217;s raw brightness value and the scale assumed for it, so a wrong percentage can be diagnosed.</td><td>int, 255</td></tr>
+            <tr class="group"><th colspan="3"><code>light</code></th></tr>
+            <tr><th scope="row"><code>on</code>, <code>color</code>, <code>brightness</code></th><td>The status light: on or off, its colour as <code>r,g,b</code>, its brightness.</td><td>bool, string, 1 to 100</td></tr>
             <tr class="group"><th colspan="3"><code>ambient</code></th></tr>
             <tr><th scope="row"><code>active</code></th><td>Whether Ambient is showing right now.</td><td>boolean</td></tr>
             <tr><th scope="row"><code>mode</code> &hellip; <code>credit_corner</code></th><td>The settings, one field per command above, under the command&#8217;s name without the prefix: <code>idle_s</code>, <code>off_s</code> and <code>picture_s</code> are the three times.</td><td>as the commands</td></tr>
@@ -986,6 +999,7 @@ Content-Type: application/json
             <tr><th scope="row">Automatic brightness</th><td>switch, only with a light sensor</td><td><code>config.auto_brightness</code></td><td><code>display.auto_brightness</code></td></tr>
             <tr><th scope="row">Orientation</th><td>select</td><td><code>config.orientation</code></td><td><code>display.orientation</code></td></tr>
             <tr><th scope="row">Display off method</th><td>select, <code>auto</code> and <code>sleep</code> offered to a device owner only; an ordinary install offers <code>film</code> alone</td><td><code>config.display_off_method</code></td><td><code>display.off_method</code></td></tr>
+            <tr><th scope="row">Status light</th><td>light: on or off, colour, brightness</td><td><code>light</code></td><td><code>light.on</code>, <code>light.off</code></td></tr>
             <tr><th scope="row">Web admin</th><td>switch</td><td><code>config.web_admin_enabled</code></td><td><code>webadmin.enabled</code></td></tr>
             <tr><th scope="row">Dashboard URL</th><td>text</td><td><code>config.dashboard_url</code></td><td><code>kiosk.set_url</code></td></tr>
             <tr><th scope="row">Open URL once</th><td>text</td><td><code>runtime.last_page_url</code></td><td><code>kiosk.open_url</code></td></tr>
