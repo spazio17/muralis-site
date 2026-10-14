@@ -86,7 +86,7 @@
       <a class="sub" href="#sending">Sending one</a>
       <a class="sub" href="#replies">Replies</a>
       <a class="sub" href="#cmd-page">The page</a>
-      <a class="sub" href="#cmd-screensaver">The screensaver</a>
+      <a class="sub" href="#cmd-ambient">Ambient</a>
       <a class="sub" href="#cmd-display">The display</a>
       <a class="sub" href="#cmd-panel">The panel</a>
       <a href="#settings">Settings</a>
@@ -159,7 +159,7 @@ Unauthorized</code></pre></div>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/setting</code></td><td>Applies one instant setting. <a href="#instant">Instant settings</a>.</td><td><code>200</code> or <code>400</code> JSON</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/certificate</code></td><td>Keeps and serves a certificate of your own, <code>multipart/form-data</code> with the files <code>certificate</code> and <code>key</code>. <a href="#tls">HTTPS and the certificate</a>.</td><td><code>200</code> or <code>400</code> JSON with the reason</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/certificate/delete</code></td><td>Deletes the uploaded certificate and its key; the panel serves its own again. With <code>sha256</code>, the fingerprint of the upload meant (as <code>config.http_certificate_upload</code> has it; colons and case do not count), a newer one is left alone.</td><td><code>200</code> JSON; <code>400</code> <code>Not deleted: no certificate is uploaded.</code> or <code>Not deleted: the uploaded certificate was replaced since this was asked; nothing was deleted.</code></td></tr>
-            <tr><th scope="row"><span class="method get">GET</span> <span class="method">POST</span></th><td><code>/api/playlists</code>, <code>/api/pictures</code> and their family</td><td>The screensaver&#8217;s playlists and the panel&#8217;s pictures, as the web admin&#8217;s pages use them. <a href="#pictures">Pictures and playlists</a>.</td><td><code>200</code> or <code>400</code>, JSON with <code>?fragment=1</code></td></tr>
+            <tr><th scope="row"><span class="method get">GET</span> <span class="method">POST</span></th><td><code>/api/playlists</code>, <code>/api/pictures</code> and their family</td><td>Ambient&#8217;s playlists and the panel&#8217;s pictures, as the web admin&#8217;s pages use them. <a href="#pictures">Pictures and playlists</a>.</td><td><code>200</code> or <code>400</code>, JSON with <code>?fragment=1</code></td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/fleet/code</code></td><td>Opens a join code, eight digits that work once for ten minutes, or answers the one already open, as the panel&#8217;s Join a fleet and New code do. None while the panel is in a fleet, its member endpoint is down, or after five wrong codes for ten minutes. Both surfaces show the same code.</td><td><code>200</code> JSON, as <code>fleet_join</code> in the <a href="#status">status document</a></td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/fleet/code/close</code></td><td>Ends the open join code.</td><td><code>200</code> JSON, as above</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/fleet/code.svg</code></td><td>The open join code as a QR code.</td><td><code>200</code> SVG; <code>404</code> when no code is open</td></tr>
@@ -168,13 +168,13 @@ Unauthorized</code></pre></div>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/fleet/identify</code></td><td><code>panel=</code> a panel&#8217;s id, or <code>all</code>: <a href="#kiosk-identify"><code>kiosk.identify</code></a> on that panel, or on every panel of the fleet at once.</td><td><code>200</code> JSON as a command&#8217;s reply; for <code>all</code> the <code>detail</code> holds one line per panel, <code>Kitchen: accepted</code>, and the status is <code>accepted</code> only when every panel accepted; <code>404</code> JSON for an id not in the fleet</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/check</code></td><td>Tests a value from the panel&#8217;s side. <a href="#checks">Checks</a>.</td><td><code>200</code> JSON, the verdict inside</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/privacy</code>, <code>/terms</code></td><td>The legal texts the app carries.</td><td><code>200</code> HTML</td></tr>
-            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/sensors</code>, <code>/sensor?id=</code>, <code>/automations</code>, <code>/automation?id=</code>, <code>/stats</code>, <code>/screensaver</code></td><td>The web admin&#8217;s pages below the settings: the sensors and one sensor, the automations and one rule&#8217;s editor, the stats and log, the screensaver.</td><td><code>200</code> HTML</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/sensors</code>, <code>/sensor?id=</code>, <code>/automations</code>, <code>/automation?id=</code>, <code>/stats</code>, <code>/ambient</code></td><td>The web admin&#8217;s pages below the settings: the sensors and one sensor, the automations and one rule&#8217;s editor, the stats and log, Ambient.</td><td><code>200</code> HTML</td></tr>
             <tr><th scope="row"><span class="method get">GET</span> <span class="method">POST</span></th><td><code>/fleet</code></td><td>The Fleet page: the panels with their groups and last contact, a picture of each panel&#8217;s screen on request (Screenshots, through <code>/api/fleet/screenshot</code>) and Identify per panel or for all (<code>/api/fleet/identify</code>), the groups, and the shared settings of one scope, the whole fleet (<code>?scope=everyone</code>, also shown for an unknown or missing scope) or a group (<code>?scope=&lt;id&gt;</code>), shown and edited there. Its forms post to the same address with <code>what</code> set to <code>panel</code> (a panel&#8217;s <code>spki</code> and <code>group_&lt;id&gt;</code> boxes), <code>add_group</code> (<code>name</code>), <code>remove_group</code> (<code>id</code>), <code>share</code> (<code>scope</code>, <code>section</code>, <code>shared</code> and the section&#8217;s values) or <code>restore</code> (<code>version</code>). A fourth card, History, lists the last twenty versions of the fleet&#8217;s list this panel held, newest first, each with its author, its time and what it changed against the one before (panels added or removed, groups made or removed, sections shared, changed or unshared), and offers Restore as new for every version but the one held: its fleet name, groups and shared settings are written as a new, higher version, never a rollback of the version number, and the panels of the fleet stay as they are now.</td><td><code>200</code> HTML, the page again; a refused post says why in a notice on it</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/automations/save</code>, <code>/api/automations/delete</code></td><td>The editor&#8217;s Save and Delete, form-encoded: <code>id</code> (empty for a new rule), <code>name</code>, <code>sensor</code>, <code>event_&lt;sensor&gt;</code>, <code>level</code>, <code>minutes</code>, <code>tag</code>, <code>action</code>, <code>argument</code>, <code>only</code>, <code>only_from</code>, <code>only_to</code>, and <code>baseline</code>, the stored rule as JSON (see the stale rule under <a href="#boxes">settings boxes</a>).</td><td>Save: <code>303</code> to <code>/automations?id=</code>; Delete: <code>303</code> to <code>/automations</code>; the editor again with the reason when refused</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/automations</code>, <code>/api/sensors/settings</code>, <code>/api/beacons/names</code></td><td>Every automation, every sensor setting, every beacon name, each as one JSON document. <a href="#documents">Automations and sensor settings</a>.</td><td><code>200</code> JSON</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/automations</code>, <code>/api/sensors/settings</code>, <code>/api/beacons/names</code></td><td>Writes the same documents back, <code>application/json</code>.</td><td><code>200</code> with the document as stored; <code>400</code> JSON with the reason, nothing written</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/log</code></td><td>The app&#8217;s own log lines, plain text, the newest 200 at most. <code>?level=</code> one of <code>V D I W E F</code>, <code>?own=1</code> for Muralis&#8217;s tags alone, <code>?q=</code> to keep the lines holding that text.</td><td><code>200</code> text</td></tr>
-            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/screenshot</code></td><td>The screen as the wall shows it, whichever layer is up (the page, the screensaver, the parking screen, the black film), captured now at full resolution. One capture at a time; requests that arrive while one runs get the same picture.</td><td><code>200</code> <code>image/png</code>; <code>409</code> JSON with the reason <code>The panel is not showing its screen</code> (another app or the launcher is in front)</td></tr>
+            <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/screenshot</code></td><td>The screen as the wall shows it, whichever layer is up (the page, Ambient, the parking screen, the black film), captured now at full resolution. One capture at a time; requests that arrive while one runs get the same picture.</td><td><code>200</code> <code>image/png</code>; <code>409</code> JSON with the reason <code>The panel is not showing its screen</code> (another app or the launcher is in front)</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/diagnostics</code></td><td>A diagnostics file, plain text, built on request and never kept or uploaded by the app: the app version and build, the device (make, model, Android and WebView versions, device owner, lock task, the kind of window), every permission the app declares with whether it is granted, the <a href="#status">status document</a> as this surface has it, the counters (renderer deaths, rebuilds, web admin lockouts, the last page and its last error, with how long ago) and the last 200 lines of the app&#8217;s own log. No password or key is in it.</td><td><code>200</code> text, as an attachment named <code>muralis-diagnostics-&lt;id&gt;-&lt;yyyyMMdd-HHmm&gt;.txt</code></td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/camera/stream</code>, <code>/camera/snapshot.jpg</code></td><td>The camera as an IP camera while its sensor is on: an MJPEG stream (<code>multipart/x-mixed-replace</code>, one part per frame) and the last frame as one JPEG. Two streams at a time; a stream ends when the camera stops, sends no frame for 15 seconds, or one frame takes longer than 10 seconds to be read.</td><td><code>200</code>; <code>503</code> while the camera is off or has no frame yet, or with <code>Retry-After</code> when two streams are already open</td></tr>
             <tr><th scope="row">any</th><td>anything else</td><td></td><td><code>404</code></td></tr>
@@ -313,163 +313,153 @@ Content-Type: application/json
 
       <article class="entry" id="kiosk-identify">
         <header><h3>kiosk.identify</h3></header>
-        <p>Shows the panel&#8217;s name, large and centred, over whatever is on its screen (the page, the screensaver, the parking screen) for ten seconds, and says it once through the text-to-speech engine, as <code>audio.say</code> does, so a person standing in front of several walls can tell which is which. A second Identify while one shows restarts the ten seconds. The name is the one the fleet&#8217;s list holds, or the device id outside a fleet. No arguments. Refused with <code>The panel is not showing its screen</code> while another app or the launcher is in front, and with <code>the name is shown but not said: ...</code> when the speech engine refused. The Fleet page&#8217;s Identify buttons and <code>POST /api/fleet/identify</code> send it to any panel of the fleet.</p>
+        <p>Shows the panel&#8217;s name, large and centred, over whatever is on its screen (the page, Ambient, the parking screen) for ten seconds, and says it once through the text-to-speech engine, as <code>audio.say</code> does, so a person standing in front of several walls can tell which is which. A second Identify while one shows restarts the ten seconds. The name is the one the fleet&#8217;s list holds, or the device id outside a fleet. No arguments. Refused with <code>The panel is not showing its screen</code> while another app or the launcher is in front, and with <code>the name is shown but not said: ...</code> when the speech engine refused. The Fleet page&#8217;s Identify buttons and <code>POST /api/fleet/identify</code> send it to any panel of the fleet.</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="kiosk.identify"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command -d cmnd=kiosk.identify</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
       </article>
 
-      <h3 id="cmd-screensaver">The screensaver</h3>
+      <h3 id="cmd-ambient">Ambient</h3>
 
-      <p>Every screensaver setting is a command, and every one is also an entity over MQTT discovery, so a caller can publish a command or move a control, whichever suits. A changed setting is saved and republished at once; it takes effect the next time the screensaver starts.</p>
+      <p>Every Ambient setting is a command, and every one is also an entity over MQTT discovery, so a caller can publish a command or move a control, whichever suits. A changed setting is saved and republished at once; it takes effect the next time Ambient starts.</p>
 
-      <article class="entry" id="cmd-screensaver-start">
-        <header><h3>screensaver.start</h3></header>
-        <p>Shows the screensaver now, in the mode that is set, without waiting for the idle time. A touch on the glass ends it as usual.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.start"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.start</code></pre></div>
+      <article class="entry" id="cmd-ambient-start">
+        <header><h3>ambient.start</h3></header>
+        <p>Shows Ambient now, in the mode that is set, without waiting for the idle time. A touch on the glass ends it as usual.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.start"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.start</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
-        <p>Refused with the reason when it cannot show: <code>the screensaver mode is off</code>, <code>the kiosk is stopped</code>, <code>Muralis is not on screen</code>, <code>the first-start wizard is on screen</code>, or <code>the escape combination recorder is on screen</code>. With the panel&#8217;s settings open it shows as a preview, and a tap on the glass brings the settings back.</p>
+        <p>Refused with the reason when it cannot show: <code>the Ambient mode is off</code>, <code>the kiosk is stopped</code>, <code>Muralis is not on screen</code>, <code>the first-start wizard is on screen</code>, or <code>the escape combination recorder is on screen</code>. With the panel&#8217;s settings open it shows as a preview, and a tap on the glass brings the settings back.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-stop">
-        <header><h3>screensaver.stop</h3></header>
-        <p>Ends a showing screensaver and brings the page back. Accepted even when none is showing.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.stop"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.stop</code></pre></div>
+      <article class="entry" id="cmd-ambient-stop">
+        <header><h3>ambient.stop</h3></header>
+        <p>Ends Ambient and brings the page back. Accepted even when none is showing.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.stop"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.stop</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
       </article>
 
-      <article class="entry" id="cmd-screensaver-mode">
-        <header><h3>screensaver.mode</h3></header>
-        <p>What the screensaver is: <code>off</code>, <code>dim</code> (the page, dimmed), <code>film</code> (a black film over the page), <code>url</code> (another web page) or <code>pictures</code>.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.mode"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.mode -d value=pictures</code></pre></div>
+      <article class="entry" id="cmd-ambient-mode">
+        <header><h3>ambient.mode</h3></header>
+        <p>What Ambient is: <code>off</code>, <code>dim</code> (the page, dimmed), <code>film</code> (a black film over the page), <code>url</code> (another web page) or <code>pictures</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.mode"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.mode -d value=pictures</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         <p>Refused with <code>value must be off, dim, film, url or pictures</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-idle-seconds">
-        <header><h3>screensaver.idle_seconds</h3></header>
-        <p>Seconds without a touch before the screensaver starts. <code>0</code> means only when asked for, with <code>screensaver.start</code>.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.idle_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.idle_seconds -d value=120</code></pre></div>
+      <article class="entry" id="cmd-ambient-idle-seconds">
+        <header><h3>ambient.idle_seconds</h3></header>
+        <p>Seconds without a touch before Ambient starts. <code>0</code> means only when asked for, with <code>ambient.start</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.idle_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.idle_seconds -d value=120</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         <p>Refused with <code>value must be a whole number of seconds, 0 to 86400</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-off-seconds">
-        <header><h3>screensaver.off_seconds</h3></header>
-        <p>Seconds of screensaver before the display is turned off, the way <code>display.visual_off</code> does it. <code>0</code> means never.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.off_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.off_seconds -d value=900</code></pre></div>
+      <article class="entry" id="cmd-ambient-off-seconds">
+        <header><h3>ambient.off_seconds</h3></header>
+        <p>Seconds of Ambient before the display is turned off, the way <code>display.visual_off</code> does it. <code>0</code> means never.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.off_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.off_seconds -d value=900</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         <p>Refused with <code>value must be a whole number of seconds, 0 to 86400</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-dim-percent">
-        <header><h3>screensaver.dim_percent</h3></header>
+      <article class="entry" id="cmd-ambient-dim-percent">
+        <header><h3>ambient.dim_percent</h3></header>
         <p>The brightness of the dimmed page, for the <code>dim</code> mode.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.dim_percent"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.dim_percent -d value=20</code></pre></div>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.dim_percent"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.dim_percent -d value=20</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         <p>Refused with <code>value must be a whole number from 1 to 100</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-url">
-        <header><h3>screensaver.url</h3></header>
+      <article class="entry" id="cmd-ambient-url">
+        <header><h3>ambient.url</h3></header>
         <p>The page the <code>url</code> mode shows, checked like the dashboard address; empty forgets it.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.url"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.url -d url=https://example.org/clock</code></pre></div>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.url"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.url -d url=https://example.org/clock</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         <p>Refused with the same reasons as <code>kiosk.set_url</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-on-wake">
-        <header><h3>screensaver.on_wake</h3></header>
-        <p>What a wake from display off shows first: <code>screensaver</code>, a touch then opens the page, or <code>dashboard</code>, the page at once.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.on_wake"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.on_wake -d value=screensaver</code></pre></div>
+      <article class="entry" id="cmd-ambient-on-wake">
+        <header><h3>ambient.on_wake</h3></header>
+        <p>What a wake from display off shows first: <code>ambient</code>, a touch then opens the page, or <code>dashboard</code>, the page at once.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.on_wake"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.on_wake -d value=ambient</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
-        <p>Refused with <code>value must be screensaver or dashboard</code>.</p>
+        <p>Refused with <code>value must be ambient or dashboard</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-source">
-        <header><h3>screensaver.source</h3></header>
-        <p>Where the pictures mode takes its pictures: <code>local</code>, the panel&#8217;s own folders and uploads in the playlist in use, <code>bing</code>, Bing&#8217;s image of the day, or <code>wikimedia</code>, Wikimedia Commons&#8217; picture of the day. The two online sources are fetched over the internet and always shown with their credit line.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.source"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.source -d value=local</code></pre></div>
-        <p class="reply">Reply</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
-        <p>Refused with <code>value must be local, bing or wikimedia</code>.</p>
-      </article>
-
-      <article class="entry" id="cmd-screensaver-playlist">
-        <header><h3>screensaver.playlist</h3></header>
-        <p>The playlist the <code>local</code> source shows, by name; an empty value puts none in use. Playlists are made and filled on the panel or in the web admin.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.playlist"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.playlist -d value=Holidays</code></pre></div>
+      <article class="entry" id="cmd-ambient-playlist">
+        <header><h3>ambient.playlist</h3></header>
+        <p>The playlist Ambient shows, by name; an empty value puts none in use. Playlists are made and filled on the panel or in the web admin.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.playlist"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.playlist -d value=Holidays</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         <p>Refused when no playlist has that name.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-picture-seconds">
-        <header><h3>screensaver.picture_seconds</h3></header>
+      <article class="entry" id="cmd-ambient-picture-seconds">
+        <header><h3>ambient.picture_seconds</h3></header>
         <p>How long each picture stays.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.picture_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.picture_seconds -d value=20</code></pre></div>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.picture_seconds"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.picture_seconds -d value=20</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         <p>Refused with <code>value must be a whole number of seconds, 1 to 86400</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-transition">
-        <header><h3>screensaver.transition</h3></header>
+      <article class="entry" id="cmd-ambient-transition">
+        <header><h3>ambient.transition</h3></header>
         <p>How one picture gives way to the next: <code>none</code> (a cut), <code>fade</code> or <code>slide</code>.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.transition"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.transition -d value=fade</code></pre></div>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.transition"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.transition -d value=fade</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         <p>Refused with <code>value must be none, fade or slide</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-picture-fit">
-        <header><h3>screensaver.picture_fit</h3></header>
+      <article class="entry" id="cmd-ambient-picture-fit">
+        <header><h3>ambient.picture_fit</h3></header>
         <p>How a picture is laid on the screen, one setting for all of them: <code>fit</code> shows the whole picture with bars where its shape differs from the screen&#8217;s, <code>fill</code> covers the screen and crops the edges, <code>stretch</code> covers the screen and pulls the picture out of shape, <code>actual</code> shows it at its own size, centred.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.picture_fit"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.picture_fit -d value=fit</code></pre></div>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.picture_fit"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.picture_fit -d value=fit</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         <p>Refused with <code>value must be fit, fill, stretch or actual</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-credit-corner">
-        <header><h3>screensaver.credit_corner</h3></header>
+      <article class="entry" id="cmd-ambient-credit-corner">
+        <header><h3>ambient.credit_corner</h3></header>
         <p>The corner the title and credit line sit in: <code>bottom_left</code>, <code>bottom_right</code>, <code>top_left</code> or <code>top_right</code>.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.credit_corner"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.credit_corner -d value=bottom_left</code></pre></div>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.credit_corner"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.credit_corner -d value=bottom_left</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
         <p>Refused with <code>value must be bottom_left, bottom_right, top_left or top_right</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-shuffle">
-        <header><h3>screensaver.shuffle</h3></header>
+      <article class="entry" id="cmd-ambient-shuffle">
+        <header><h3>ambient.shuffle</h3></header>
         <p>Shows the playlist in a random order rather than its own.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.shuffle"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.shuffle -d enabled=true</code></pre></div>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="ambient.shuffle"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=ambient.shuffle -d enabled=true</code></pre></div>
         <p class="reply">Reply</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
-        <p>Refused with <code>enabled must be true or false</code>. The same shape for <code>screensaver.one_per_cycle</code>, one picture per screensaver instead of a slideshow, and <code>screensaver.credit</code>, the title and credit line, which the two online sources show whatever this says because their licences require it.</p>
+        <p>Refused with <code>enabled must be true or false</code>. The same shape for <code>ambient.one_per_cycle</code>, one picture per cycle instead of a slideshow, and <code>ambient.credit</code>, the title and credit line.</p>
       </article>
 
       <h3 id="cmd-display">The display</h3>
@@ -538,7 +528,7 @@ Content-Type: application/json
 
       <article class="entry" id="sensor-enabled">
         <header><h3>sensor.enabled</h3></header>
-        <p>Switches one sensor on or off: <code>value</code> names it (<code>proximity</code>, <code>light</code>, <code>movement</code>, <code>bluetooth</code>, <code>nfc</code>, <code>audio</code>, <code>camera</code>, <code>microphone</code>, <code>pressure</code>, <code>temperature</code>, <code>humidity</code>), <code>enabled</code> says which way. The panel&#8217;s own values (<code>display</code>, <code>screensaver</code>, <code>battery</code>, <code>power</code>, <code>network</code>, <code>memory</code>, <code>processor</code>) have a switch too and start on.</p>
+        <p>Switches one sensor on or off: <code>value</code> names it (<code>proximity</code>, <code>light</code>, <code>movement</code>, <code>bluetooth</code>, <code>nfc</code>, <code>audio</code>, <code>camera</code>, <code>microphone</code>, <code>pressure</code>, <code>temperature</code>, <code>humidity</code>), <code>enabled</code> says which way. The panel&#8217;s own values (<code>display</code>, <code>ambient</code>, <code>battery</code>, <code>power</code>, <code>network</code>, <code>memory</code>, <code>processor</code>) have a switch too and start on.</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="sensor.enabled"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
      -d cmnd=sensor.enabled -d value=proximity -d enabled=1</code></pre></div>
         <p class="reply">Reply</p>
@@ -635,7 +625,7 @@ Content-Type: application/json
       <p>There is no <code>system.shutdown</code>: Android has no API an app could use to power a tablet off. It answers <code>unsupported</code> like any unknown command.</p>
 
       <h2 id="settings">Settings</h2>
-      <p>The stats overlay, the display-off method, the look, the web admin&#8217;s certificate and every screensaver setting apply instantly through <code>/api/setting</code>; the web admin posts them the same way. The rest are saved the way the web admin saves them, one box at a time, through a POST to <code>/</code>. Orientation, automatic brightness and the page itself are set with the commands above.</p>
+      <p>The stats overlay, the display-off method, the look, the web admin&#8217;s certificate and every Ambient setting apply instantly through <code>/api/setting</code>; the web admin posts them the same way. The rest are saved the way the web admin saves them, one box at a time, through a POST to <code>/</code>. Orientation, automatic brightness and the page itself are set with the commands above.</p>
 
       <h3 id="instant">Instant settings</h3>
       <p>Form-encoded, <code>section=behaviour</code>, one key per request. The panel republishes its MQTT state afterwards.</p>
@@ -656,12 +646,12 @@ Content-Type: application/json
             <tr><th scope="row"><code>appearance_colour</code></th><td><code>purple</code>, <code>blue</code>, <code>orange</code></td><td>The colour of this panel and its web admin, chosen on the Appearance page under This panel: each names a Material 3 scheme built from that seed with Google&#8217;s own Material colour library. Purple is the default. This panel&#8217;s alone. Refused with <code>Not saved: appearance colour must be purple, blue or orange.</code></td></tr>
             <tr><th scope="row"><code>http_certificate</code></th><td><code>own</code>, <code>uploaded</code></td><td>Which certificate the web admin serves: the panel&#8217;s own or the one uploaded (<a href="#tls">HTTPS and the certificate</a>), from the next connection on. Refused with <code>Not saved: the certificate must be own or uploaded.</code>, and with <code>Not saved: no certificate is uploaded.</code> while none is kept.</td></tr>
             <tr><th scope="row"><code>separators</code></th><td><code>lines</code>, <code>segments</code>, <code>none</code></td><td>How the rows of a list are kept apart on both surfaces: a hairline, each row its own rounded segment as Android&#8217;s settings draw them, or nothing. This panel&#8217;s alone. Refused with <code>Not saved: separators must be lines, segments or none.</code></td></tr>
-            <tr><th scope="row"><code>screensaver_mode</code></th><td><code>off</code>, <code>dim</code>, <code>film</code>, <code>url</code>, <code>pictures</code></td><td>Same as <code>screensaver.mode</code>.</td></tr>
-            <tr><th scope="row"><code>screensaver_idle_s</code>, <code>screensaver_off_s</code>, <code>screensaver_picture_s</code></th><td>whole seconds</td><td>Same as <code>screensaver.idle_seconds</code>, <code>screensaver.off_seconds</code> and <code>screensaver.picture_seconds</code>.</td></tr>
-            <tr><th scope="row"><code>screensaver_dim_percent</code></th><td><code>1</code> to <code>100</code></td><td>Same as <code>screensaver.dim_percent</code>.</td></tr>
-            <tr><th scope="row"><code>screensaver_url</code></th><td>an address, or empty</td><td>Same as <code>screensaver.url</code>.</td></tr>
-            <tr><th scope="row"><code>screensaver_on_wake</code>, <code>screensaver_source</code>, <code>screensaver_transition</code>, <code>screensaver_picture_fit</code>, <code>screensaver_credit_corner</code></th><td>the same words as the commands</td><td>Same as the command of the same name.</td></tr>
-            <tr><th scope="row"><code>screensaver_shuffle</code>, <code>screensaver_one_per_cycle</code>, <code>screensaver_credit</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Same as the commands with <code>enabled</code>.</td></tr>
+            <tr><th scope="row"><code>ambient_mode</code></th><td><code>off</code>, <code>dim</code>, <code>film</code>, <code>url</code>, <code>pictures</code></td><td>Same as <code>ambient.mode</code>.</td></tr>
+            <tr><th scope="row"><code>ambient_idle_s</code>, <code>ambient_off_s</code>, <code>ambient_picture_s</code></th><td>whole seconds</td><td>Same as <code>ambient.idle_seconds</code>, <code>ambient.off_seconds</code> and <code>ambient.picture_seconds</code>.</td></tr>
+            <tr><th scope="row"><code>ambient_dim_percent</code></th><td><code>1</code> to <code>100</code></td><td>Same as <code>ambient.dim_percent</code>.</td></tr>
+            <tr><th scope="row"><code>ambient_url</code></th><td>an address, or empty</td><td>Same as <code>ambient.url</code>.</td></tr>
+            <tr><th scope="row"><code>ambient_on_wake</code>, <code>ambient_transition</code>, <code>ambient_picture_fit</code>, <code>ambient_credit_corner</code></th><td>the same words as the commands</td><td>Same as the command of the same name.</td></tr>
+            <tr><th scope="row"><code>ambient_shuffle</code>, <code>ambient_one_per_cycle</code>, <code>ambient_credit</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Same as the commands with <code>enabled</code>.</td></tr>
             <tr><th scope="row"><code>sensor_&lt;id&gt;</code></th><td>on/off words as above</td><td>Same as <code>sensor.enabled</code>. An unknown id is refused.</td></tr>
             <tr><th scope="row"><code>sensor_option_&lt;key&gt;</code></th><td>as the sensor&#8217;s page offers</td><td>One setting of a sensor&#8217;s page: <code>movement_sensitivity</code> (<code>light</code>, <code>normal</code>, <code>heavy</code>; the pages show them as High, Normal and Low, a light push being the most sensitive), <code>movement_still_s</code>, <code>beacons_reach_s</code>, <code>camera_still_s</code> (seconds from 1), <code>beacons_listening</code> (<code>low</code>, in short bursts to save battery, or <code>high</code>, all the time; the pages show them as Low and High), <code>camera_name</code> (up to 40), <code>camera_lens</code> (<code>front</code>, <code>back</code>), <code>camera_size</code>, <code>camera_fps</code> (the offered ones), <code>camera_orientation</code> (<code>device</code> upright as the panel is turned, <code>portrait</code>, <code>landscape</code>: always tall or wide, the middle of the picture when the panel is the other way), <code>camera_mirror</code>, <code>camera_flip</code>, <code>camera_watermark</code>, <code>camera_motion</code>, <code>camera_sensitivity</code> (<code>low</code>, <code>normal</code>, <code>high</code>), <code>camera_mqtt</code>, <code>beacon_&lt;uuid:major:minor&gt;</code> (a beacon&#8217;s name, up to 40). Anything else is refused with the rule.</td></tr>
             <tr><th scope="row"><code>automation_&lt;id&gt;</code></th><td>on/off words</td><td>Same as <code>automation.enabled</code>.</td></tr>
@@ -688,7 +678,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>webadmin</code></th><td><code>http_port</code>, <code>http_admin_password</code> (blank keeps)</td><td><code>baseline</code> = port</td><td>The port is not a number, not between 1024 and 65535, the member port, or already in use; the password is shorter than 8 characters, because a shorter one would switch the page off with only the tablet able to switch it back on.</td></tr>
             <tr><th scope="row"><code>fleet</code></th><td><code>fleet_port</code></td><td><code>baseline</code> = member port</td><td>The port is not a number, not between 1024 and 65535, the web admin&#8217;s port, or already in use. The member port is where the panel&#8217;s fleet endpoint listens, 8081 until changed; the web admin and the member endpoint never share a port.</td></tr>
             <tr><th scope="row"><code>sequences</code></th><td><code>settings_sequence</code>, <code>launcher_sequence</code></td><td><code>sequence_baseline</code> = settings<code>|</code>launcher</td><td>Both fields are empty, or both hold the same combination. Format <code>TL,TR,BL,BR</code>, 3 to 12 taps.</td></tr>
-            <tr><th scope="row"><code>behaviour</code></th><td><code>stats_overlay</code>, <code>volume_buttons_disabled</code>, <code>display_off_method</code>, <code>appearance_colour</code>, <code>separators</code>, <code>http_certificate</code>, every <code>screensaver_*</code> key</td><td>none</td><td>As under <a href="#instant">instant settings</a>.</td></tr>
+            <tr><th scope="row"><code>behaviour</code></th><td><code>stats_overlay</code>, <code>volume_buttons_disabled</code>, <code>display_off_method</code>, <code>appearance_colour</code>, <code>separators</code>, <code>http_certificate</code>, every <code>ambient_*</code> key</td><td>none</td><td>As under <a href="#instant">instant settings</a>.</td></tr>
           </tbody>
         </table>
       </div>
@@ -726,14 +716,14 @@ Content-Type: application/json
             <tr><th scope="row"><code>camera</code></th><td><code>motion</code>, <code>no_motion</code> (holds for minutes)</td></tr>
             <tr><th scope="row"><code>microphone</code></th><td><code>louder</code> (level, 0 to 100)</td></tr>
             <tr><th scope="row"><code>display</code></th><td><code>on</code>, <code>off</code></td></tr>
-            <tr><th scope="row"><code>screensaver</code></th><td><code>started</code>, <code>ended</code></td></tr>
+            <tr><th scope="row"><code>ambient</code></th><td><code>started</code>, <code>ended</code></td></tr>
             <tr><th scope="row"><code>battery</code></th><td><code>below</code> (level in percent), <code>plugged</code>, <code>unplugged</code></td></tr>
             <tr><th scope="row"><code>network</code></th><td><code>connected</code>, <code>lost</code></td></tr>
             <tr><th scope="row"><code>processor</code></th><td><code>hotter</code> (level in &deg;C)</td></tr>
           </tbody>
         </table>
       </div>
-      <p><code>action</code>: <code>display_on</code>, <code>display_off</code>, <code>dashboard</code>, <code>screensaver</code>, <code>play_sound</code> (<code>argument</code> an <code>http://</code> or <code>https://</code> address), <code>say</code> (<code>argument</code> the sentence), <code>reload</code>. The editor&#8217;s <code>baseline</code> is the stored rule without <code>enabled</code> and <code>changed_at</code>, so a switch flipped beside an open editor never makes its Save stale.</p>
+      <p><code>action</code>: <code>display_on</code>, <code>display_off</code>, <code>dashboard</code>, <code>ambient</code>, <code>play_sound</code> (<code>argument</code> an <code>http://</code> or <code>https://</code> address), <code>say</code> (<code>argument</code> the sentence), <code>reload</code>. The editor&#8217;s <code>baseline</code> is the stored rule without <code>enabled</code> and <code>changed_at</code>, so a switch flipped beside an open editor never makes its Save stale.</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="Turning the microphone on"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/sensors/settings \
      -H 'Content-Type: application/json' \
      -d '{"switches": {"microphone": {"on": true}}}'</code></pre></div>
@@ -741,24 +731,23 @@ Content-Type: application/json
       <div class="code-scroll" tabindex="0" role="region" aria-label="Reply to a setting of this panel alone"><pre><code>{"status":"rejected","detail":"camera_size belongs to this panel alone"}</code></pre></div>
 
       <h2 id="pictures">Pictures and playlists</h2>
-      <p>The routes the web admin&#8217;s Screensaver and playlist pages use, for the Pictures screensaver with this panel as the source. A picture is named by its address, as the panel stores it: <code>content://media/external/images/media/186</code> for one of the panel&#8217;s own pictures, a <code>file://</code> address inside Muralis for an upload. A playlist is named by its <code>id</code>, which <code>GET /api/playlists</code> gives. Every POST below is form-encoded, the upload aside, and is answered as the page needs it: add <code>?fragment=1</code> to get <code>{"ok": true, "message": "..."}</code>, with <code>400</code> and <code>"ok": false</code> and the reason for a refusal; without it the answer is the page again. The panel&#8217;s own pictures need Android&#8217;s permission to read them, which the panel asks for on its Screensaver settings; uploads need none.</p>
+      <p>The routes the web admin&#8217;s Ambient and playlist pages use, for the Pictures mode. A picture is named by its address, as the panel stores it: <code>content://media/external/images/media/186</code> for one of the panel&#8217;s own pictures, a <code>file://</code> address inside Muralis for an upload. A playlist is named by its <code>id</code>, which <code>GET /api/playlists</code> gives. Every POST below is form-encoded, the upload aside, and is answered as the page needs it: add <code>?fragment=1</code> to get <code>{"ok": true, "message": "..."}</code>, with <code>400</code> and <code>"ok": false</code> and the reason for a refusal; without it the answer is the page again. The panel&#8217;s own pictures need Android&#8217;s permission to read them, which the panel asks for on its Ambient settings; uploads need none.</p>
       <div class="table-scroll">
         <table class="spec">
           <thead><tr><th>Method</th><th>Path</th><th>Fields</th><th>What it does</th></tr></thead>
           <tbody>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/playlists</code></td><td></td><td>Every playlist: <code>{"active": id, "playlists": [{"id", "name", "count", "updatedAt", "active"}]}</code>.</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists</code></td><td><code>name</code></td><td>Makes an empty playlist. Names are unique without regard to case, 60 characters at most, 32 playlists at most.</td></tr>
-            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/activate</code></td><td><code>id</code></td><td>Makes it the one that plays. <code>screensaver.playlist</code> does the same by name, and its <code>None</code> leaves none in use.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/activate</code></td><td><code>id</code></td><td>Makes it the one that plays. <code>ambient.playlist</code> does the same by name, and its <code>None</code> leaves none in use.</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/rename</code></td><td><code>id</code>, <code>name</code></td><td>Renames it, with the rules of a new name.</td></tr>
-            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/delete</code></td><td><code>id</code></td><td>Deletes the playlist, never its pictures. Without <code>?fragment=1</code> it answers <code>303</code> to <code>/screensaver</code> when done or when the playlist was already gone.</td></tr>
-            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/order</code></td><td><code>id</code>, <code>order</code></td><td>The order the screensaver shows: every address the playlist holds, one per line. Refused whole unless it is exactly the playlist&#8217;s pictures, so an order made from a page opened before another change cannot scramble it.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/delete</code></td><td><code>id</code></td><td>Deletes the playlist, never its pictures. Without <code>?fragment=1</code> it answers <code>303</code> to <code>/ambient</code> when done or when the playlist was already gone.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/playlists/order</code></td><td><code>id</code>, <code>order</code></td><td>The order Ambient shows: every address the playlist holds, one per line. Refused whole unless it is exactly the playlist&#8217;s pictures, so an order made from a page opened before another change cannot scramble it.</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/select</code></td><td><code>playlist</code>, <code>uri</code>, <code>selected</code></td><td>Puts a picture in a playlist or takes it out (<code>true</code> or <code>false</code>). Taking it out never deletes the file. 1000 pictures a playlist at most.</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures</code></td><td><code>picture</code>, one file or many, <code>multipart/form-data</code>; <code>?playlist=</code> to add them to one</td><td>Uploads pictures into Muralis&#8217;s own store: JPEG, PNG or WebP, checked by their bytes, 12 MB each and 24 MB a request, one upload at a time (<code>503</code> with <code>Retry-After</code> otherwise).</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/delete</code></td><td><code>uri</code></td><td>Deletes an uploaded picture, and it leaves every playlist that held it. The panel&#8217;s own pictures are never deleted, only taken out of a playlist.</td></tr>
-            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/caption</code></td><td><code>name</code> (the address), <code>caption</code></td><td>The name the screensaver&#8217;s credit line shows for the picture, 200 characters at most; empty shows the file&#8217;s name.</td></tr>
+            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/caption</code></td><td><code>name</code> (the address), <code>caption</code></td><td>The name Ambient&#8217;s credit line shows for the picture, 200 characters at most; empty shows the file&#8217;s name.</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/credit</code></td><td><code>name</code> (the address), <code>shown</code></td><td>Switches the picture&#8217;s credit line off or back on, keeping its name.</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/view</code></td><td><code>view</code></td><td>How a folder is shown on both surfaces: <code>list</code>, <code>details</code>, <code>small</code> or <code>big</code>.</td></tr>
-            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/refresh</code></td><td></td><td>Fetches an online source&#8217;s pictures again.</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/pictures/thumb</code></td><td><code>?uri=</code></td><td>A picture&#8217;s thumbnail, a 256 px JPEG, for the panel&#8217;s own pictures and uploads only.</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/playlists/table</code>, <code>/api/playlists/items?playlist=</code>, <code>/api/pictures/folders</code>, <code>/api/pictures/content</code></td><td><code>?playlist=</code>, <code>?at=</code> (a folder), <code>?n=</code> (10, 25, 50 or 100)</td><td>The pages&#8217; parts as HTML fragments, which the pages swap in place; not a data format to build on.</td></tr>
           </tbody>
@@ -820,13 +809,13 @@ Content-Type: application/json
               "off_method_reason": "Display off turns the screen off. A remote wake or the power button turns it back on.",
               "off_method_warning": false, "auto": false, "has_light_sensor": false,
               "source": "manual", "brightness_percent": 40, "system_raw": 102, "system_scale_assumed": 255},
-  "screensaver": {"active": false, "mode": "pictures", "idle_s": 120, "off_s": 900, "dim_percent": 20,
-                  "on_wake": "screensaver", "url": "", "source": "local", "picture_s": 20, "transition": "fade",
-                  "picture_fit": "fit", "shuffle": false, "one_per_cycle": false, "credit": true,
-                  "credit_corner": "bottom_left", "source_state": "6 pictures from Holidays.", "source_problem": null,
-                  "pictures_readable": true, "playlist": "Holidays", "playlists": 2,
-                  "picture": {"title": "The Starry Night", "credit": "Vincent van Gogh, 1889"}, "problem": null,
-                  "summary": "Pictures from this panel after 2 min without a touch, display off 15 min later."},
+  "ambient": {"active": false, "mode": "pictures", "idle_s": 120, "off_s": 900, "dim_percent": 20,
+              "on_wake": "ambient", "url": "", "picture_s": 20, "transition": "fade",
+              "picture_fit": "fit", "shuffle": false, "one_per_cycle": false, "credit": true,
+              "credit_corner": "bottom_left", "pictures_state": "6 pictures from Holidays.", "pictures_problem": null,
+              "pictures_readable": true, "playlist": "Holidays", "playlists": 2,
+              "picture": {"title": "The Starry Night", "credit": "Vincent van Gogh, 1889"}, "problem": null,
+              "summary": "Pictures after 2 min without a touch, display off 15 min later."},
   "config": {"dashboard_url": "https://grafana.example.net/d/wall", "device_id": "hallway-panel",
              "appearance_summary": "Purple &#183; Lines",
              "settings_sequence": "TL,TL,TL,TL", "launcher_sequence": "BR,BR,BR,BR",
@@ -889,18 +878,18 @@ Content-Type: application/json
             <tr><th scope="row"><code>off_method_reason</code></th><td>One sentence saying why.</td><td>string</td></tr>
             <tr><th scope="row"><code>off_method_warning</code></th><td>A sleep ended badly and the method was switched to the film. Painted red on both admin surfaces.</td><td>bool</td></tr>
             <tr><th scope="row"><code>auto</code>, <code>has_light_sensor</code></th><td>Automatic brightness on, and whether a light sensor exists.</td><td>bool</td></tr>
-            <tr><th scope="row"><code>source</code></th><td>Where the brightness comes from.</td><td><code>auto</code>, <code>manual</code>, <code>display_off</code></td></tr>
+            <tr><th scope="row"><code>source</code></th><td>Where the brightness comes from.</td><td><code>auto</code>, <code>manual</code>, <code>display_off</code>, <code>ambient</code></td></tr>
             <tr><th scope="row"><code>brightness_percent</code></th><td>The level.</td><td>0 to 100, and 0 while dark; <code>null</code> only when the system setting cannot be read</td></tr>
             <tr><th scope="row"><code>system_raw</code>, <code>system_scale_assumed</code></th><td>Android&#8217;s raw brightness value and the scale assumed for it, so a wrong percentage can be diagnosed.</td><td>int, 255</td></tr>
-            <tr class="group"><th colspan="3"><code>screensaver</code></th></tr>
-            <tr><th scope="row"><code>active</code></th><td>Whether the screensaver is showing right now.</td><td>boolean</td></tr>
+            <tr class="group"><th colspan="3"><code>ambient</code></th></tr>
+            <tr><th scope="row"><code>active</code></th><td>Whether Ambient is showing right now.</td><td>boolean</td></tr>
             <tr><th scope="row"><code>mode</code> &hellip; <code>credit_corner</code></th><td>The settings, one field per command above, under the command&#8217;s name without the prefix: <code>idle_s</code>, <code>off_s</code> and <code>picture_s</code> are the three times.</td><td>as the commands</td></tr>
-            <tr><th scope="row"><code>source_state</code></th><td>One sentence about the source: how many pictures, from where, and what is showing.</td><td>string</td></tr>
-            <tr><th scope="row"><code>source_problem</code></th><td>Why the source has nothing to show, when it has not.</td><td>string or <code>null</code></td></tr>
+            <tr><th scope="row"><code>pictures_state</code></th><td>One sentence about the pictures: how many, from which playlist, and what is showing.</td><td>string</td></tr>
+            <tr><th scope="row"><code>pictures_problem</code></th><td>Why there is nothing to show, when there is not.</td><td>string or <code>null</code></td></tr>
             <tr><th scope="row"><code>pictures_readable</code></th><td>Whether the panel may read its own pictures yet.</td><td>boolean</td></tr>
             <tr><th scope="row"><code>playlist</code>, <code>playlists</code></th><td>The playlist in use, and how many there are.</td><td>string or <code>null</code>, number</td></tr>
             <tr><th scope="row"><code>picture</code></th><td>The picture on screen: its title and its credit line.</td><td><code>{"title","credit"}</code> or <code>null</code></td></tr>
-            <tr><th scope="row"><code>problem</code>, <code>summary</code></th><td>Why the screensaver cannot run as set, and the settings in one sentence, the same sentence both surfaces show.</td><td>string or <code>null</code>, string</td></tr>
+            <tr><th scope="row"><code>problem</code>, <code>summary</code></th><td>Why Ambient cannot run as set, and the settings in one sentence, the same sentence both surfaces show.</td><td>string or <code>null</code>, string</td></tr>
             <tr class="group"><th colspan="3"><code>sensors</code></th></tr>
             <tr><th scope="row">one object per sensor, by id</th><td>Every sensor the app knows, on this device or not: <code>name</code>, <code>kind</code> (<code>switch</code>, <code>permission</code>, <code>panel</code>), <code>page</code>, <code>glyph</code>, <code>available</code>, <code>permitted</code>, <code>enabled</code>, <code>active</code> (on and permitted), <code>value</code>, <code>attributes</code> where the sensor has them (the beacons in reach, each with <code>id</code>, <code>name</code>, <code>rssi</code>, its signal in dBm averaged over 20 seconds with the highest and lowest tenth left out, <code>distance_m</code>, the estimated distance, and <code>calibrated_m</code>, the steps of its <a href="#beacons-calibrate">calibration</a> on this panel, <code>[1, 3]</code> for both, left out for none; the camera&#8217;s name, viewers and detection, the last tag&#8217;s content, the audio state), and <code>reading</code>, the sentence both surfaces show.</td><td>object</td></tr>
             <tr><th scope="row"><code>near</code>, <code>calibrated</code></th><td>The proximity sensor&#8217;s verdict and whether a person calibrated it; <code>calibrated</code> on the microphone too, and on the Bluetooth beacons, where it says whether any beacon is calibrated on this panel.</td><td>bool</td></tr>
@@ -922,7 +911,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>fleet_port</code>, <code>fleet_listening</code>, <code>fleet_state</code></th><td>The member port, whether the fleet&#8217;s member endpoint listens on it, the sentence the Fleet section shows under it, such as <code>Not listening: port 8081 is in use on this device</code>. <b>Admin</b>: HTTP only.</td><td>number, bool, string</td></tr>
             <tr><th scope="row"><code>fleet_join</code></th><td>Membership and the join code as both surfaces show them: <code>member</code>, <code>member_line</code> (<code>Member of the fleet Home</code>), <code>fleet</code> (its name), <code>can_join</code> (the member endpoint listens), <code>code</code> (<code>1234 5678</code>, empty when none is open), <code>qr</code> (whether <code>/api/fleet/code.svg</code> has one), <code>detail</code> (the key in short form, the address and the member port), <code>locked</code> (five wrong codes) and <code>line</code>, the Join screen&#8217;s sentence. <b>Admin</b>: HTTP only, never on MQTT.</td><td>object</td></tr>
             <tr><th scope="row"><code>fleet_peers</code></th><td>The other panels of the fleet as this panel last heard from them, one object each: <code>id</code>, <code>name</code>, <code>spki</code>, <code>seen_ago_ms</code> (<code>-1</code> when not heard from since the app started), <code>online</code> (heard from within ten minutes), <code>address</code>, <code>version</code> (of the fleet&#8217;s list it holds), <code>clock_skew_ms</code> and its <code>health</code> summary. Empty outside a fleet. <b>Admin</b>: HTTP only.</td><td>array</td></tr>
-            <tr><th scope="row"><code>fleet_profile</code></th><td>The fleet&#8217;s groups and what they share: <code>groups</code> (one object each: <code>id</code>, <code>name</code>, <code>in</code>, whether this panel is in it), <code>follows_fleet</code> (whether this panel takes what the whole fleet shares; its groups it always follows), <code>sections</code> (per group of settings the fleet can share, <code>dashboard</code>, <code>mqtt</code>, <code>web_admin</code>, <code>display</code>, <code>screensaver</code>, <code>alerts</code>: <code>shared_by</code>, the ids of the groups that share it, <code>group</code>, the one whose values apply on this panel (<code>everyone</code> is the whole fleet; a group wins over it), empty when none applies, and <code>refused</code>, the lines this panel could not apply, in the words of the checks that refused them), and <code>suggestions</code>, names offered for a new group. Empty outside a fleet. <b>Admin</b>: HTTP only.</td><td>object</td></tr>
+            <tr><th scope="row"><code>fleet_profile</code></th><td>The fleet&#8217;s groups and what they share: <code>groups</code> (one object each: <code>id</code>, <code>name</code>, <code>in</code>, whether this panel is in it), <code>follows_fleet</code> (whether this panel takes what the whole fleet shares; its groups it always follows), <code>sections</code> (per group of settings the fleet can share, <code>dashboard</code>, <code>mqtt</code>, <code>web_admin</code>, <code>display</code>, <code>ambient</code>, <code>alerts</code>: <code>shared_by</code>, the ids of the groups that share it, <code>group</code>, the one whose values apply on this panel (<code>everyone</code> is the whole fleet; a group wins over it), empty when none applies, and <code>refused</code>, the lines this panel could not apply, in the words of the checks that refused them), and <code>suggestions</code>, names offered for a new group. Empty outside a fleet. <b>Admin</b>: HTTP only.</td><td>object</td></tr>
             <tr><th scope="row"><code>alert_offline_minutes</code>, <code>alert_page_error</code>, <code>alert_battery_below</code>, <code>alert_temperature_above</code>, <code>alert_combination_used</code>, <code>alert_pin_lockout</code>, <code>alert_mqtt_topic</code>, <code>alert_webhook_url</code></th><td>The fleet&#8217;s alert settings as stored on this panel, under the keys <a href="#instant">instant settings</a> take. <b>Admin</b>: HTTP only.</td><td>number, bool, number, number, bool, bool, string, string</td></tr>
             <tr><th scope="row"><code>http_tls</code>, <code>http_certificate_sha256</code></th><td>Whether the web admin speaks HTTPS, and the fingerprint of its certificate, to compare with the browser&#8217;s. <b>Admin</b>: HTTP only.</td><td>bool, string</td></tr>
             <tr><th scope="row"><code>http_certificate</code>, <code>http_certificate_problem</code>, <code>http_certificate_upload</code></th><td>Which certificate is served, <code>own</code> or <code>uploaded</code> (empty on plain HTTP); why the uploaded one, chosen, is not, empty when it is; and the fingerprint of the upload kept, served or not, empty when none is. <b>Admin</b>: HTTP only.</td><td>string, string, string</td></tr>
@@ -1003,16 +992,15 @@ Content-Type: application/json
             <tr><th scope="row">Main dashboard, Reload dashboard, Restart kiosk</th><td>buttons</td><td></td><td><code>kiosk.home</code>, <code>kiosk.reload</code>, <code>kiosk.restart</code></td></tr>
             <tr><th scope="row">Display on, Display off</th><td>buttons</td><td></td><td><code>display.wake</code>, <code>display.visual_off</code></td></tr>
             <tr><th scope="row">Reboot tablet</th><td>button, only on a device-owner install</td><td></td><td><code>system.reboot</code></td></tr>
-                      <tr><th scope="row">Screensaver</th><td>switch</td><td><code>screensaver.active</code></td><td><code>screensaver.start</code>, <code>screensaver.stop</code></td></tr>
-            <tr><th scope="row">Screensaver mode</th><td>select</td><td><code>screensaver.mode</code></td><td><code>screensaver.mode</code></td></tr>
-            <tr><th scope="row">Screensaver playlist</th><td>select, the panel&#8217;s playlists by name</td><td><code>screensaver.playlist</code></td><td><code>screensaver.playlist</code></td></tr>
-            <tr><th scope="row">Screensaver source</th><td>select</td><td><code>screensaver.source</code></td><td><code>screensaver.source</code></td></tr>
-            <tr><th scope="row">Screensaver idle time, to display off, picture time</th><td>number, s</td><td><code>screensaver.idle_s</code>, <code>off_s</code>, <code>picture_s</code></td><td><code>screensaver.idle_seconds</code>, <code>off_seconds</code>, <code>picture_seconds</code></td></tr>
-            <tr><th scope="row">Screensaver dim brightness</th><td>number, %</td><td><code>screensaver.dim_percent</code></td><td><code>screensaver.dim_percent</code></td></tr>
-            <tr><th scope="row">Screensaver transition, picture fit, credit corner, after a wake</th><td>select</td><td><code>screensaver.transition</code>, <code>picture_fit</code>, <code>credit_corner</code>, <code>on_wake</code></td><td>the command of the same name</td></tr>
-            <tr><th scope="row">Screensaver shuffle, one picture per cycle, credit line</th><td>switch</td><td><code>screensaver.shuffle</code>, <code>one_per_cycle</code>, <code>credit</code></td><td>the command of the same name with <code>enabled</code></td></tr>
-            <tr><th scope="row">Screensaver page</th><td>text</td><td><code>screensaver.url</code></td><td><code>screensaver.url</code></td></tr>
-            <tr><th scope="row">Screensaver picture</th><td>sensor</td><td><code>screensaver.picture.title</code></td><td></td></tr>
+                      <tr><th scope="row">Ambient</th><td>switch</td><td><code>ambient.active</code></td><td><code>ambient.start</code>, <code>ambient.stop</code></td></tr>
+            <tr><th scope="row">Ambient mode</th><td>select</td><td><code>ambient.mode</code></td><td><code>ambient.mode</code></td></tr>
+            <tr><th scope="row">Ambient playlist</th><td>select, the panel&#8217;s playlists by name</td><td><code>ambient.playlist</code></td><td><code>ambient.playlist</code></td></tr>
+            <tr><th scope="row">Ambient idle time, to display off, picture time</th><td>number, s</td><td><code>ambient.idle_s</code>, <code>off_s</code>, <code>picture_s</code></td><td><code>ambient.idle_seconds</code>, <code>off_seconds</code>, <code>picture_seconds</code></td></tr>
+            <tr><th scope="row">Ambient dim brightness</th><td>number, %</td><td><code>ambient.dim_percent</code></td><td><code>ambient.dim_percent</code></td></tr>
+            <tr><th scope="row">Ambient transition, picture fit, credit corner, after a wake</th><td>select</td><td><code>ambient.transition</code>, <code>picture_fit</code>, <code>credit_corner</code>, <code>on_wake</code></td><td>the command of the same name</td></tr>
+            <tr><th scope="row">Ambient shuffle, one picture per cycle, credit line</th><td>switch</td><td><code>ambient.shuffle</code>, <code>one_per_cycle</code>, <code>credit</code></td><td>the command of the same name with <code>enabled</code></td></tr>
+            <tr><th scope="row">Ambient page</th><td>text</td><td><code>ambient.url</code></td><td><code>ambient.url</code></td></tr>
+            <tr><th scope="row">Ambient picture</th><td>sensor</td><td><code>ambient.picture.title</code></td><td></td></tr>
             <tr><th scope="row">Proximity, Light, Movement, Bluetooth beacons, NFC, Audio, Camera, Microphone, Pressure, Ambient temperature, Humidity</th><td>sensor or binary sensor, one each, announced while the sensor is on and this device has it, removed when it is switched off</td><td><code>sensors.&lt;id&gt;.value</code>, with <code>attributes</code> for the beacons, NFC, audio and the camera</td><td></td></tr>
             <tr><th scope="row">Camera motion detection, Camera snapshot, Camera picture</th><td>switch, button, camera: motion detection while the camera is on, the snapshot and the picture only while Picture to MQTT is on too</td><td><code>sensors.camera.attributes.detecting</code>; the picture from <code>kiosk/&lt;id&gt;/camera</code></td><td><code>camera.motion</code>, <code>camera.snapshot</code></td></tr>
             <tr><th scope="row">Take a screenshot, Screenshot</th><td>button and image: the button asks for a picture, the image shows the last one</td><td>the picture from <code>kiosk/&lt;id&gt;/screenshot</code></td><td><code>kiosk.screenshot</code></td></tr>

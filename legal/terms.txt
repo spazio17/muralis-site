@@ -40,7 +40,7 @@ The local web administration is authenticated by the password you set, and by no
 
 PICTURES
 
-The screensaver can show pictures from the device, pictures you upload, and pictures from Bing's image of the day or Wikimedia Commons' picture of the day. What a panel shows is your responsibility: make sure you have the right to display it where the panel is. Muralis grants no rights to any picture. The Bing source is unofficial: Microsoft publishes no interface for it, may change or close it at any time, and its pictures are copyrighted works shown with Bing's own credit line, so whether you may display them is between you and their owners. Wikimedia Commons pictures carry the licences their credit line names.
+Ambient, the screen a panel shows while nobody uses it, can show pictures from the device and pictures you upload. What a panel shows is your responsibility: make sure you have the right to display it where the panel is. Muralis grants no rights to any picture.
 
 BUYING, AND GETTING YOUR MONEY BACK
 
