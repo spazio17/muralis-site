@@ -44,7 +44,7 @@ Every sensor that reads the room (the camera, the microphone, Bluetooth beacons,
 
 DELETION
 
-Uninstalling the app, or clearing its data, removes everything it has stored, including the encrypted credentials, the uploads, the previews and the cached pictures. The copies outside its reach are the retained status snapshot on your broker and, if you had pictures to the broker on, the camera's last picture and the last picture of the screen, all of which you clear there.
+Uninstalling the app, or clearing its data, removes everything it has stored, including the encrypted credentials, the uploads and the previews. The copies outside its reach are the retained status snapshot on your broker and, if you had pictures to the broker on, the camera's last picture and the last picture of the screen, all of which you clear there.
 
 IF YOU BUY MURALIS PRO
 
