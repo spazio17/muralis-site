@@ -733,7 +733,7 @@ Content-Type: application/json
           </tbody>
         </table>
       </div>
-      <p><code>action</code>: <code>display_on</code>, <code>display_off</code>, <code>dashboard</code>, <code>ambient</code>, <code>play_sound</code> (<code>argument</code> an <code>http://</code> or <code>https://</code> address), <code>say</code> (<code>argument</code> the sentence), <code>reload</code>, <code>light_on</code> (<code>argument</code> the colour as <code>r,g,b</code>), <code>light_off</code>. The editor&#8217;s <code>baseline</code> is the stored rule without <code>enabled</code> and <code>changed_at</code>, so a switch flipped beside an open editor never makes its Save stale.</p>
+      <p><code>action</code>: <code>display_on</code>, <code>display_off</code>, <code>dashboard</code>, <code>ambient</code>, <code>play_sound</code> (<code>argument</code> an <code>http://</code> or <code>https://</code> address), <code>say</code> (<code>argument</code> the sentence), <code>reload</code>, <code>light_on</code> (<code>argument</code> the colour as <code>r,g,b</code>, or empty for the colour it has), <code>light_off</code>. The editor&#8217;s <code>baseline</code> is the stored rule without <code>enabled</code> and <code>changed_at</code>, so a switch flipped beside an open editor never makes its Save stale.</p>
       <div class="code-scroll" tabindex="0" role="region" aria-label="Turning the microphone on"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/sensors/settings \
      -H 'Content-Type: application/json' \
      -d '{"switches": {"microphone": {"on": true}}}'</code></pre></div>
