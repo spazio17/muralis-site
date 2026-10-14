@@ -40,7 +40,7 @@ The local web administration is authenticated by the password you set, and by no
 
 PICTURES
 
-The screensaver can show pictures from the device and pictures you upload. What a panel shows is your responsibility: make sure you have the right to display it where the panel is. Muralis grants no rights to any picture.
+Ambient, the screen a panel shows while nobody uses it, can show pictures from the device and pictures you upload. What a panel shows is your responsibility: make sure you have the right to display it where the panel is. Muralis grants no rights to any picture.
 
 BUYING, AND GETTING YOUR MONEY BACK
 
