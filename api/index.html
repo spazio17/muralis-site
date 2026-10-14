@@ -402,16 +402,6 @@ Content-Type: application/json
         <p>Refused with <code>value must be screensaver or dashboard</code>.</p>
       </article>
 
-      <article class="entry" id="cmd-screensaver-source">
-        <header><h3>screensaver.source</h3></header>
-        <p>Where the pictures mode takes its pictures: <code>local</code>, the panel&#8217;s own folders and uploads in the playlist in use, <code>bing</code>, Bing&#8217;s image of the day, or <code>wikimedia</code>, Wikimedia Commons&#8217; picture of the day. The two online sources are fetched over the internet and always shown with their credit line.</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="screensaver.source"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=screensaver.source -d value=local</code></pre></div>
-        <p class="reply">Reply</p>
-        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
-        <p>Refused with <code>value must be local, bing or wikimedia</code>.</p>
-      </article>
-
       <article class="entry" id="cmd-screensaver-playlist">
         <header><h3>screensaver.playlist</h3></header>
         <p>The playlist the <code>local</code> source shows, by name; an empty value puts none in use. Playlists are made and filled on the panel or in the web admin.</p>
@@ -660,7 +650,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>screensaver_idle_s</code>, <code>screensaver_off_s</code>, <code>screensaver_picture_s</code></th><td>whole seconds</td><td>Same as <code>screensaver.idle_seconds</code>, <code>screensaver.off_seconds</code> and <code>screensaver.picture_seconds</code>.</td></tr>
             <tr><th scope="row"><code>screensaver_dim_percent</code></th><td><code>1</code> to <code>100</code></td><td>Same as <code>screensaver.dim_percent</code>.</td></tr>
             <tr><th scope="row"><code>screensaver_url</code></th><td>an address, or empty</td><td>Same as <code>screensaver.url</code>.</td></tr>
-            <tr><th scope="row"><code>screensaver_on_wake</code>, <code>screensaver_source</code>, <code>screensaver_transition</code>, <code>screensaver_picture_fit</code>, <code>screensaver_credit_corner</code></th><td>the same words as the commands</td><td>Same as the command of the same name.</td></tr>
+            <tr><th scope="row"><code>screensaver_on_wake</code>, <code>screensaver_transition</code>, <code>screensaver_picture_fit</code>, <code>screensaver_credit_corner</code></th><td>the same words as the commands</td><td>Same as the command of the same name.</td></tr>
             <tr><th scope="row"><code>screensaver_shuffle</code>, <code>screensaver_one_per_cycle</code>, <code>screensaver_credit</code></th><td><code>1</code>/<code>0</code>, <code>true</code>/<code>false</code>, <code>on</code>/<code>off</code></td><td>Same as the commands with <code>enabled</code>.</td></tr>
             <tr><th scope="row"><code>sensor_&lt;id&gt;</code></th><td>on/off words as above</td><td>Same as <code>sensor.enabled</code>. An unknown id is refused.</td></tr>
             <tr><th scope="row"><code>sensor_option_&lt;key&gt;</code></th><td>as the sensor&#8217;s page offers</td><td>One setting of a sensor&#8217;s page: <code>movement_sensitivity</code> (<code>light</code>, <code>normal</code>, <code>heavy</code>; the pages show them as High, Normal and Low, a light push being the most sensitive), <code>movement_still_s</code>, <code>beacons_reach_s</code>, <code>camera_still_s</code> (seconds from 1), <code>beacons_listening</code> (<code>low</code>, in short bursts to save battery, or <code>high</code>, all the time; the pages show them as Low and High), <code>camera_name</code> (up to 40), <code>camera_lens</code> (<code>front</code>, <code>back</code>), <code>camera_size</code>, <code>camera_fps</code> (the offered ones), <code>camera_orientation</code> (<code>device</code> upright as the panel is turned, <code>portrait</code>, <code>landscape</code>: always tall or wide, the middle of the picture when the panel is the other way), <code>camera_mirror</code>, <code>camera_flip</code>, <code>camera_watermark</code>, <code>camera_motion</code>, <code>camera_sensitivity</code> (<code>low</code>, <code>normal</code>, <code>high</code>), <code>camera_mqtt</code>, <code>beacon_&lt;uuid:major:minor&gt;</code> (a beacon&#8217;s name, up to 40). Anything else is refused with the rule.</td></tr>
@@ -758,7 +748,6 @@ Content-Type: application/json
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/caption</code></td><td><code>name</code> (the address), <code>caption</code></td><td>The name the screensaver&#8217;s credit line shows for the picture, 200 characters at most; empty shows the file&#8217;s name.</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/credit</code></td><td><code>name</code> (the address), <code>shown</code></td><td>Switches the picture&#8217;s credit line off or back on, keeping its name.</td></tr>
             <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/view</code></td><td><code>view</code></td><td>How a folder is shown on both surfaces: <code>list</code>, <code>details</code>, <code>small</code> or <code>big</code>.</td></tr>
-            <tr><th scope="row"><span class="method">POST</span></th><td><code>/api/pictures/refresh</code></td><td></td><td>Fetches an online source&#8217;s pictures again.</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/pictures/thumb</code></td><td><code>?uri=</code></td><td>A picture&#8217;s thumbnail, a 256 px JPEG, for the panel&#8217;s own pictures and uploads only.</td></tr>
             <tr><th scope="row"><span class="method get">GET</span></th><td><code>/api/playlists/table</code>, <code>/api/playlists/items?playlist=</code>, <code>/api/pictures/folders</code>, <code>/api/pictures/content</code></td><td><code>?playlist=</code>, <code>?at=</code> (a folder), <code>?n=</code> (10, 25, 50 or 100)</td><td>The pages&#8217; parts as HTML fragments, which the pages swap in place; not a data format to build on.</td></tr>
           </tbody>
@@ -821,9 +810,9 @@ Content-Type: application/json
               "off_method_warning": false, "auto": false, "has_light_sensor": false,
               "source": "manual", "brightness_percent": 40, "system_raw": 102, "system_scale_assumed": 255},
   "screensaver": {"active": false, "mode": "pictures", "idle_s": 120, "off_s": 900, "dim_percent": 20,
-                  "on_wake": "screensaver", "url": "", "source": "local", "picture_s": 20, "transition": "fade",
+                  "on_wake": "screensaver", "url": "", "picture_s": 20, "transition": "fade",
                   "picture_fit": "fit", "shuffle": false, "one_per_cycle": false, "credit": true,
-                  "credit_corner": "bottom_left", "source_state": "6 pictures from Holidays.", "source_problem": null,
+                  "credit_corner": "bottom_left", "pictures_state": "6 pictures from Holidays.", "pictures_problem": null,
                   "pictures_readable": true, "playlist": "Holidays", "playlists": 2,
                   "picture": {"title": "The Starry Night", "credit": "Vincent van Gogh, 1889"}, "problem": null,
                   "summary": "Pictures from this panel after 2 min without a touch, display off 15 min later."},
@@ -895,8 +884,8 @@ Content-Type: application/json
             <tr class="group"><th colspan="3"><code>screensaver</code></th></tr>
             <tr><th scope="row"><code>active</code></th><td>Whether the screensaver is showing right now.</td><td>boolean</td></tr>
             <tr><th scope="row"><code>mode</code> &hellip; <code>credit_corner</code></th><td>The settings, one field per command above, under the command&#8217;s name without the prefix: <code>idle_s</code>, <code>off_s</code> and <code>picture_s</code> are the three times.</td><td>as the commands</td></tr>
-            <tr><th scope="row"><code>source_state</code></th><td>One sentence about the source: how many pictures, from where, and what is showing.</td><td>string</td></tr>
-            <tr><th scope="row"><code>source_problem</code></th><td>Why the source has nothing to show, when it has not.</td><td>string or <code>null</code></td></tr>
+            <tr><th scope="row"><code>pictures_state</code></th><td>One sentence about the pictures: how many, from which playlist, and what is showing.</td><td>string</td></tr>
+            <tr><th scope="row"><code>pictures_problem</code></th><td>Why there is nothing to show, when there is not.</td><td>string or <code>null</code></td></tr>
             <tr><th scope="row"><code>pictures_readable</code></th><td>Whether the panel may read its own pictures yet.</td><td>boolean</td></tr>
             <tr><th scope="row"><code>playlist</code>, <code>playlists</code></th><td>The playlist in use, and how many there are.</td><td>string or <code>null</code>, number</td></tr>
             <tr><th scope="row"><code>picture</code></th><td>The picture on screen: its title and its credit line.</td><td><code>{"title","credit"}</code> or <code>null</code></td></tr>
@@ -1006,7 +995,6 @@ Content-Type: application/json
                       <tr><th scope="row">Screensaver</th><td>switch</td><td><code>screensaver.active</code></td><td><code>screensaver.start</code>, <code>screensaver.stop</code></td></tr>
             <tr><th scope="row">Screensaver mode</th><td>select</td><td><code>screensaver.mode</code></td><td><code>screensaver.mode</code></td></tr>
             <tr><th scope="row">Screensaver playlist</th><td>select, the panel&#8217;s playlists by name</td><td><code>screensaver.playlist</code></td><td><code>screensaver.playlist</code></td></tr>
-            <tr><th scope="row">Screensaver source</th><td>select</td><td><code>screensaver.source</code></td><td><code>screensaver.source</code></td></tr>
             <tr><th scope="row">Screensaver idle time, to display off, picture time</th><td>number, s</td><td><code>screensaver.idle_s</code>, <code>off_s</code>, <code>picture_s</code></td><td><code>screensaver.idle_seconds</code>, <code>off_seconds</code>, <code>picture_seconds</code></td></tr>
             <tr><th scope="row">Screensaver dim brightness</th><td>number, %</td><td><code>screensaver.dim_percent</code></td><td><code>screensaver.dim_percent</code></td></tr>
             <tr><th scope="row">Screensaver transition, picture fit, credit corner, after a wake</th><td>select</td><td><code>screensaver.transition</code>, <code>picture_fit</code>, <code>credit_corner</code>, <code>on_wake</code></td><td>the command of the same name</td></tr>
