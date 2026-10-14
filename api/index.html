@@ -319,6 +319,15 @@ Content-Type: application/json
         <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
       </article>
 
+      <article class="entry" id="browser-options">
+        <header><h3>browser.text_size</h3> <h3>browser.page_zoom</h3> <h3>browser.user_agent</h3> <h3>browser.back_after</h3> <h3>browser.dark_look</h3></header>
+        <p>The page&#8217;s browser options, each in <code>value</code>: <code>browser.text_size</code> from 50 to 300 percent; <code>browser.page_zoom</code> <code>auto</code> or <code>0</code> for the page&#8217;s own scale, or 25 to 400 percent; <code>browser.user_agent</code> one line of at most 512 characters, or empty for the browser&#8217;s own with <code>Muralis/</code> and the version after it; <code>browser.back_after</code> the seconds without a touch after which a page that has left the dashboard goes back to it, <code>0</code> for never; <code>browser.dark_look</code> with <code>enabled</code>, which tells the page the panel prefers its dark look (<code>prefers-color-scheme</code>) and leaves a page without one as it is; it needs Android 10 or newer and is refused with <code>the page's dark look needs Android 10 or newer</code> below. The page&#8217;s sign-in for HTTP basic auth is set on the panel or in the web admin only, since it carries a password. Refused with the rule that was broken, such as <code>the text size must be a whole number from 50 to 300</code>.</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="browser.text_size"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
+     -d cmnd=browser.text_size -d value=125</code></pre></div>
+        <p class="reply">Reply</p>
+        <div class="code-scroll" tabindex="0" role="region" aria-label="Reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
+      </article>
+
       <h3 id="cmd-ambient">Ambient</h3>
 
       <p>Every Ambient setting is a command, and every one is also an entity over MQTT discovery, so a caller can publish a command or move a control, whichever suits. A changed setting is saved and republished at once; it takes effect the next time Ambient starts.</p>
@@ -683,6 +692,7 @@ Content-Type: application/json
           <thead><tr><th><code>section</code></th><th>Fields</th><th>Baseline</th><th>Refused when</th></tr></thead>
           <tbody>
             <tr><th scope="row"><code>dashboard</code></th><td><code>dashboard_url</code></td><td><code>baseline</code> = url</td><td>The URL does not start with <code>http://</code> or <code>https://</code>.</td></tr>
+            <tr><th scope="row"><code>browser</code></th><td><code>browser_user_agent</code>, <code>browser_text_size</code>, <code>browser_page_zoom</code>, <code>browser_back_after</code>, <code>browser_dark</code>, <code>browser_user</code>, <code>browser_password</code> (blank keeps the stored one; an empty name clears both)</td><td><code>baseline</code> = user agent<code>|</code>text size<code>|</code>zoom<code>|</code>dark<code>|</code>seconds<code>|</code>name</td><td>The same rules as the <code>browser.*</code> commands; a name with a colon.</td></tr>
             <tr><th scope="row"><code>panel</code></th><td><code>device_id</code>, the panel&#8217;s name</td><td><code>baseline</code> = id</td><td>The name is empty or uses anything but letters, digits, dot, underscore and hyphen, or is longer than 64. With scripting, the web admin stores the name the moment its box loses the focus, through <code>device_id</code> under <a href="#instant">instant settings</a>.</td></tr>
             <tr><th scope="row"><code>mqtt</code></th><td><code>mqtt_host</code>, <code>mqtt_port</code>, <code>mqtt_username</code>, <code>mqtt_password</code> (blank keeps the stored one)</td><td><code>baseline</code> = host<code>|</code>port<code>|</code>username</td><td>The port is not between 1 and 65535.</td></tr>
             <tr><th scope="row"><code>webadmin</code></th><td><code>http_port</code>, <code>http_admin_password</code> (blank keeps)</td><td><code>baseline</code> = port</td><td>The port is not a number, not between 1024 and 65535, the member port, or already in use; the password is shorter than 8 characters, because a shorter one would switch the page off with only the tablet able to switch it back on.</td></tr>
@@ -837,7 +847,9 @@ Content-Type: application/json
              "fleet_port": 8081, "fleet_listening": true, "fleet_state": "Listening on port 8081",
              "http_certificate_sha256": "F0:4D:30:A1:3D:67:35:08:11:C8:93:F4:28:EA:C3:69:D3:D9:BA:77:3B:DB:97:31:3B:B7:AB:C2:A7:50:7D:63",
              "http_certificate": "own", "http_certificate_problem": "", "http_certificate_upload": "",
-             "mqtt_host": "192.0.2.10", "mqtt_port": 1883}
+             "mqtt_host": "192.0.2.10", "mqtt_port": 1883,
+             "browser": {"user_agent": "", "text_size": 100, "page_zoom": 0, "dark_look": false,
+                         "back_after_s": 0, "sign_in": false}}
 }</code></pre></div>
       <p>A real document, with the addresses, the page and the combinations replaced. On a panel with no battery, a PoE wall panel or a screen on a DC adapter, <code>battery.present</code> is <code>false</code>, every other battery field is <code>null</code>, and <code>power.source</code> says <code>mains</code>.</p>
       <div class="table-scroll">
@@ -920,6 +932,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>appearance_summary</code></th><td>The look in words, as the Appearance row says it on both surfaces: the colour and the separators. <b>Admin</b>: HTTP only.</td><td>string, <code>Purple &#183; Lines</code></td></tr>
             <tr><th scope="row"><code>stats_overlay</code>, <code>volume_buttons_disabled</code>, <code>orientation</code>, <code>display_off_method</code>, <code>appearance_colour</code>, <code>separators</code>, <code>web_admin_enabled</code></th><td>Stored settings; <code>display_off_method</code> reads <code>film</code> on an ordinary install whatever is stored, since the film is the only method it has.</td><td>bool; bool; <code>auto</code>/<code>landscape</code>/<code>portrait</code>; <code>auto</code>/<code>sleep</code>/<code>film</code>; the look&#8217;s two words as under <a href="#instant">instant settings</a>; bool</td></tr>
             <tr><th scope="row"><code>has_light_sensor</code>, <code>auto_brightness</code></th><td>Live, repeated here for the Home Assistant switch.</td><td>bool</td></tr>
+            <tr><th scope="row"><code>browser</code></th><td>The page&#8217;s browser options as the <code>browser.*</code> commands set them; of the sign-in only whether one is stored.</td><td>object</td></tr>
             <tr><th scope="row"><code>http_port</code>, <code>mqtt_host</code>, <code>mqtt_port</code></th><td>Where the panel listens and which broker it talks to. <b>Admin</b>: HTTP only.</td><td></td></tr>
             <tr><th scope="row"><code>fleet_port</code>, <code>fleet_listening</code>, <code>fleet_state</code></th><td>The member port, whether the fleet&#8217;s member endpoint listens on it, the sentence the Fleet section shows under it, such as <code>Not listening: port 8081 is in use on this device</code>. <b>Admin</b>: HTTP only.</td><td>number, bool, string</td></tr>
             <tr><th scope="row"><code>fleet_join</code></th><td>Membership and the join code as both surfaces show them: <code>member</code>, <code>member_line</code> (<code>Member of the fleet Home</code>), <code>fleet</code> (its name), <code>can_join</code> (the member endpoint listens), <code>code</code> (<code>1234 5678</code>, empty when none is open), <code>qr</code> (whether <code>/api/fleet/code.svg</code> has one), <code>detail</code> (the key in short form, the address and the member port), <code>locked</code> (five wrong codes) and <code>line</code>, the Join screen&#8217;s sentence. <b>Admin</b>: HTTP only, never on MQTT.</td><td>object</td></tr>
