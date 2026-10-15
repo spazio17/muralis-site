@@ -268,7 +268,7 @@ html[data-mode="home"] [data-tier="free"] li,html[data-mode="pro"] [data-tier="p
  .needs{grid-template-columns:1fr 1fr}
  .brick{grid-column:span 6}
  section{padding:72px 0}}
-@media (max-width:600px){nav .mode button span{display:none}nav .mode button{padding:7px 12px}nav .btn{display:none}nav .in{gap:12px}}
+@media (max-width:600px){nav .mode button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}nav .mode button{padding:7px 12px}nav .btn{display:none}nav .in{gap:12px}}
 @media (max-width:560px){.groups,.shots,.needs{grid-template-columns:1fr}.brick{grid-column:span 12}}
 @media (prefers-reduced-motion:reduce){
  *{animation:none !important;transition:none !important}html{scroll-behavior:auto}
