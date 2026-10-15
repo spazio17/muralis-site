@@ -184,14 +184,11 @@ p code, li code, td code, th code, dd code {
   transition: background .15s, border-color .15s, color .15s;
 }
 .button:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
-.button.secondary { background: transparent; color: var(--accent-text); border-color: var(--line-strong); }
-.button.secondary:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-text); }
 .button:focus-visible, button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 .button, .button:hover { color: var(--on-accent); }
-.button.secondary, .button.secondary:hover { color: var(--accent-text); }
 
 .tag {
   display: inline-block;
@@ -318,26 +315,7 @@ p code, li code, td code, th code, dd code {
 .themepick button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-text); font-weight: 650; }
 
 /* Hero */
-.hero { padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(2.5rem, 5vw, 4rem); background: var(--hero-wash); }
-.hero > .wrap {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 2.5rem;
-  align-items: center;
-}
-@media (min-width: 62rem) {
-  .hero > .wrap { grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 3.5rem; }
-}
-/* The name is the headline, then one plain line (round four of the 2026-10-06 sketches). */
-.hero h1 { font-size: clamp(2.8rem, 6.5vw, 4.4rem); }
-.hero .tagline { margin-top: .45rem; font-size: clamp(1.2rem, 2.3vw, 1.55rem); font-weight: 650; letter-spacing: -.01em; }
-.hero .lede {
-  margin-top: 1.25rem;
-  font-size: 1.15rem;
-  color: var(--muted);
-  max-width: 34rem;
-}
-.hero .actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem; }
+
 .facts {
   list-style: none;
   margin: 1.75rem 0 0;
@@ -373,7 +351,6 @@ section > .wrap > .intro {
   max-width: var(--measure);
   font-size: 1.02rem;
 }
-section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
 
 .cards {
   display: grid;
@@ -398,25 +375,6 @@ section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
 .card p { color: var(--muted); font-size: .95rem; }
 .card p + p { margin-top: .5rem; }
 
-.audience .cards { grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
-.audience .card { display: block; }
-.audience .card svg { margin-bottom: .9rem; }
-.audience .card svg {
-  width: 40px;
-  height: 40px;
-  padding: 8px;
-  border-radius: 10px;
-  background: var(--accent-soft);
-  color: var(--accent-text);
-  flex: none;
-  border-radius: 12px;
-  color: var(--accent-text);
-  background: var(--accent-soft);
-}
-.audience .card:nth-child(2) svg { color: var(--teal); background: var(--teal-soft); }
-.audience .card:nth-child(3) svg { color: var(--amber); background: var(--amber-soft); }
-.audience .card:nth-child(4) svg { color: var(--rose); background: var(--rose-soft); }
-
 .remote > .wrap > .split, #fleet > .wrap > .split {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -440,7 +398,6 @@ section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
   background: var(--accent);
 }
 .remote .points li b, #fleet .points li b { color: var(--text); font-weight: 600; }
-.remote .actions { margin-top: 1.5rem; display: flex; gap: .75rem; flex-wrap: wrap; }
 .remote .code-scroll + .code-scroll { margin-top: .75rem; }
 .remote .reply { font-size: .82rem; color: var(--muted); margin: .5rem 0 0; }
 
@@ -458,7 +415,6 @@ section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
 }
 .code-scroll pre { margin: 0; padding: .9rem 1rem; font-family: var(--mono); font-size: .84rem; line-height: 1.55; overflow: auto; }
 .code-scroll code { font-family: inherit; font-size: inherit; color: inherit; background: none; padding: 0; }
-.code-scroll .prompt { color: var(--code-accent); user-select: none; }
 .code-scroll .copy {
   position: absolute;
   top: .5rem;
@@ -478,39 +434,6 @@ section > .wrap > .intro.footnote { margin-top: 1.75rem; font-size: .9rem; }
 .code-scroll.has-copy pre { padding-right: 4.75rem; }
 
 /* Clip deck */
-.clipdeck {
-  display: grid;
-  grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
-  gap: 1.5rem;
-  margin-top: 2rem;
-  align-items: start;
-}
-.clipdeck-list { display: flex; flex-direction: column; gap: .5rem; }
-.clipdeck-list button {
-  font: inherit;
-  text-align: left;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: .8rem .95rem;
-  cursor: pointer;
-  color: var(--text);
-}
-.clipdeck-list button b { display: block; font-weight: 650; font-size: .95rem; }
-.clipdeck-list button span { display: block; color: var(--muted); font-size: .85rem; margin-top: .15rem; }
-.clipdeck-list button:hover { border-color: var(--line-strong); }
-.clipdeck-list button[aria-selected="true"] { border-color: var(--accent); background: var(--accent-soft); }
-figure.clip { margin: 0; min-width: 0; }
-/* No fixed aspect: the two 1280x800 clips and the two 1280x1000 ones each get their own height,
-   so nothing is padded with bars; the stage is black under the video's own edges. */
-figure.clip video { width: 100%; height: auto; display: block; }
-.clip-note { margin: .8rem 0 0; max-width: 62ch; color: var(--muted); font-size: .88rem; }
-.clipdeck-stage .code-scroll { margin-top: .75rem; }
-@media (max-width: 56rem) {
-  .clipdeck { grid-template-columns: minmax(0, 1fr); }
-  .clipdeck-list { flex-direction: row; overflow-x: auto; padding: 2px 2px .5rem; }
-  .clipdeck-list button { flex: 0 0 15rem; }
-}
 
 /* Screens */
 .shots {
@@ -520,19 +443,15 @@ figure.clip video { width: 100%; height: auto; display: block; }
   margin-top: 2rem;
 }
 figure.shot { margin: 0; }
-/* The first figure is three pages side by side on one row: the panel does not care which
-   page it holds, and one page would say it did. */
-figure.shot.trio { grid-column: 1 / -1; }
-figure.shot.trio .frames { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-@media (max-width: 40rem) { figure.shot.trio .frames { grid-template-columns: minmax(0, 1fr); } }
+
 /* Screenshots shown as the hardware they were taken on (back since 2026-09-24, Juri: "I miss
    the old frames"): a panel shot sits inside a tablet bezel with the camera in the top edge,
    where a tablet in landscape has its camera and sensors (Juri, 2026-09-25: not on the left,
    and never lower on a taller clip), and a desktop shot inside a small browser
    window with a title bar and three dots. The bezel is the same near-black in both themes: a
    tablet does not change colour with the website, and committing to it is what makes the frame
-   read as an object instead of a border. The hero's device and the clips share the bezel. */
-figure.shot .frame, .device .bezel, figure.clip .frame {
+   read as an object instead of a border. */
+figure.shot .frame {
   --bezel: .7rem;
   /* The top bezel is the browser window's title bar as well: the same edges on both frames,
      so a tablet and a browser in one row of the gallery end on the same line (Juri, 2026-09-25). */
@@ -548,7 +467,7 @@ figure.shot .frame, .device .bezel, figure.clip .frame {
   overflow: visible;
 }
 /* The camera, centred in the wider top bezel. Drawn, not an image: a dot with a darker pupil. */
-figure.shot .frame::before, .device .bezel::before, figure.clip .frame::before {
+figure.shot .frame::before {
   content: "";
   position: absolute;
   top: .55rem;
@@ -574,7 +493,7 @@ figure.shot .frame::after {
   pointer-events: none;
 }
 figure.shot:hover .frame::after, figure.shot:focus-within .frame::after { opacity: 1; }
-figure.shot .frame .shot-open, .device .bezel img, figure.clip video {
+figure.shot .frame .shot-open {
   border-radius: var(--screen-radius);
   overflow: hidden;
   background: var(--panel);
@@ -655,14 +574,6 @@ dialog.lightbox.blueprint .code-scroll { border-radius: 0; border: 0; max-height
 
 /* Recipes */
 .recipes .card .what { color: var(--muted); }
-.recipes .asks-label {
-  margin-top: 1rem;
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
 .recipes .asks { margin: .4rem 0 0; padding-left: 1.1rem; color: var(--muted); font-size: .92rem; }
 .recipes .asks li + li { margin-top: .15rem; }
 .recipes .asks b { color: var(--text); font-weight: 600; }
@@ -672,22 +583,6 @@ dialog.lightbox.blueprint .code-scroll { border-radius: 0; border: 0; max-height
 .recipes .card { display: flex; flex-direction: column; }
 /* A flex column stretches its children; the badge is a pill and keeps its own width. */
 .recipes .card .tag { align-self: flex-start; }
-.recipe-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; margin-top: auto; padding-top: 1.1rem; }
-.ha-add {
-  display: inline-flex;
-  align-items: center;
-  gap: .45rem;
-  padding: .5rem .9rem;
-  border-radius: 9px;
-  background: var(--accent);
-  color: #fff;
-  font-size: .88rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-.ha-add svg { width: 16px; height: 16px; fill: currentColor; }
-.ha-add:hover { background: var(--accent-strong); color: #fff; }
-.ha-add, .ha-add:hover { color: var(--on-accent); }
 .read-yaml {
   font: inherit;
   font-size: .88rem;
@@ -700,43 +595,8 @@ dialog.lightbox.blueprint .code-scroll { border-radius: 0; border: 0; max-height
   cursor: pointer;
 }
 .read-yaml:hover { border-color: var(--accent); background: var(--accent-soft); }
-.recipe-actions .plain { font-size: .88rem; }
-.copy-yaml { cursor: pointer; }
 
 /* Pricing */
-.tiers {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
-  gap: 1.25rem;
-  margin-top: 2rem;
-}
-.tier {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  box-shadow: var(--shadow);
-}
-.tier.paid { border-color: var(--accent); }
-.tier h3 { font-size: 1.15rem; }
-.tier .price { font-size: 2rem; font-weight: 750; letter-spacing: -.02em; margin-top: .5rem; }
-.tier .taxnote { font-size: .78rem; color: var(--muted); }
-.tier > p.what { margin-top: .75rem; color: var(--muted); font-size: .95rem; }
-.tier ul { margin: 1.25rem 0 0; padding: 0; list-style: none; display: grid; gap: .55rem; }
-.tier li { position: relative; padding-left: 1.5rem; font-size: .95rem; color: var(--muted); }
-.tier li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: .5em;
-  width: .85rem;
-  height: .45rem;
-  border-left: 2px solid var(--accent);
-  border-bottom: 2px solid var(--accent);
-  transform: rotate(-45deg);
-}
-.tier.free li::before { border-color: var(--ok); }
-.tier li b { color: var(--text); font-weight: 600; }
 
 /* Install */
 .waydeck, .vendordeck {
@@ -773,15 +633,6 @@ dialog.lightbox.blueprint .code-scroll { border-radius: 0; border: 0; max-height
   border-color: var(--line);
 }
 .way-panel, .vendor-panel { padding: 1.5rem; }
-.way-split {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1.5rem;
-  align-items: start;
-}
-@media (min-width: 46rem) {
-  .way-split { grid-template-columns: minmax(0, 1fr) auto; gap: 2.5rem; }
-}
 .way-panel .lead { font-size: 1.02rem; }
 .way-panel .lead strong { font-weight: 650; }
 .way-panel .note, .deck-note { margin-top: 1rem; color: var(--muted); font-size: .9rem; }
@@ -807,36 +658,6 @@ dialog.lightbox.blueprint .code-scroll { border-radius: 0; border: 0; max-height
 .path i { font-style: normal; margin: 0 .25rem; opacity: .7; }
 .act { display: block; margin-top: .15rem; }
 .act b { font-weight: 650; }
-.qrcard {
-  background: #fff;
-  border-radius: 14px;
-  padding: 14px;
-  border: 1px solid var(--line);
-  width: fit-content;
-}
-.qrcard img { display: block; width: 240px; height: 240px; }
-.qrcard.big img { width: 280px; height: 280px; }
-@media (max-width: 34rem) {
-  .qrcard img, .qrcard.big img { width: 220px; height: 220px; }
-}
-.playbadge { margin: 1.25rem 0 0; }
-.playbadge a { display: inline-block; line-height: 0; }
-.playbadge img { width: 200px; height: auto; }
-
-.callout {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1.1rem 1.25rem;
-  border-radius: var(--radius);
-  background: var(--panel-2);
-  border: 1px solid var(--line);
-}
-.callout > p { color: var(--muted); }
-.callout strong { color: var(--text); font-weight: 650; }
 
 /* Tables */
 .table-scroll { overflow-x: auto; margin-top: 2rem; }
@@ -916,8 +737,6 @@ table.spec td { color: var(--muted); }
 .downloads .lede { margin-top: 1rem; color: var(--muted); font-size: 1.1rem; }
 .downloads p { margin-top: .75rem; color: var(--muted); }
 .downloads .note { font-size: .88rem; }
-.downloads figure.clip { margin-top: 2rem; }
-.downloads figure.clip .frame { aspect-ratio: 1280 / 800; }
 .filelist {
   margin: 2rem 0 0;
   background: var(--panel);
@@ -1018,43 +837,3 @@ footer a:hover { color: var(--text); }
   * { transition: none !important; }
 }
 
-/* System stats, off and on: the same page twice, the switch above choosing which (stats.js). */
-.statspair { margin-top: 2rem; max-width: 56rem; }
-.statspair-switch { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 999px; overflow: hidden; margin-bottom: 1.25rem; }
-.statspair-switch button { font: inherit; font-size: .9rem; font-weight: 600; padding: .55rem 1.1rem; min-height: 44px; border: 0; background: transparent; color: var(--text); cursor: pointer; }
-.statspair-switch button + button { border-left: 1px solid var(--line-strong); }
-.statspair-switch button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-text); }
-.statspair .bezel { position: relative; }
-.statspair .statspair-on { position: absolute; inset: 0; opacity: 0; transition: opacity .35s ease; }
-.statspair[data-stats="on"] .statspair-on { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .statspair .statspair-on { transition: none; } }
-
-/* Everything it does: four groups, one line per feature. */
-.featuregrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; margin-top: 2rem; }
-.featuregroup { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem 1.25rem 1.4rem; box-shadow: var(--shadow); }
-.featuregroup h3 { display: flex; align-items: center; gap: .55rem; font-size: 1.05rem; margin-bottom: .9rem; }
-.featuregroup ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
-.featuregroup li { font-size: .92rem; color: var(--muted); }
-.featuregroup li b { color: var(--text); font-weight: 600; }
-.featuregroup .dot { width: .7rem; height: .7rem; border-radius: 50%; flex: none; }
-.dot-accent { background: var(--accent); }
-.dot-teal { background: var(--teal); }
-.dot-amber { background: var(--amber); }
-.dot-rose { background: var(--rose); }
-.featuregroup .tag { margin-left: auto; font-size: .72rem; font-weight: 700; letter-spacing: .02em; padding: .15rem .5rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-text); }
-.featuregroup.pro { border-color: var(--accent); }
-.bricks { margin-top: 1.5rem; padding: 1.1rem 1.25rem; border: 1px dashed var(--line-strong); border-radius: var(--radius); }
-.bricks-head { margin: 0; color: var(--muted); font-size: .95rem; }
-.bricks-head b { color: var(--text); }
-.bricks ul { list-style: none; margin: .8rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
-.bricks li { font-size: .85rem; font-weight: 600; padding: .35rem .75rem; border-radius: 8px; background: var(--amber-soft); color: var(--amber); }
-
-/* Three editions. */
-.tier .per { font-size: 1rem; font-weight: 600; color: var(--muted); letter-spacing: 0; }
-.tier.soon { border-style: dashed; }
-.tier.soon .price { color: var(--muted); }
-.sizes-table { width: 100%; margin-top: 1rem; border-collapse: collapse; font-size: .9rem; }
-.sizes-table th, .sizes-table td { text-align: left; padding: .45rem 0; border-top: 1px solid var(--line); }
-.sizes-table th { font-weight: 650; }
-.sizes-table td { color: var(--muted); }
-.sizes-table td:last-child { text-align: right; color: var(--text); white-space: nowrap; }

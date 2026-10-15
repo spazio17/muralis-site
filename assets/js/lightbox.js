@@ -27,7 +27,7 @@
     button.addEventListener('click', function () {
       var img = button.querySelector('img');
       if (!img) return;
-      full.src = img.currentSrc || img.src;
+      full.src = img.dataset.full || img.currentSrc || img.src;
       full.alt = img.alt;
       caption.textContent = img.alt;
       dialog.showModal();
