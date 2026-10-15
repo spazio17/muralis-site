@@ -36,7 +36,7 @@ Your settings, a device identifier Muralis generates itself, and the corner-tap 
 
 If Ambient shows your pictures, the app also stores the playlists you make, the names you give pictures for their credit line, the pictures you upload, and small previews of the pictures you browsed. Your own pictures are read where they are and never copied, changed or deleted; the one thing Muralis deletes is an uploaded copy, when you ask it to.
 
-Muralis reads the photos on the device only if you have Ambient show the panel's own pictures, and only after you grant the permission Android asks for at that moment; it reads them to list the folders, draw the previews and show the pictures you picked, and for nothing else. It does not read your contacts, messages or call history, and requests no permission that would allow it to.
+Muralis reads the photos on the device only if you have Ambient show the panel's own pictures, and only after you grant the permission Android asks for at that moment; it reads them to list the folders, draw the previews and show the pictures you picked, and for nothing else. For App lock, which shows one installed app instead of a web page, Muralis reads the list of apps on the device that have an icon to open, to let you choose one, shows that list on the panel and in the web admin, and sends the name of the chosen app in the status snapshot; with your permission to display over other apps it lays four small invisible squares in the corners over that app, which take the taps landing there for your escape combinations, and the status light's frame. It does not read your contacts, messages or call history, and requests no permission that would allow it to.
 
 SENSORS
 
