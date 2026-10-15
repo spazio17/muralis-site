@@ -23,6 +23,7 @@ a{color:inherit}
 .skip:focus{left:8px}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;text-decoration:none;font-size:1rem;min-height:48px}
 .btn.primary{background:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue-ink)}
+button.btn{border:0;background:none;color:inherit;font-family:inherit;cursor:pointer}
 .btn.quiet{box-shadow:inset 0 0 0 1.5px currentColor}
 .dark .btn.primary,nav .btn.primary{background:var(--sky);color:var(--on-sky)}
 .dark .btn.primary:hover,nav .btn.primary:hover{background:var(--sky-hover)}
@@ -287,3 +288,5 @@ dialog.lightbox .bar button:hover{border-color:var(--blue)}
 dialog.lightbox.blueprint .sheet{width:min(96vw,900px)}
 .code-scroll{background:#161827;color:#e4e6f6;max-height:72vh;overflow:auto}
 .code-scroll pre{margin:0;padding:.9rem 1rem;font:.84rem/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.ha-shot{margin:40px 0 0;max-width:650px}
+.ha-shot figcaption{margin-top:12px;color:var(--sub);font-size:.98rem}
