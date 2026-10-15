@@ -48,7 +48,7 @@ IF YOU BUY MURALIS PRO
 
 The purchase is handled by Google Play. Google is the seller, takes the payment and issues the receipt. The developer never sees your name, your address or your payment details, and receives no report of who bought anything.
 
-To know whether the remote-control features are unlocked, Muralis asks the Google Play app on the same device what the signed-in account has bought, and stores Google's signed answer, encrypted like the other credentials, so the panel stays unlocked with no network and no account. Whether Google Play then talks to Google's own servers is Google's business, covered by Google's privacy policy rather than this one. On a device without Google Play there is no one to ask, and the app asks no further.
+To know whether Muralis Pro is on your account, Muralis asks the Google Play app on the same device what the signed-in account has bought, and stores Google's signed answer, encrypted like the other credentials, so the panel keeps it with no network and no account. Whether Google Play then talks to Google's own servers is Google's business, covered by Google's privacy policy rather than this one. On a device without Google Play there is no one to ask, and the app asks no further.
 
 CHILDREN
 
@@ -64,4 +64,4 @@ Juri Calleri, Vienna, Austria. spazio17@protonmail.com.
 
 A postal address is published on the imprint at muralis.spazio17.org, as Austrian law requires of it. It is kept in that one place rather than repeated here, so that changing it does not need a new release of the app.
 
-This policy was last updated on 5 October 2026.
+This policy was last updated on 6 October 2026.

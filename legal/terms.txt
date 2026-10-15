@@ -8,11 +8,11 @@ What you may not do is redistribute the app, sell it, or pass it off as your own
 
 MURALIS PRO
 
-Everything above is free and stays free. Muralis Pro is a one time purchase that unlocks the remote control surfaces: MQTT, including Home Assistant discovery and telemetry, and the local web administration.
+Everything above is free and stays free, on every panel you own, with no limit on how many: the kiosk, MQTT including Home Assistant discovery, the local web administration, the sensors and the automations. Each free panel stands on its own.
 
-Pro belongs to the Google account that bought it, not to a device. Every panel signed in to that account is unlocked, with no limit on how many. It does not expire and there is nothing to renew. It cannot be transferred, resold, or shared with another account.
+Muralis Pro is a one time purchase for the fleet: your panels managed together from one page, served by one of them, with no cloud and no server of ours. It belongs to the Google account that bought it, not to a device. Panels without a Google account take part through the panel or phone that holds the account, as long as that device is reachable on your network now and then. It does not expire and there is nothing to renew. It cannot be transferred, resold, or shared with another account.
 
-A panel that never buys Pro is not nagged, not watermarked, and not degraded. It simply does not have the remote surfaces.
+A panel that never buys Pro is not nagged, not watermarked, and not degraded. It simply is not part of a fleet.
 
 WHAT THE APP DOES TO THE DEVICE
 

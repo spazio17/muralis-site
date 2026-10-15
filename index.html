@@ -203,7 +203,7 @@
 
   <section id="remote" class="remote">
     <div class="wrap">
-      <p class="eyebrow">Remote control, Pro</p>
+      <p class="eyebrow">Remote control</p>
       <h2>Every setting, from anywhere on your network</h2>
       <p class="intro">The web admin is a page the panel serves itself. The same commands and settings answer over HTTP and MQTT, and the reference shows each one with the panel&#8217;s real reply.</p>
       <div class="split">
@@ -340,7 +340,6 @@
       <div class="cards recipes">
 
         <article class="card">
-          <p class="tag">Needs Pro</p>
           <h3>Wake on presence, blank when empty</h3>
           <p class="what">A panel that glows all night is a nightlight nobody asked for. This wakes the screen when someone is in the room and blanks it again once the room has been empty for a while. The page stays loaded and comes straight back.</p>
           <p class="asks-label">It asks you for</p>
@@ -361,7 +360,6 @@
         </article>
 
         <article class="card">
-          <p class="tag">Needs Pro</p>
           <h3>Keep the battery in a healthy band</h3>
           <p class="what">A tablet left plugged in forever sits at 100 percent and warms up, and after a year or two the battery swells and lifts the screen off the front. This charges it only between two thresholds instead. The panel keeps running throughout; only the charger is switched.</p>
           <p class="asks-label">It asks you for</p>
@@ -382,15 +380,15 @@
 
       </div>
 
-      <p class="intro footnote">Both read the panel&#8217;s own entities, so both need Pro. Home Assistant imports blueprints from GitHub rather than from any website, which is why the buttons above hand it <a href="https://github.com/spazio17/muralis-blueprints">the repository</a> and not this page.</p>
+      <p class="intro footnote">Both read the panel&#8217;s own entities. Home Assistant imports blueprints from GitHub rather than from any website, which is why the buttons above hand it <a href="https://github.com/spazio17/muralis-blueprints">the repository</a> and not this page.</p>
     </div>
   </section>
 
   <section id="pricing">
     <div class="wrap">
       <p class="eyebrow">Free, and Pro</p>
-      <h2>The kiosk is free. Reaching it from a distance is Pro.</h2>
-      <p class="intro">A panel on a wall is meant to be left alone, and the kiosk does that for free. Pro is how you reach it anyway: a browser, a broker or an automation, without walking up to it.</p>
+      <h2>One panel has everything, free. Pro manages all of them.</h2>
+      <p class="intro">Every panel you own is free, with nothing locked and no limit on how many. Pro is for the day you have several: all of them on one page, served by one of them, with no cloud and no server to run.</p>
       <div class="tiers">
 
         <div class="tier free">
@@ -403,6 +401,9 @@
             <li>The recorded corner-tap way out</li>
             <li>Display off, real or black film, chosen for you and explained</li>
             <li>Optional stats overlay, drawn on the panel itself</li>
+            <li>The built-in web admin, over HTTPS</li>
+            <li>Commands over HTTP and MQTT, telemetry to your broker, Home Assistant discovery</li>
+            <li>Sensors and automations: camera, sound level, light, proximity, beacons, NFC</li>
             <li><b>No Google account needed</b>, on a de-Googled tablet or any other</li>
             <li>A screensaver: dimmed page, black film, a web page, or pictures from your own folders and from Bing or Wikimedia Commons</li>
             <li><b>No watermark, no expiry, no sign-in, nothing that phones home</b></li>
@@ -411,20 +412,19 @@
 
         <div class="tier paid">
           <h3>Muralis Pro</h3>
-          <p class="price">&euro;4.99 once*</p>
-          <p class="taxnote">* Before tax.</p>
-          <p class="what">The remote surfaces. Worth it if the panel should be one more thing you can reach from your desk; irrelevant if you want a page on a wall.</p>
+          <p class="price">Once, with 0.7</p>
+          <p class="what">The fleet. Worth it the day you have more than one panel; irrelevant if you want one page on one wall.</p>
           <ul>
-            <li>The built-in web admin</li>
-            <li>Commands over HTTP and MQTT: reload, restart, set the page, brightness, display off, the screensaver, reboot</li>
-            <li>Telemetry to your broker: battery, memory, network, thermal, page health</li>
-            <li>Home Assistant discovery, so entities appear without YAML</li>
-            <li><b>One purchase covers every panel on the same Google account</b></li>
+            <li>All your panels on one page, served by one of them: no cloud, no server</li>
+            <li>Shared settings, with exceptions per panel</li>
+            <li>One command for all: reload, display off, restart</li>
+            <li>Alerts when a panel is offline or its page fails</li>
+            <li><b>One purchase covers every panel on the same Google account</b>, with no limit</li>
           </ul>
         </div>
 
       </div>
-      <p class="intro footnote">Muralis is in closed testing on Google Play, and nothing is on sale yet: the price and the split above are the plan, not a shop. A panel that never buys Pro is never nagged and never stops working.</p>
+      <p class="intro footnote">Muralis is in closed testing on Google Play, and nothing is on sale yet: Pro arrives with 0.7, and its price with it. A panel that never buys Pro is never nagged and never stops working.</p>
     </div>
   </section>
 
