@@ -109,7 +109,7 @@
 
       <h2 id="start">Before you start</h2>
       <p>The web admin and MQTT are free on every panel. Everything on this page describes what those two surfaces do.</p>
-      <p><b>The web admin</b> starts once an admin password of at least 8 characters is stored and the Web admin switch is on. Default port 8080; any port from 1024 to 65535. <b>MQTT</b> starts as soon as a broker host is stored; username and password are optional, the connection is plain TCP without TLS, so use it on a network you trust.</p>
+      <p><b>The web admin</b> starts once an admin password of at least 8 characters is stored and the Web admin switch is on. Default port 8080; any port from 1024 to 65535. <b>MQTT</b> starts as soon as a broker host is stored; username and password are optional. The connection is plain TCP unless <b>Encrypted (TLS)</b> is on: then the broker is trusted when Android trusts its certificate for its name, or when its certificate is the one trusted on the panel (shown with its SHA-256 and <b>Trust</b> after the first refused connection, on both surfaces), and a client certificate uploaded in the web admin (PEM certificate and unencrypted key, with clientAuth) is presented when the broker asks for one. Without TLS, use it on a network you trust.</p>
       <p><b>One command set.</b> HTTP and MQTT hand every command to the same code, so a command behaves the same and is refused with the same words on both. After an accepted command the panel republishes its MQTT state within half a second, so a Home Assistant control does not snap back.</p>
       <p><b>Device owner.</b> Three things need the device-owner install (by QR at setup, or <code>dpm set-device-owner</code> over adb): <code>system.reboot</code>, the real screen-off, and CPU and temperature readings on stock Android. Everything else works on an ordinary install.</p>
 
@@ -605,7 +605,7 @@ Content-Type: application/json
 
       <article class="entry" id="panel-notify">
         <header><h3>panel.notify</h3></header>
-        <p>A pop-up over whatever is on the screen: <code>value</code> the message (at most 500 characters, line breaks kept), <code>title</code> (at most 80), <code>url</code> an <code>http://</code> or <code>https://</code> address shown in the card (a picture, a camera&#8217;s stream or a page), <code>seconds</code> 0 to 300 (default 30, 0 for until touched), <code>wake</code> (default true, the display comes on first) and <code>chime</code> (default false, the device&#8217;s notification sound once). A message or an address is needed. A touch on the card closes it; a new pop-up replaces the one showing; while the settings are open it waits. Also a Home Assistant notify entity, <b>Pop-up</b>, and the automations&#8217; <code>popup</code> action.</p>
+        <p>A pop-up over whatever is on the screen: <code>value</code> the message (at most 500 characters, line breaks kept), <code>title</code> (at most 80), <code>url</code> an <code>http://</code> or <code>https://</code> address shown in the card (a picture, a camera&#8217;s stream or a page), <code>seconds</code> 0 to 300 (default 30, 0 for until touched), <code>wake</code> (default true, the display comes on first) and <code>chime</code> (default false, the device&#8217;s notification sound once). A message or an address is needed. A touch on the card closes it; a new pop-up replaces the one showing; while the settings are open, or another app is in front, it waits, for a minute at most. Also a Home Assistant notify entity, <b>Pop-up</b>, and the automations&#8217; <code>popup</code> action.</p>
         <div class="code-scroll" tabindex="0" role="region" aria-label="panel.notify"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
      -H 'Content-Type: application/json' \
      -d '{"command":"panel.notify","args":{"value":"Someone is at the door","title":"Doorbell","url":"http://192.0.2.20/snapshot.jpg","seconds":20}}'</code></pre></div>
@@ -761,7 +761,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>battery</code></th><td><code>below</code>, <code>above</code> (level in percent), <code>plugged</code>, <code>unplugged</code></td></tr>
             <tr><th scope="row"><code>network</code></th><td><code>connected</code>, <code>lost</code></td></tr>
             <tr><th scope="row"><code>processor</code></th><td><code>hotter</code> (level in &deg;C)</td></tr>
-            <tr><th scope="row"><code>time</code></th><td><code>at</code>, with <code>level</code> the minute of the day (1320 for 22:00): once a day when the panel&#8217;s clock reaches it, a late tick included; a rule made after today&#8217;s time first runs tomorrow</td></tr>
+            <tr><th scope="row"><code>time</code></th><td><code>at</code>, with <code>level</code> the minute of the day (1320 for 22:00): once a day when the panel&#8217;s clock reaches it, a tick up to two minutes late included; a run the panel slept or was stopped through is dropped, never fired late at wake; a rule made after today&#8217;s time first runs tomorrow</td></tr>
           </tbody>
         </table>
       </div>
@@ -977,7 +977,7 @@ Content-Type: application/json
       <div class="table-scroll">
         <table class="spec">
           <tbody>
-            <tr><th scope="row">Transport</th><td>MQTT 3.1.1 over plain TCP, default port 1883, no TLS. Clean session, keepalive 30 s.</td></tr>
+            <tr><th scope="row">Transport</th><td>MQTT 3.1.1 over plain TCP (default port 1883), or over TLS when Encrypted (TLS) is on (brokers usually listen on 8883). Clean session, keepalive 30 s.</td></tr>
             <tr><th scope="row">Client id</th><td>The device id.</td></tr>
             <tr><th scope="row">Last will</th><td><code>kiosk/&lt;id&gt;/availability</code> = <code>offline</code>, retained.</td></tr>
             <tr><th scope="row">On connect</th><td>Publishes <code>online</code>, subscribes to its command topic, to <code>homeassistant/status</code> and to its own <code>homeassistant/device/&lt;id&gt;/config</code>, whose retained copy says what it announced before, then publishes discovery. It waits up to five seconds for that copy, so a broker with access lists must let the panel read its own discovery topic as well as write it. When Home Assistant announces itself as back online, discovery is published again.</td></tr>
