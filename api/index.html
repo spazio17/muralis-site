@@ -761,7 +761,7 @@ Content-Type: application/json
             <tr><th scope="row"><code>battery</code></th><td><code>below</code>, <code>above</code> (level in percent), <code>plugged</code>, <code>unplugged</code></td></tr>
             <tr><th scope="row"><code>network</code></th><td><code>connected</code>, <code>lost</code></td></tr>
             <tr><th scope="row"><code>processor</code></th><td><code>hotter</code> (level in &deg;C)</td></tr>
-            <tr><th scope="row"><code>time</code></th><td><code>at</code>, with <code>level</code> the minute of the day (1320 for 22:00): once a day when the panel&#8217;s clock reaches it, a late tick included; a rule made after today&#8217;s time first runs tomorrow</td></tr>
+            <tr><th scope="row"><code>time</code></th><td><code>at</code>, with <code>level</code> the minute of the day (1320 for 22:00): once a day when the panel&#8217;s clock reaches it, a tick up to two minutes late included; a run the panel slept or was stopped through is dropped, never fired late at wake; a rule made after today&#8217;s time first runs tomorrow</td></tr>
           </tbody>
         </table>
       </div>
