@@ -1,18 +1,18 @@
-Draft terms for Muralis, a kiosk launcher for displaying a web dashboard on hardware you own.
+Terms for Muralis, a kiosk launcher that shows a web page or an app on hardware you own.
 
 WHAT YOU MAY DO
 
 Install and run Muralis on as many devices as you like, whether you own them or administer them for somebody else, for private or commercial purposes. You do not need an account, you do not need to register, and this does not expire.
 
-What you may not do is redistribute the app, sell it, or pass it off as your own work. Muralis is licensed to you, not sold to you, and the copyright stays with the developer.
+Muralis's source code is available under the Fair Core License (FCL-1.0-ALv2), published with the code: you may read it, change it for yourself and contribute. You may not sell the app or a product made from it, offer it as a service, remove or work around the Pro lock, or pass it off as your own work. The copyright stays with the developer.
 
 MURALIS PRO
 
 Everything above is free and stays free, on every panel you own, with no limit on how many: the kiosk, MQTT including Home Assistant discovery, the local web administration, the sensors and the automations. Each free panel stands on its own.
 
-Muralis Pro is a one time purchase for the fleet: your panels managed together from one page, served by one of them, with no cloud and no server of ours. It belongs to the Google account that bought it, not to a device. Panels without a Google account take part through the panel or phone that holds the account, as long as that device is reachable on your network now and then. It does not expire and there is nothing to renew. It cannot be transferred, resold, or shared with another account.
+Muralis Pro is a one time purchase for the fleet: up to six panels managed together from any of them, with no cloud and no server of ours. It belongs to the Google account that bought it, not to a device. Panels without a Google account take part through the panel or phone that holds the account: each time that device confirms the purchase, Pro stays on the other panels for thirty days, so it must be reachable on your network at least once a month. It does not expire and there is nothing to renew. It cannot be transferred, resold, or shared with another account.
 
-A panel that never buys Pro is not nagged, not watermarked, and not degraded. It simply is not part of a fleet.
+A panel without Pro is not nagged, not watermarked, and not degraded: it does everything on its own, and it can still be added to a fleet that has Pro.
 
 WHAT THE APP DOES TO THE DEVICE
 
@@ -22,7 +22,7 @@ This is the intended behaviour of a kiosk, and you should understand it before p
 
 GETTING BACK OUT
 
-There is always an escape route, and it does not require a cable: a configurable series of corner taps releases the kiosk and returns the system launcher. The default combinations are shown on the configuration screen. Change them, and remember what you changed them to.
+There is always an escape route, and it does not require a cable: a series of corner taps that you record at the first start releases the kiosk and returns the system launcher. The combinations are shown in the settings, under Way out. Change them if you like, and remember what you changed them to.
 
 REMOVING DEVICE-OWNER STATUS
 
@@ -54,7 +54,7 @@ Nothing in these terms limits liability for death or personal injury, for intent
 
 WHAT THESE TERMS CANNOT TAKE AWAY
 
-If you are in the European Union, you keep the rights the law gives you whatever this document says. In particular you may make a backup copy, and you may decompile the app as far as is necessary to make it work with other software, whatever the section above says about not redistributing it. Your statutory rights as a consumer are unaffected.
+If you are in the European Union, you keep the rights the law gives you whatever this document says. In particular you may make a backup copy, and you may decompile the app as far as is necessary to make it work with other software, whatever else these terms say. Your statutory rights as a consumer are unaffected.
 
 CHANGES
 
