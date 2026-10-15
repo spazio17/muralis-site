@@ -3,18 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Muralis, an Android kiosk that locks a tablet to one web page</title>
-<meta name="description" content="Muralis turns an Android tablet into a wall panel for any web page and keeps it there: locked, self-recovering, controllable over HTTP and MQTT. A dashboard, a board, a menu, a page on your own network. Made in Austria.">
+<title>Muralis, any web page or app on a tablet on the wall</title>
+<meta name="description" content="Muralis turns an Android tablet into a wall panel for any web page or app and keeps it there: locked, self-recovering, run from your own network over the web admin, HTTP and MQTT. One panel is free; Pro puts up to six on one page. No cloud. Made in Austria.">
 <link rel="canonical" href="https://muralis.spazio17.org/">
 <link rel="icon" href="assets/img/icon-512.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/icon-512.png">
-<link rel="stylesheet" href="assets/css/site.css?v=34">
+<link rel="stylesheet" href="assets/css/site.css?v=35">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Muralis, lock a tablet to one page and leave it">
-<meta property="og:description" content="An Android kiosk for any web page. Locked, self-recovering, controllable over HTTP and MQTT.">
+<meta property="og:title" content="Muralis, hang it up, and leave it">
+<meta property="og:description" content="Any web page or app on a tablet on the wall. Locked, self-recovering, no cloud.">
 <meta property="og:url" content="https://muralis.spazio17.org/">
-<meta property="og:image" content="https://muralis.spazio17.org/assets/img/icon-512.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://muralis.spazio17.org/assets/img/feature-graphic.png">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta name="twitter:card" content="summary_large_image">
 <script>
   /* An explicit choice from the menu is applied before first paint. Without one the page
      follows the system, through prefers-color-scheme in the stylesheet. */
@@ -48,7 +50,9 @@
       <nav class="menugroup" aria-label="On this page">
         <p class="menuhead">On this page</p>
         <a href="#for">Who it is for</a>
-        <a href="#features">What it does</a>
+        <a href="#features">Built to be left alone</a>
+        <a href="#everything">Everything it does</a>
+        <a href="#fleet">The fleet</a>
         <a href="#remote">Remote control</a>
         <a href="#motion">In motion</a>
         <a href="#look">Screens</a>
@@ -82,9 +86,10 @@
   <div class="hero">
     <div class="wrap">
       <div class="herocopy">
-        <p class="eyebrow">Android kiosk for any web page</p>
-        <h1>Lock a tablet to one page. Then leave it.</h1>
-        <p class="lede">Muralis turns an Android tablet into a wall panel for any web page: a dashboard, a board, a menu, a page on your own network. It holds the screen on that page, recovers by itself, and takes commands over HTTP and MQTT.</p>
+        <p class="eyebrow">Android kiosk for any web page or app</p>
+        <h1>Muralis</h1>
+        <p class="tagline">Hang it up, and leave it.</p>
+        <p class="lede">Muralis turns an Android tablet into a wall panel for any web page or app: a dashboard, a board, a menu, a page on your own network. It holds the screen, recovers by itself, and listens to your network over the web admin, HTTP and MQTT. No cloud, no account, no server.</p>
         <div class="actions">
           <a class="button" href="#install">See how it installs</a>
           <a class="button secondary" href="api/">Read the API</a>
@@ -92,8 +97,8 @@
         <ul class="facts">
           <li>Android 8 and up</li>
           <li>No root</li>
-          <li>Any URL, local or internet</li>
-          <li>HTTP + MQTT</li>
+          <li>No cloud</li>
+          <li>Free for one panel</li>
           <li>Made in Austria</li>
         </ul>
       </div>
@@ -197,6 +202,126 @@
             <p>Dimmed page, black film, another page, or pictures: your folders in playlists.</p>
           </div>
         </div>
+        <div class="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10 6h4"/><rect x="9" y="10" width="6" height="6" rx="1.2"/></svg>
+          <div>
+            <h3>An app, if not a page</h3>
+            <p>App lock shows one app you choose instead of a page, and opens it again when it closes. Your corner taps still work over it.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="overlay">
+    <div class="wrap">
+      <p class="eyebrow">At a glance</p>
+      <h2>The panel tells you how it is doing</h2>
+      <p class="intro">Switch on the system stats and the panel draws them over its own page: memory, temperature, battery, network, uptime. Move the block where it does not cover anything. Over an app it works the same.</p>
+      <div class="statspair" data-stats="off">
+        <div class="statspair-switch" role="group" aria-label="System stats">
+          <button type="button" data-show="off" aria-pressed="true">Stats off</button>
+          <button type="button" data-show="on" aria-pressed="false">Stats on</button>
+        </div>
+        <figure class="device">
+          <div class="bezel">
+            <img class="statspair-off" src="assets/img/screenshots/page.png" alt="Home Assistant&#8217;s demo dashboard filling the tablet" width="1920" height="1200" loading="lazy">
+            <img class="statspair-on" src="assets/img/screenshots/page-stats.png" alt="The same dashboard with the system stats block in its top right corner" width="1920" height="1200" loading="lazy">
+          </div>
+          <figcaption>The same page, the same minute: without the stats and with them.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="everything">
+    <div class="wrap">
+      <p class="eyebrow">Everything it does</p>
+      <h2>All of it, on one page</h2>
+      <p class="intro">What a Muralis panel does today, in four groups. Everything here is free on one panel, except where it says Pro.</p>
+      <div class="featuregrid">
+        <div class="featuregroup">
+          <h3><span class="dot dot-accent" aria-hidden="true"></span>On the wall</h3>
+          <ul>
+            <li><b>One page, full screen.</b> No browser bar, no Android bars, no way to another app.</li>
+            <li><b>App lock.</b> One app instead of a page, opened again when it closes.</li>
+            <li><b>The way out.</b> Corner taps you record, a PIN after them if you want.</li>
+            <li><b>Self-recovery.</b> Retries, frozen pages, a crashed engine, a nightly restart.</li>
+            <li><b>Display.</b> Brightness, orientation, a real screen-off or a black film.</li>
+            <li><b>Ambient.</b> A dimmed page, black, another page, or your pictures in playlists.</li>
+            <li><b>Pop-ups.</b> A message, a picture, a camera or a page over the screen, for some seconds.</li>
+            <li><b>Status light.</b> A coloured frame around the screen, switched like a light.</li>
+            <li><b>Page options.</b> A sign-in for the page, text size, zoom, a dark look, camera and microphone.</li>
+          </ul>
+        </div>
+        <div class="featuregroup">
+          <h3><span class="dot dot-teal" aria-hidden="true"></span>Sense and act</h3>
+          <ul>
+            <li><b>Sensors.</b> Light, proximity, movement, battery, power, network and more.</li>
+            <li><b>Camera.</b> A network camera with motion detection, a stream and a snapshot.</li>
+            <li><b>Sound level.</b> From the microphone. Nothing is recorded.</li>
+            <li><b>Bluetooth beacons and NFC tags.</b> Who is near, and which tag touched it.</li>
+            <li><b>Automations.</b> When this, then that, on the panel itself, at a time of day too.</li>
+            <li><b>Actions.</b> Wake, dim, a pop-up, a message to MQTT, a call to an address.</li>
+          </ul>
+        </div>
+        <div class="featuregroup">
+          <h3><span class="dot dot-amber" aria-hidden="true"></span>Control</h3>
+          <ul>
+            <li><b>Web admin.</b> Every setting from a browser, served by the panel over HTTPS.</li>
+            <li><b>HTTP API.</b> The same commands and a live status, with a reference.</li>
+            <li><b>MQTT.</b> With Home Assistant discovery, over TLS if your broker offers it.</li>
+            <li><b>Your own certificate.</b> Upload one, or trust the panel&#8217;s by its fingerprint.</li>
+            <li><b>Screenshot and diagnostics.</b> What the wall shows, and a file to send when asking for help.</li>
+            <li><b>Settings file and setup QR.</b> Copy one panel&#8217;s settings to the next, even at its first start.</li>
+          </ul>
+        </div>
+        <div class="featuregroup pro">
+          <h3><span class="dot dot-rose" aria-hidden="true"></span>Together <span class="tag">Pro</span></h3>
+          <ul>
+            <li><b>The fleet.</b> Up to six panels, managed from any of them.</li>
+            <li><b>Add a panel.</b> By its camera reading a QR, or by typing a code.</li>
+            <li><b>Groups and sharing.</b> Share a section with every panel or with a group.</li>
+            <li><b>Alerts.</b> A panel offline, a page error, a low battery: said once.</li>
+            <li><b>History.</b> The last versions of the fleet, and Restore.</li>
+            <li><b>Every screen on one page.</b> A picture of each panel, and Identify.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="bricks" aria-label="Integrations, coming soon">
+        <p class="bricks-head"><b>&#8230;and more is coming.</b> Integrations bring other services&#8217; data onto the panel, with no Home Assistant in between:</p>
+        <ul>
+          <li>Calendars</li>
+          <li>Weather</li>
+          <li>Status pages</li>
+          <li>A value from a web address</li>
+          <li>An MQTT topic</li>
+          <li>Photo libraries</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="fleet">
+    <div class="wrap">
+      <p class="eyebrow">The fleet, with Pro</p>
+      <h2>Every panel on one page, served by one of them</h2>
+      <p class="intro">Panels on one network trust each other by their own keys. Open the web admin of any of them and you manage all: no cloud, no server, no account.</p>
+      <div class="split">
+        <div>
+          <ul class="points">
+            <li><b>Add a panel in one step.</b> Its camera reads the other panel&#8217;s Join QR, or you type the eight digits under it. A new tablet can join at its first start, before anything locks.</li>
+            <li><b>Share what should be the same.</b> The page, MQTT, the web admin, the display, Ambient, the alerts: one switch each, for the whole fleet or for a group like &#8220;Meeting rooms&#8221;.</li>
+            <li><b>One page address for all.</b> <code>{panel.name}</code> in the address gives each panel its own page.</li>
+            <li><b>Know when something is wrong.</b> Alerts on the panel, to an MQTT topic and to a web address, once when it starts and once when it ends.</li>
+            <li><b>See every screen.</b> A picture of each panel on request, never stored, and Identify to find which one is which.</li>
+            <li><b>Change it back.</b> The fleet keeps its last versions; restore one as new.</li>
+          </ul>
+        </div>
+        <figure class="shot">
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Fleet page on the tablet, with the panels, their groups and the sections shared"><img src="assets/img/screenshots/fleet.png" alt="The Fleet page on the tablet: the panels with their groups, Identify and Remove, and the sections the whole fleet shares" loading="lazy"></button></div>
+          <figcaption><b>The Fleet page.</b> The panels, their groups, and what they share.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -308,16 +433,20 @@
           <figcaption><b>Web admin.</b> Every setting, without touching the panel.</figcaption>
         </figure>
         <figure class="shot">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the on-device settings, reached through the corner-tap combination"><img src="assets/img/screenshots/config-screen.png" alt="The on-device settings, reached through the corner-tap combination" loading="lazy"></button></div>
-          <figcaption><b>On the device.</b> The same settings, in your hand.</figcaption>
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the on-device settings, reached through the corner-tap combination"><img src="assets/img/screenshots/config-screen.png" alt="The on-device settings: the menu in groups at the left, Dashboard open at the right with The panel shows, a web page or an app" loading="lazy"></button></div>
+          <figcaption><b>On the device.</b> The same settings, in groups, in your hand.</figcaption>
         </figure>
         <figure class="shot">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Escape sequences page on the tablet, the two recorded corner-tap combinations and the optional PIN"><img src="assets/img/screenshots/escape-sequences.png" alt="The Escape sequences page on the tablet: the two recorded corner-tap combinations and the optional PIN" loading="lazy"></button></div>
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Way out page on the tablet, the two recorded corner-tap combinations and the optional PIN"><img src="assets/img/screenshots/way-out.png" alt="The Way out page on the tablet: the two recorded corner-tap combinations and the optional PIN" loading="lazy"></button></div>
           <figcaption><b>The way out.</b> Corner taps you record yourself, and a PIN if you want one.</figcaption>
         </figure>
         <figure class="shot">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Ambient settings on the tablet, the five modes, the playlists and the options for pictures"><img src="assets/img/screenshots/screensaver.png" alt="The Ambient settings on the tablet: the five modes, the playlists, and the options for pictures" loading="lazy"></button></div>
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Ambient page on the tablet, the playlists and the options for pictures"><img src="assets/img/screenshots/ambient.png" alt="The Ambient page on the tablet: the playlists at the left, the options for pictures at the right" loading="lazy"></button></div>
           <figcaption><b>Ambient.</b> Pictures from the panel&#8217;s own folders, in playlists.</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Automations page on the tablet, a rule with its sensor, its event and its action"><img src="assets/img/screenshots/automations.png" alt="The Automations page on the tablet: the rules at the left, one rule open at the right, When the panel is picked up, Then display on" loading="lazy"></button></div>
+          <figcaption><b>Automations.</b> When this, then that, on the panel itself.</figcaption>
         </figure>
         <figure class="shot contain">
           <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Muralis device page in Home Assistant, controls, sensors and diagnostics, all created by MQTT discovery"><img src="assets/img/screenshots/home-assistant.png" alt="The Muralis device page in Home Assistant: controls, sensors and diagnostics, all created by MQTT discovery" loading="lazy"></button></div>
@@ -386,46 +515,57 @@
 
   <section id="pricing">
     <div class="wrap">
-      <p class="eyebrow">Free, and Pro</p>
-      <h2>One panel has everything, free. Pro manages all of them.</h2>
-      <p class="intro">Every panel you own is free, with nothing locked and no limit on how many. Pro is for the day you have several: all of them on one page, served by one of them, with no cloud and no server to run.</p>
-      <div class="tiers">
+      <p class="eyebrow">Free, Pro and Business</p>
+      <h2>One panel has everything, free. Pro manages up to six.</h2>
+      <p class="intro">Every panel you own is free, with nothing locked and no limit on how many. Pro is for the day you have several: all of them on one page, served by one of them, with no cloud and no server to run. Business, for companies with many screens, comes next.</p>
+      <div class="tiers three">
 
         <div class="tier free">
           <h3>Muralis</h3>
           <p class="price">Free</p>
           <p class="what">Everything that makes a tablet a wall panel. Not a trial, not a cut-down edition.</p>
           <ul>
-            <li>Locked to one page, with the system UI out of reach</li>
+            <li>Locked to one page, or to one app with App lock</li>
             <li>Recovers on its own: retries, timeouts, frozen-page detection, a nightly restart</li>
-            <li>The recorded corner-tap way out</li>
-            <li>Display off, real or black film, chosen for you and explained</li>
-            <li>Optional stats overlay, drawn on the panel itself</li>
-            <li>The built-in web admin, over HTTPS</li>
-            <li>Commands over HTTP and MQTT, telemetry to your broker, Home Assistant discovery</li>
-            <li>Sensors and automations: camera, sound level, light, proximity, beacons, NFC</li>
+            <li>The recorded corner-tap way out, with an optional PIN</li>
+            <li>Display, Ambient, pop-ups, the status light</li>
+            <li>The web admin over HTTPS, the HTTP API, MQTT with Home Assistant discovery</li>
+            <li>Sensors, the camera, beacons, NFC and automations</li>
             <li><b>No Google account needed</b>, on a de-Googled tablet or any other</li>
-            <li>Ambient, the screen while nobody uses the panel: dimmed page, black film, a web page, or pictures from your own folders</li>
-            <li>A status light for panels without one: a coloured frame around the screen, switched like a Home Assistant light</li>
             <li><b>No watermark, no expiry, no sign-in, nothing that phones home</b></li>
           </ul>
         </div>
 
         <div class="tier paid">
           <h3>Muralis Pro</h3>
-          <p class="price">Once, with 0.7</p>
-          <p class="what">The fleet. Worth it the day you have more than one panel; irrelevant if you want one page on one wall.</p>
+          <p class="price">49.99&#8239;&#8364; <span class="per">once</span></p>
+          <p class="taxnote">In the euro area; Google Play shows the price in your currency.</p>
+          <p class="what">The fleet. Worth it the day you have more than one panel.</p>
           <ul>
-            <li>All your panels on one page, served by one of them: no cloud, no server</li>
-            <li>Shared settings, with exceptions per panel</li>
-            <li>One command for all: reload, display off, restart</li>
-            <li>Alerts when a panel is offline or its page fails</li>
-            <li><b>One purchase for a fleet of up to six panels</b>, carried to the ones without a Google account</li>
+            <li><b>Up to six panels</b> in one fleet, managed from any of them</li>
+            <li>Add a panel by its camera or by its code</li>
+            <li>Share settings with every panel or with a group</li>
+            <li>Alerts, the fleet&#8217;s history, a picture of every screen</li>
+            <li>Bought once with a Google account and carried to the panels without one</li>
           </ul>
         </div>
 
+        <div class="tier soon">
+          <h3>Muralis Business</h3>
+          <p class="price">Coming soon</p>
+          <p class="what">For companies with many screens and several places. A yearly plan, in three sizes:</p>
+          <table class="sizes-table">
+            <tbody>
+              <tr><th scope="row">Small</th><td>up to 15 screens</td><td>149&#8239;&#8364; a year</td></tr>
+              <tr><th scope="row">Medium</th><td>up to 30 screens</td><td>249&#8239;&#8364; a year</td></tr>
+              <tr><th scope="row">Large</th><td>up to 99 screens</td><td>399&#8239;&#8364; a year</td></tr>
+            </tbody>
+          </table>
+          <p class="what">Sold by Google Play: a company enters its tax number and gets Google&#8217;s invoice.</p>
+        </div>
+
       </div>
-      <p class="intro footnote">Muralis is in closed testing on Google Play, and nothing is on sale yet: Pro arrives with 0.7, and its price with it. A panel that never buys Pro is never nagged and never stops working.</p>
+      <p class="intro footnote">Pro is sold by Google Play. A panel that never buys Pro is never nagged and never stops working. Business prices are planned and may change before it ships.</p>
     </div>
   </section>
 
@@ -461,7 +601,6 @@
 
         <div class="way-panel" role="tabpanel" id="panel-play" aria-labelledby="tab-play" tabindex="0">
           <p class="lead"><strong>The app only.</strong> No lockdown, nothing is wiped: Android grants ownership during setup and never after. Good for seeing what it does before you reset a tablet.</p>
-          <p class="note">In closed testing: the link opens only for accounts on the tester list.</p>
           <p class="playbadge"><a href="https://play.google.com/store/apps/details?id=org.spazio17.muralis"><img src="assets/img/google-play-badge.png" alt="Get it on Google Play" width="646" height="250"></a></p>
         </div>
       </div>
@@ -485,6 +624,14 @@
               <td>8.0 (API 26) or newer.</td>
             </tr>
             <tr>
+              <th scope="row">Memory</th>
+              <td>2 GB or more.</td>
+            </tr>
+            <tr>
+              <th scope="row">Processor</th>
+              <td>What a 2019 tablet has is enough: tested on a Huawei MediaPad T5 and a Lenovo Tab M10.</td>
+            </tr>
+            <tr>
               <th scope="row">Install</th>
               <td>An ordinary APK. No root, no platform signature.</td>
             </tr>
@@ -502,7 +649,7 @@
             </tr>
             <tr>
               <th scope="row">Google account</th>
-              <td>Only to buy Pro.</td>
+              <td>Only to buy Pro. The other panels of the fleet need none.</td>
             </tr>
             <tr>
               <th scope="row">The page</th>
@@ -510,7 +657,7 @@
             </tr>
             <tr>
               <th scope="row">Broker</th>
-              <td>Only for MQTT. Unencrypted, so trusted networks only.</td>
+              <td>Only for MQTT. Over TLS if your broker offers it; without it, trusted networks only.</td>
             </tr>
           </tbody>
         </table>
@@ -522,9 +669,9 @@
     <div class="wrap">
       <p class="eyebrow">Availability</p>
       <h2>Where it stands</h2>
-      <p class="intro">Runs on real panels every day. On Google Play in closed testing, and published in full on the download page.</p>
+      <p class="intro">Runs on real panels every day. On Google Play, and published in full on the download page: the same APK, signed by Google, with its checksum, its signing certificate and the setup QR, for anyone who wants to check it or make a panel with it today.</p>
       <div class="notice">
-        <p><strong>Closed testing.</strong> The Play link opens only for accounts on the tester list. The <a href="download/">download page</a> has the same APK, signed by Google, together with its checksum, its signing certificate and the provisioning QR, for anyone who wants to check it or make a panel with it today.</p>
+        <p><strong>Source available.</strong> The code is <a href="https://github.com/spazio17/muralis">on GitHub</a> under the Fair Core License: read it, change it for yourself, contribute. Selling it, or removing the Pro lock, is not allowed. Each version becomes Apache 2.0 two years after its release.</p>
       </div>
     </div>
   </section>
@@ -572,5 +719,6 @@
 <script src="assets/js/clips.js?v=7"></script>
 <script src="assets/js/waydeck.js?v=1"></script>
 <script src="assets/js/copy.js?v=1"></script>
+<script src="assets/js/stats.js?v=1"></script>
 </body>
 </html>
