@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800">
+<rect width="1280" height="800" fill="#f6efe6"/>
+<circle cx="1120" cy="120" r="300" fill="#ead9c4"/>
+<text x="80" y="110" font-family="Georgia,serif" font-size="40" font-style="italic" fill="#7a4b2a">studio fiore</text>
+<text x="80" y="300" font-family="Georgia,serif" font-size="96" fill="#2e2118">Atelier</text>
+<text x="80" y="370" font-family="Helvetica,Arial,sans-serif" font-size="34" fill="#7a4b2a">Next meeting in</text>
+<text x="80" y="520" font-family="Georgia,serif" font-size="150" fill="#2e2118">25 min</text>
+<text x="80" y="600" font-family="Helvetica,Arial,sans-serif" font-size="32" fill="#5d4636">Client presentation, Ponte Group</text>
+<rect x="760" y="480" width="440" height="230" rx="28" fill="#2e2118"/>
+<text x="800" y="555" font-family="Helvetica,Arial,sans-serif" font-size="30" fill="#ead9c4">Room ready</text>
+<g fill="#ead9c4"><circle cx="815" cy="620" r="14"/><circle cx="865" cy="620" r="14"/><circle cx="915" cy="620" r="14"/></g>
+<text x="950" y="630" font-family="Helvetica,Arial,sans-serif" font-size="28" fill="#ead9c4">screen, coffee, 6 chairs</text>
+</svg>

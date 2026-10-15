@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800">
+<rect width="1280" height="800" fill="#f7f4fa"/>
+<rect width="560" height="800" fill="#1f7a3f"/>
+<text x="60" y="110" font-family="Helvetica,Arial,sans-serif" font-size="34" fill="#d7f5df">Meeting room</text>
+<text x="60" y="180" font-family="Helvetica,Arial,sans-serif" font-size="64" font-weight="700" fill="#fff">Danube</text>
+<text x="60" y="420" font-family="Helvetica,Arial,sans-serif" font-size="120" font-weight="700" fill="#fff">Free</text>
+<text x="60" y="490" font-family="Helvetica,Arial,sans-serif" font-size="38" fill="#d7f5df">until 14:00</text>
+<rect x="60" y="610" width="300" height="84" rx="42" fill="#fff"/>
+<text x="210" y="664" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="32" font-weight="700" fill="#1f7a3f">Book now</text>
+<text x="640" y="110" font-family="Helvetica,Arial,sans-serif" font-size="34" font-weight="700" fill="#1e1a24">Today</text>
+<g font-family="Helvetica,Arial,sans-serif" font-size="30" fill="#4b4453">
+<rect x="640" y="160" width="580" height="120" rx="18" fill="#fff"/><text x="670" y="210" font-weight="700" fill="#1e1a24">09:00  Team stand-up</text><text x="670" y="252">Marta, 6 people</text>
+<rect x="640" y="300" width="580" height="120" rx="18" fill="#fff"/><text x="670" y="350" font-weight="700" fill="#1e1a24">14:00  Weekly planning</text><text x="670" y="392">Luca, 9 people</text>
+<rect x="640" y="440" width="580" height="120" rx="18" fill="#fff"/><text x="670" y="490" font-weight="700" fill="#1e1a24">16:30  Customer call</text><text x="670" y="532">Anna, 3 people</text></g>
+</svg>
