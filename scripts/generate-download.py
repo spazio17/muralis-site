@@ -108,10 +108,12 @@ def qr_svg(payload):
     import io
     import segno
     # Compact separators: every byte saved is one less module, and a denser code is
-    # harder for an older front-facing camera to read off a screen. Error correction M
-    # is the usual compromise; this is read off a screen, not off a dusty crate.
+    # harder for an older front-facing camera to read off a screen.
     text = json.dumps(payload, separators=(",", ":"), sort_keys=True)
-    code = segno.make(text, error="m")
+    # Error correction H, the strongest, because the app's icon covers the centre: it reads
+    # through about 30 percent of the code lost, and the icon takes about a fifth of its width.
+    # Read by the Lenovo's camera, the weakest of the test tablets, off a phone's screen.
+    code = segno.make(text, error="h")
     buffer = io.BytesIO()
     # Black on white in both themes, deliberately, rather than following the page's
     # palette. A light-on-dark code is inverted, and while most scanners cope, the one
@@ -121,11 +123,35 @@ def qr_svg(payload):
     # intrinsic size, and an <img> of one inside a shrink-to-fit box asks its parent for a
     # width while the parent asks it back: Chrome breaks the tie with the HTML attributes,
     # Firefox resolves it to zero and the code vanishes. Reported on the page 2026-09-02.
-    # scale=4 makes that intrinsic size 372px, a sensible natural size for a QR; the CSS
+    # scale=4 makes that intrinsic size 468px for today's payload at H; the CSS
     # scales it from there and it stays sharp because it is still vector.
     code.save(buffer, kind="svg", scale=4, border=2, dark="#000000", light="#ffffff",
               xmldecl=False, svgns=True)
-    return buffer.getvalue().decode()
+    return buffer.getvalue().decode().replace("</svg>", icon_svg(code.symbol_size(scale=1,
+                                                                                    border=0)[0],
+                                                                 scale=4, border=2) + "</svg>")
+
+
+def icon_svg(modules, scale, border):
+    """The app's icon over the centre of the code, as the app's own Join QR draws it
+    (QrCodes.java): a white square of about a fifth of the code, the dark tile, and the
+    launcher icon's glyph from res/drawable/ic_launcher_foreground.xml, drawn larger."""
+    side = max(7, round(modules * 0.22))
+    side += side % 2 == 0
+    start = border + (modules - side) / 2
+    unit = (side - 1) / 108
+    glyph = 41 / 28
+    panes = "".join(
+        f'<rect x="{x0}" y="{y0}" width="{x1 - x0}" height="{y1 - y0}" rx="2" fill="{fill}"/>'
+        for x0, y0, x1, y1, fill in ((33, 40, 57, 52, "#B9C3FF"), (61, 40, 75, 52, "#6F86FF"),
+                                     (33, 56, 47, 68, "#6F86FF"), (51, 56, 75, 68, "#B9C3FF")))
+    return (f'<g transform="scale({scale})"><rect x="{start}" y="{start}" width="{side}" '
+            f'height="{side}" fill="#ffffff"/><g transform="translate({start + 0.5} {start + 0.5}) '
+            f'scale({unit})"><rect width="108" height="108" rx="24" fill="#12131D"/>'
+            f'<g transform="translate(54 54) scale({glyph}) translate(-54 -54)">'
+            f'<rect x="26" y="30" width="56" height="48" rx="6" fill="none" stroke="#B9C3FF" '
+            f'stroke-width="4"/><circle cx="54" cy="30" r="1.25" fill="#12131D"/>{panes}'
+            f'</g></g></g>')
 
 
 def write(path, text):
