@@ -16,7 +16,7 @@ A panel without Pro is not nagged, not watermarked, and not degraded: it does ev
 
 WHAT THE APP DOES TO THE DEVICE
 
-Muralis is designed to take over a device. When granted device-owner status it will: become the home application, hold the screen on a single task so other applications cannot be reached, disable the notification shade and status bar, disable the lock screen, keep the display awake while charging, and make the back gesture inert.
+Muralis is designed to take over a device. When granted device-owner status it will: become the home application, hold the screen on a single task so other applications cannot be reached, disable the notification shade and status bar, disable the lock screen, keep the display awake while charging, make the back gesture inert, block starting the device in safe mode, allow only the system's accessibility services and the system's keyboards plus the one in use, and grant itself the permissions its features use (the camera, the microphone, location for the Bluetooth beacons, the photos and notifications), each feature still staying off until you switch it on.
 
 This is the intended behaviour of a kiosk, and you should understand it before provisioning a device you rely on for anything else.
 
