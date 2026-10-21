@@ -1,0 +1,736 @@
+/* The home page: a tablet on a wall. Night bands for the panel in the dark, plaster for the wall
+   by day, ultramarine for what you press, fresco gold only as light falling on the wall.
+   Archivo for headings, Atkinson Hyperlegible for text. The other pages keep site.css. */
+@font-face{font-family:'Archivo';src:url(../fonts/archivo.woff2) format('woff2');font-weight:100 900;font-display:swap}
+@font-face{font-family:'Atkinson';src:url(../fonts/atkinson-400.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Atkinson';src:url(../fonts/atkinson-700.woff2) format('woff2');font-weight:700;font-display:swap}
+
+:root{
+ --night:#12131d;--night-2:#1b1d2b;--night-3:#252839;--night-line:#343850;--night-edge:#474c68;
+ --paper:#f7f3ea;--white:#fffdf8;--wall:#efe7d6;--line:#e1d8c4;
+ --ink:#191b28;--sub:#4b4e60;--on-night:#e4e6f6;--sub-night:#b4b8d2;
+ --blue:#1c39bb;--blue-ink:#152c94;--sky:#b9c3ff;--sky-hover:#d6dcff;--on-sky:#0b1a66;
+ /* Material 3 secondary-container from the same blue: the chosen Home/Pro/Business, quieter than the one filled action */
+ --sel:#3b4374;--on-sel:#dee0ff;
+ --gold:#e0a93b;--display:'Archivo',system-ui,sans-serif;--r:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.6 'Atkinson',system-ui,sans-serif}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.015em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:6px}
+.dark :focus-visible,nav :focus-visible{outline-color:var(--sky)}
+.in{max-width:1160px;margin:0 auto;padding:0 24px}
+.skip{position:absolute;left:-999px;top:8px;z-index:50;background:var(--sky);color:var(--on-sky);padding:8px 14px;border-radius:8px}
+.skip:focus{left:8px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;text-decoration:none;font-size:1rem;min-height:48px}
+.btn.primary{background:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue-ink)}
+button.btn{border:0;background:none;color:inherit;font-family:inherit;cursor:pointer}
+.btn.quiet{box-shadow:inset 0 0 0 1.5px currentColor}
+.dark .btn.primary,nav .btn.primary{background:var(--sky);color:var(--on-sky)}
+.dark .btn.primary:hover,nav .btn.primary:hover{background:var(--sky-hover)}
+h2.big{font-size:clamp(2rem,3.6vw,2.9rem);line-height:1.05;font-weight:800}
+.intro{color:var(--sub);margin:12px 0 0;max-width:60ch}
+.dark .intro{color:var(--sub-night)}
+section{padding:96px 0}
+
+/* nav */
+nav{position:sticky;top:0;z-index:20;background:rgba(18,19,29,.95);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--on-night)}
+nav .in{display:flex;align-items:center;gap:24px;height:64px}
+nav .logo{display:flex;align-items:center;gap:10px;font:700 1.15rem var(--display);text-decoration:none}
+nav .logo img{width:30px;height:30px;border-radius:8px}
+nav ul{display:flex;gap:20px;list-style:none;margin:0 0 0 12px;padding:0;font-size:.95rem;white-space:nowrap}nav .drop ul{white-space:normal}
+nav ul a{text-decoration:none;color:var(--sub-night)}nav ul a:hover{color:#fff}
+nav .drop{position:relative}
+nav .drop button{display:flex;align-items:center;gap:4px;border:0;background:none;padding:0;color:var(--sub-night);font:inherit;cursor:pointer}nav .drop button:hover,nav .drop button[aria-expanded="true"]{color:#fff}
+nav .drop button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}nav .drop button[aria-expanded="true"] svg{transform:rotate(180deg)}
+nav .drop ul{position:absolute;top:calc(100% + 14px);left:-12px;flex-direction:column;gap:0;margin:0;padding:6px;width:max-content;max-width:320px;background:var(--night-2);border:1px solid var(--night-line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.4)}nav .drop ul[hidden]{display:none}
+nav .drop ul a{display:flex;flex-direction:column;justify-content:center;min-height:48px;padding:8px 12px;border-radius:8px}nav .drop ul b{color:var(--on-night);font-weight:600}nav .drop ul span{font-size:.82rem;line-height:1.35}nav .drop ul a:hover{background:var(--night-3)}
+nav .btn{padding:9px 16px;font-size:.9rem;min-height:40px;white-space:nowrap}
+
+/* the switch: Home, Pro, Business */
+.mode{display:inline-grid;grid-template-columns:repeat(3,1fr);position:relative;background:var(--night-3);border-radius:999px;padding:4px;margin-left:auto}
+.mode button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;border:0;background:none;color:var(--sub-night);font:700 .9rem 'Atkinson',sans-serif;padding:7px 14px;border-radius:999px;cursor:pointer;min-height:36px}
+.mode button svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mode button[aria-pressed="true"]{color:var(--on-sel)}
+.mode button[aria-pressed="true"] svg{stroke:var(--sky)}
+.mode button:hover{background:rgba(228,230,246,.08);color:var(--on-night)}
+.mode button[aria-pressed="true"]:hover{background:rgba(222,224,255,.08);color:var(--on-sel)}
+.mode .thumb{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);background:var(--sel);box-shadow:inset 0 0 0 1.5px var(--sky);border-radius:999px;transition:transform .35s cubic-bezier(.3,1.3,.5,1)}
+html[data-mode="pro"] .mode .thumb{transform:translateX(100%)}
+html[data-mode="business"] .mode .thumb{transform:translateX(200%)}
+html[data-mode="home"] [data-for]:not([data-for~="home"]),html[data-mode="pro"] [data-for]:not([data-for~="pro"]),
+html[data-mode="business"] [data-for]:not([data-for~="business"]){display:none !important}
+.swap{animation:swap .45s ease}
+@keyframes swap{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:none}}
+
+/* hero: the panel at night, its screen coming on */
+.hero{background:var(--night);color:var(--on-night);text-align:center;padding:clamp(28px,6vh,72px) 0 0;overflow:hidden;position:relative}
+/* The hero's ultramarine glow, behind its words and behind its tablet. */
+.hero::before,.hero::after{content:'';position:absolute;pointer-events:none;z-index:0;background:radial-gradient(closest-side,rgba(46,74,214,.30),transparent)}
+.hero::before{left:50%;top:-12%;width:min(1000px,140vw);height:620px;transform:translateX(-50%)}
+.hero::after{left:50%;bottom:-8%;width:min(900px,150vw);height:520px;transform:translateX(-50%)}
+.hero>.in,.hero>.hall{position:relative;z-index:1}
+.hero h1{font-size:clamp(2.8rem,min(9vw,12vh),7.2rem);line-height:.95;font-weight:800;letter-spacing:-.03em}
+.hero .line{font:600 clamp(1.25rem,2.4vw,1.75rem)/1.3 var(--display);color:#fff;margin:18px auto 0;max-width:36ch}
+.hero .line span{display:block;text-wrap:balance}
+.hero .lead{max-width:56ch;margin:16px auto 0;color:var(--sub-night);font-size:1.08rem}
+.hero .acts{margin:clamp(16px,3vh,30px) 0 0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.facts{display:flex;gap:14px 24px;justify-content:center;flex-wrap:wrap;margin:clamp(14px,2.6vh,28px) 0 0;padding:0;list-style:none;color:var(--sub-night);font-size:.95rem}
+.facts li{display:flex;align-items:center;gap:8px}.facts svg{width:18px;height:18px;stroke:var(--sky);fill:none;stroke-width:2}
+.hall{position:relative;margin:clamp(20px,4vh,64px) auto 0;width:min(820px,92vw)}
+.glow{position:absolute;left:50%;top:44%;width:150%;aspect-ratio:1.6;transform:translate(-50%,-50%);
+ background:radial-gradient(closest-side,rgba(185,195,255,.26),rgba(185,195,255,.07) 55%,transparent 75%);opacity:0;animation:glow 1.6s .9s ease-out forwards;pointer-events:none}
+.tablet{position:relative;background:#0a0b12;border-radius:26px;padding:14px;box-shadow:0 30px 60px -24px #000c,0 0 0 1px #262a3c}
+.glass{position:relative;border-radius:10px;overflow:hidden;line-height:0;background:#000;aspect-ratio:16/10}
+.glass img{width:100%;height:100%;object-fit:cover;display:block}
+.hero .glass::after{content:'';position:absolute;inset:0;background:#fff;opacity:0;animation:flash .5s .6s ease-out;pointer-events:none}
+.hero .glass .reel{position:absolute;inset:0;animation:poweron 1.1s .6s ease-out both}
+.hero .glass .reel img{position:absolute;inset:0;opacity:0;transform:scale(1.03);transition:opacity .9s ease,transform 5.5s cubic-bezier(.2,.6,.3,1)}
+.hero .glass .reel img.on{opacity:1;transform:none;z-index:2}
+.hero .glass .reel img.was{opacity:1;z-index:1}
+.hero .glass .reel.swap{animation:poweron .9s ease-out both}
+.cord{display:block;margin:0 auto;height:clamp(60px,12vh,150px);width:auto;overflow:visible}
+.cord path{stroke-dasharray:240;stroke-dashoffset:240;animation:draw 1.2s 1.4s ease-in-out forwards}
+.socket{opacity:0;animation:fadein .4s 2.4s forwards}
+.sidecord{display:none}
+@keyframes poweron{0%{opacity:0;filter:brightness(2.4)}35%{opacity:.9}100%{opacity:1;filter:none}}
+@keyframes flash{0%{opacity:0}20%{opacity:.35}100%{opacity:0}}
+@keyframes glow{to{opacity:1}}@keyframes draw{to{stroke-dashoffset:0}}@keyframes fadein{to{opacity:1}}
+/* The greeting, drawn by the scroll: at the top of the page the hero tablet is big and centred with
+   "Welcome to Muralis"; scrolling shrinks it into its place while the text comes in, and scrolling
+   back up makes it big again (home.js). The hero stays pinned under the bar while it happens. */
+.greet{display:none}
+html.scrollhero .hero{position:sticky;top:64px}
+html.scrollhero .greet{display:flex;position:absolute;inset:0;z-index:5;flex-direction:column;align-items:center;justify-content:center;gap:4%;background:radial-gradient(circle at 50% 45%,#1d2033,#000 70%);line-height:1.1;pointer-events:none}
+html.scrollhero .greet img{width:14%;height:auto;border-radius:22%}
+html.scrollhero .greet p{margin:0;font:700 clamp(1rem,4.2vw,3.2rem) var(--display);letter-spacing:-.02em;color:#fff}
+
+@media (max-height:820px) and (max-width:999px){.hero .facts{display:none}.hero .lead{font-size:1rem;margin-top:10px}.hero .line{font-size:clamp(1.1rem,2.6vh,1.5rem)}}
+/* wide: text at the left, the tablet at the right, its cord leaving the right side down to a
+   socket; the hero is exactly one screen */
+@media (min-width:1000px){
+ .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.45fr);align-items:center;column-gap:clamp(24px,4vw,64px);
+  min-height:calc(100svh - 64px);padding:clamp(24px,5vh,56px) max(32px,calc((100vw - 1640px)/2)) clamp(48px,8vh,88px) max(24px,calc((100vw - 1160px)/2 + 24px));text-align:left}
+ .hero .in{padding:0;margin:0;max-width:none}
+ .hero h1{font-size:clamp(3rem,min(7vw,12vh),6.6rem)}
+ .hero .line,.hero .lead{margin-left:0;margin-right:0}
+ .hero .acts,.hero .facts{justify-content:flex-start}
+ .hero .hall{margin:0;justify-self:start}
+ .hero::before{left:max(-120px,calc((100vw - 1160px) / 2 - 220px));top:2%;width:900px;height:720px;transform:none}
+ .hero::after{left:auto;bottom:auto;right:-6%;top:50%;width:min(1300px,80vw);height:900px;transform:translateY(-50%);background:radial-gradient(closest-side,rgba(46,74,214,.26),transparent)}
+ .hero .cord{display:none}
+ .sidecord{display:block;position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+ .sidecord path{fill:none;stroke:var(--night-line);stroke-width:6;stroke-linecap:round}
+}
+
+/* a day on the wall */
+.day .in{display:grid;grid-template-columns:1.05fr 1fr;gap:64px;align-items:start}
+.stage{position:sticky;top:96px}
+/* A wide screen: the heading stays on top, the panel stays in the middle of the screen, and the
+   step whose dot passes that middle is the one the panel shows (home.js reads the same line). */
+@media (min-width:901px) and (orientation:landscape){
+ .stage{top:64px;height:calc(100vh - 64px);display:flex;flex-direction:column;justify-content:center}
+ .day-head{position:sticky;top:64px;z-index:2;background:var(--paper);padding:24px 0 16px;margin-top:-24px}
+ /* Room under the last step, so its dot reaches the middle while the panel is still there. */
+ .steps .step:last-child{min-height:calc(50vh - 10px);padding-bottom:0}
+}
+.room{--wall:#22283d;--light:transparent;position:relative;border-radius:22px;padding:42px 46px 30px;background:var(--wall);transition:background 1.1s ease;overflow:hidden}
+.room::before{content:'';position:absolute;inset:-20%;background:radial-gradient(60% 50% at var(--lx,80%) var(--ly,10%),var(--light),transparent 70%);transition:background 1.1s ease;pointer-events:none}
+.room .tablet{padding:11px;border-radius:20px}
+.clock{position:absolute;top:14px;right:18px;font:700 1.05rem var(--display);color:#fff;opacity:.9;transition:color 1.1s}
+.room[data-light="day"] .clock{color:var(--ink)}
+.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;transition:opacity .6s ease;opacity:0;pointer-events:none;line-height:1.2}
+.screen.dash{opacity:1}
+.s-ready{background:#000;color:#c5c9de;font:600 .95rem 'Atkinson',sans-serif}.s-ready img{width:56px !important;height:56px !important;border-radius:14px}
+.s-reload .bar{position:absolute;top:0;left:0;height:4px;width:0;background:var(--blue)}
+.s-reload .note,.s-frozen .note{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#191b28e6;color:#fff;font:600 .85rem 'Atkinson',sans-serif;padding:8px 14px;border-radius:999px;white-space:nowrap}
+.s-ambient{background:#000}.s-ambient img{width:100%;height:100%;object-fit:cover}
+.s-off{background:#000}
+/* A message from outside: the status light around the screen and a pop-up over the page. */
+.s-notify{--led:#2fbf5b;justify-content:flex-end;padding-bottom:7%;box-shadow:inset 0 0 0 6px var(--led)}
+html[data-mode="pro"] .s-notify{--led:#e0a93b}html[data-mode="business"] .s-notify{--led:#e5484d}
+.s-notify .pop{margin:0;max-width:72%;padding:10px 14px;border-radius:10px;background:#fff;color:var(--ink);font:400 .85rem/1.35 'Atkinson',sans-serif;box-shadow:0 8px 20px -8px #0008}
+.s-notify .pop b{display:block;font-weight:700;font-size:.95rem}
+@media (max-width:900px){.s-notify{padding-bottom:5%;box-shadow:inset 0 0 0 4px var(--led)}.s-notify .pop{padding:6px 10px;font-size:.72rem;border-radius:8px}.s-notify .pop b{font-size:.8rem}}
+.room[data-state="ready"] .s-ready,.room[data-state="reload"] .s-reload,.room[data-state="ambient"] .s-ambient,
+.room[data-state="frozen"] .s-frozen,.room[data-state="off"] .s-off,.room[data-state="notify"] .s-notify{opacity:1}
+.room[data-state="ready"] .dash,.room[data-state="ambient"] .dash,.room[data-state="off"] .dash{opacity:0}
+.room[data-state="frozen"] .dash img{filter:grayscale(.6) brightness(.85)}
+.room[data-state="reload"] .s-reload .bar{animation:load 2.2s ease-out infinite}
+.room[data-state="wake"] .glass{box-shadow:0 0 0 2px var(--sky)}
+@keyframes load{0%{width:0}70%{width:100%}100%{width:100%;opacity:0}}
+.room .cordlet{display:block;margin:0 auto;width:60px;height:44px}
+.steps{list-style:none;margin:40px 0 0;padding:0;position:relative}
+.steps::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.step{position:relative;padding:0 0 0 44px;min-height:34vh;opacity:.85;transition:opacity .4s}
+.step:last-child{min-height:0;padding-bottom:12vh}
+.step::before{content:'';position:absolute;left:4px;top:6px;width:16px;height:16px;border-radius:50%;background:var(--paper);box-shadow:inset 0 0 0 3px var(--line);transition:box-shadow .4s,background .4s}
+.step.on{opacity:1}.step.on::before{background:var(--blue);box-shadow:none}
+.step time{font:800 1.9rem/1 var(--display);display:block}
+.step h3{font-size:1.2rem;margin:8px 0 4px}.step p{margin:0;color:var(--sub);max-width:42ch}
+
+/* the panel as it is: the stats switch, then the screens */
+.look{background:var(--white);border-top:1px solid var(--line)}
+
+.look h3{font-size:1.5rem;line-height:1.15}
+/* The demo: wider than the other sections, a tablet with the panel and a phone with the web admin on one row. */
+.demo{display:flex;gap:32px;align-items:center;justify-content:center;margin-top:40px;width:min(1480px,100vw - 48px);margin-inline:calc((100% - min(1480px,100vw - 48px)) / 2)}
+.demo-tablet-col{flex:1 1 auto;max-width:980px}
+.demo-tablet{padding:14px;border-radius:24px}
+/* The demo's way in, given beside its corners the way a demo site gives its test login. */
+.demo-taps{display:flex;justify-content:space-between;gap:16px}
+/* The arrows end over the panel's own corners, where the taps count: 14 px of frame plus half
+   of the 64 px corner. Taps pass through them; each fades once its corner has been tapped. */
+.demo-arrow{position:absolute;bottom:-32px;width:60px;height:80px;fill:none;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;z-index:2;transition:opacity .6s;filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff)}
+.demo-arrow path{stroke:var(--ink);stroke-width:2.5}
+.demo-arrow.l{left:16px}.demo-arrow.r{right:16px;transform:scaleX(-1)}.demo-arrow.gone{opacity:0}
+.demo-taps p{margin:0;padding:22px 0 0 80px;font-size:1rem;line-height:1.3;color:var(--sub)}
+.demo-taps .r{padding:22px 80px 0 0;text-align:right}.demo-taps b{color:var(--ink);margin-right:4px}
+.demo-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;padding:0}
+.demo-tablet iframe{display:block;width:100%;aspect-ratio:16/10;border:0;border-radius:8px;background:#000}
+.demo-phone{flex:0 0 340px;background:#0a0b12;border-radius:40px;padding:12px;box-shadow:0 30px 60px -24px #000c,0 0 0 1px #262a3c}
+.demo-urlbar{background:#e8e7f5;border-radius:28px 28px 0 0;padding:14px 16px 10px;font:.8rem/1.2 system-ui,sans-serif;color:#444654}
+.demo-urlbar span{display:block;background:#fff;border-radius:999px;padding:6px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.demo-phone iframe{display:block;width:100%;aspect-ratio:9/17;border:0;border-radius:0 0 28px 28px;background:#12131d}
+/* The guide above the frames, in the site's own style so it never looks like part of the app. */
+.demo-guide{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin-top:32px;padding:14px 18px;border-radius:14px;background:var(--wall);border:1px solid var(--line);position:sticky;top:76px;z-index:6;box-shadow:0 8px 24px -16px rgba(18,19,29,.35)}
+.demo-guide[hidden]{display:none}
+.demo-step{flex:1 1 320px;margin:0;font-size:1.05rem;color:var(--ink)}
+.demo-count{color:var(--blue)}
+.demo-guide-acts{display:flex;flex-wrap:wrap;gap:8px}
+.demo-gbtn{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--white);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.demo-gbtn:hover{border-color:var(--blue)}.demo-gbtn[hidden]{display:none}
+.demo-gbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.demo-next{background:var(--blue);border-color:var(--blue);color:#fff}
+.demo-tours{position:relative}
+#demo-tour-list{position:absolute;top:calc(100% + 6px);left:0;z-index:10;min-width:260px;margin:0;padding:6px;list-style:none;background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(18,19,29,.18)}
+#demo-tour-list[hidden]{display:none}
+#demo-tour-list button{display:block;width:100%;min-height:44px;padding:0 12px;border:0;border-radius:8px;background:none;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
+#demo-tour-list button:hover{background:var(--wall)}
+.demo-switch{display:none;margin-top:16px;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.demo-switch button{position:relative;flex:1;min-height:44px;border:0;background:none;font:inherit;font-weight:600;color:var(--ink);cursor:pointer}
+.demo-switch button[aria-pressed="true"]{background:var(--sky);color:var(--on-sky)}
+.demo-switch .demo-dot::after{content:'';position:absolute;top:10px;right:16px;width:8px;height:8px;border-radius:50%;background:#e0a93b}
+.demo-under{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 20px;margin-top:24px}
+.demo-lux{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 16px;border:1px solid var(--line);border-radius:999px;font-weight:600;color:var(--ink)}
+.demo-lux[hidden]{display:none}.demo-lux input{width:180px;accent-color:var(--blue)}
+.demo-lux output{min-width:56px;font-variant-numeric:tabular-nums;color:var(--sub);font-weight:400}
+.demo-ringed{outline:3px solid #e0a93b;outline-offset:3px}
+/* A phone held sideways: the guide scrolls away and the tablet shrinks to the screen's height
+   (64 px bar, about 84 px for the notes below it), so both corners and their notes fit at once. */
+@media (max-height:500px){.demo-guide{position:static}.demo-tablet-col{max-width:calc((100svh - 148px) * 1.6 + 28px)}}
+.demo-note{text-align:center;color:var(--sub);font-size:.9rem;margin-top:12px}
+@media (max-width:599px){.demo-guide{padding:10px 12px;gap:8px}.demo-step{font-size:.95rem;flex-basis:100%}.demo-guide-acts{flex-wrap:nowrap}.demo-guide .demo-gbtn{min-height:40px;padding:0 12px}.demo-switch{display:flex}.demo[data-show="panel"] .demo-phone,.demo[data-show="web"] .demo-tablet-col{display:none}.demo-taps b{display:block;margin:0}.demo-tablet iframe{aspect-ratio:10/16}.demo-phone{width:100%}.demo{margin-top:16px}}
+@media (max-width:1000px){.demo{flex-direction:column}.demo-tablet-col{width:100%}.demo-phone{flex-basis:auto;width:340px;max-width:100%}}
+
+/* everything it does */
+/* Everything a wall screen needs: a bento of living tiles, each a small drawn tablet playing its feature. */
+#does{--amber:#e0a93b;--green:#3fbf7f;--red:#ef5b5b;--ultra:#2e4ad6}
+/* ---- the section ---- */#does{position:relative;background:var(--night);color:var(--on-night);padding:96px 16px 104px;overflow:hidden}
+#does::before{content:'';position:absolute;left:50%;top:-20%;width:1100px;height:700px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(46,74,214,.28),transparent);pointer-events:none}
+#does h2{font:800 clamp(2.3rem,5.4vw,4rem)/1 'Archivo',sans-serif;letter-spacing:-.03em;margin:0 0 14px;color:#fff;max-width:14ch}
+#does .intro{color:var(--sub-night);max-width:56ch;margin:0;font-size:1.08rem}
+/* the bento: one big tile, four small, one wide, and the way to every feature */#does .bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:auto;gap:16px;margin:48px 0 0}
+#does .tile{position:relative;display:flex;flex-direction:column;background:linear-gradient(180deg,var(--night-2),#171926);border:1px solid var(--night-line);border-radius:22px;padding:14px 14px 20px;transition:transform .3s cubic-bezier(.2,.7,.2,1),border-color .3s}
+#does .tile:hover{transform:translateY(-3px);border-color:var(--night-edge)}
+#does .tile.big{grid-column:span 2;grid-row:span 2}
+#does .tile.wide{grid-column:span 2}
+#does .scene{position:relative;border-radius:14px;background:#0d0e16;overflow:hidden;aspect-ratio:12/7}
+#does .tile.big .scene{aspect-ratio:auto;flex:1;min-height:300px;container-type:size}
+#does .tile.wide .scene{aspect-ratio:auto;height:150px}
+#does .scene svg{display:block;width:100%;height:100%}
+#does .tile h3{font:700 1.2rem/1.25 'Archivo',sans-serif;color:#fff;margin:16px 6px 4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#does .tile.big h3{font-size:1.7rem;margin-top:20px}
+#does .tile p{margin:0 6px;color:var(--sub-night);font-size:.98rem}
+#does .tile.big p{font-size:1.08rem;max-width:40ch}
+#does .soon{font:700 11px/1 'Atkinson',sans-serif;color:#3b2a00;background:var(--amber);border-radius:999px;padding:5px 9px;letter-spacing:.02em}
+#does .cta{grid-column:span 2;display:flex;flex-direction:column;justify-content:center;gap:10px;text-decoration:none;color:var(--on-sky);background:var(--sky);border-radius:22px;padding:28px 30px;transition:transform .3s cubic-bezier(.2,.7,.2,1),background .3s}
+#does .cta:hover{transform:translateY(-3px);background:#d6dcff}
+#does .cta strong{font:800 clamp(1.6rem,3vw,2.2rem)/1.05 'Archivo',sans-serif;letter-spacing:-.02em;display:flex;align-items:center;gap:12px}
+#does .cta strong svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+#does .cta:hover strong svg{transform:translateX(6px)}
+#does .cta span{font-size:1rem;opacity:.85}
+/* the big tablet in the hero tile */#does .tab{position:absolute;left:50%;top:46%;width:min(84%,calc((100cqh - 40px)*1.6));aspect-ratio:16/10;transform:translate(-50%,-50%);background:#0a0b12;border-radius:18px;padding:3.2%;box-shadow:0 30px 50px -24px #000,0 0 0 1px #262a3c}
+#does .tab .dz-glass{position:relative;width:100%;height:100%;border-radius:8px;overflow:hidden;background:#000;container-type:inline-size}
+#does .tab .dz-glass img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#does .chip{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);white-space:nowrap;background:rgba(18,19,29,.92);border:1px solid var(--night-edge);color:var(--on-night);font:700 13px 'Atkinson',sans-serif;padding:6px 12px;border-radius:999px}
+#does .ring{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:2.5px solid var(--sky);opacity:0}
+#does .seg{position:absolute;left:50%;top:3.5%;transform:translateX(-50%);display:flex;background:rgba(18,19,29,.92);border:1px solid var(--night-edge);border-radius:999px;padding:3px;font:700 12px 'Atkinson',sans-serif}
+#does .seg i{position:relative;font-style:normal;padding:4px 10px;border-radius:999px;color:var(--sub-night)}
+#does .seg i.p{background:var(--sel);color:var(--on-sel)}
+#does .seg .tapr{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:2px solid var(--sky);opacity:0}
+#does .badge{position:absolute;left:3%;top:4%;background:#12131d;color:var(--on-night);font:700 2.4cqw/1 'Atkinson',sans-serif;padding:1.2cqw 2cqw;border-radius:99px;opacity:0}
+#does .big .dz-swap{opacity:0}
+/* the panel's own settings, drawn as it looks (list and detail on a landscape tablet) */#does .set{position:absolute;inset:0;background:#12131d;color:var(--on-night);font-family:'Atkinson',sans-serif;padding:3.4cqw 4cqw;display:grid;grid-template-columns:40% 1fr;grid-template-rows:auto 1fr;gap:2.6cqw 3cqw}
+#does .set .ab{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start}
+#does .set .ab b{display:block;font:400 4.6cqw/1 'Atkinson',sans-serif;color:#fff}
+#does .set .ab small{display:block;font-size:2.5cqw;color:var(--sub-night);margin-top:.8cqw}
+#does .set .ab span{font-size:2.1cqw;color:var(--sub-night);text-align:right;line-height:1.5}
+#does .set .nav{display:flex;flex-direction:column;gap:.8cqw}
+#does .set .lab{font-size:2.1cqw;line-height:1.3;color:#8fa0ff;margin:0 0 .2cqw 1cqw;white-space:nowrap}
+#does .set .row{display:flex;align-items:center;gap:1.8cqw;background:#1f2132;border-radius:1.6cqw;padding:1.1cqw 1.6cqw;font-size:2.3cqw;line-height:1.3;color:var(--on-night)}
+#does .set .row i{width:2.6cqw;height:2.6cqw;border:.35cqw solid var(--sub-night);border-radius:.5cqw;flex:0 0 auto}
+#does .set .row.on{background:#33395f;color:#fff}
+#does .set .od{margin-top:1cqw;line-height:1.3;background:#3f5bd9;color:#fff;border-radius:1.6cqw;padding:1.6cqw;font-size:2.4cqw;font-weight:700}
+#does .set .det{background:#1a1c2b;border-radius:2cqw;padding:2.4cqw;display:flex;flex-direction:column;gap:1.6cqw}
+#does .set .det b{font-size:3cqw;font-weight:400;color:#fff}
+#does .set .fld{border:.3cqw solid #5b6080;border-radius:1cqw;padding:1.4cqw 1.6cqw;font-size:2.4cqw;color:#fff;position:relative}
+#does .set .fld em{position:absolute;top:-1.3cqw;left:1.2cqw;background:#1a1c2b;padding:0 .6cqw;font:normal 1.8cqw 'Atkinson',sans-serif;color:var(--sub-night)}
+#does .set .btn2{align-self:flex-start;background:#2c3150;color:var(--on-sel);border-radius:99px;padding:1.2cqw 2.6cqw;font-size:2.2cqw;font-weight:700}
+/* drawing colours inside the small scenes */#does .s-line{stroke:var(--night-edge);stroke-width:1.5;fill:none}
+#does .s-frame{fill:#0a0b12;stroke:#2c3045;stroke-width:1.5}
+#does .s-glass{fill:#151827}
+#does .s-block{fill:#3b4374}
+#does .s-block.b{fill:#5d68b8}
+#does .s-sky{fill:var(--sky)}
+#does .s-stroke{stroke:var(--sky);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#does .s-text{font:700 11px 'Atkinson',sans-serif;fill:var(--on-night)}
+#does .s-sub{font:400 10px 'Atkinson',sans-serif;fill:var(--sub-night)}
+#does .s-cap{font:700 10px 'Atkinson',sans-serif;fill:var(--on-night)}
+#does .s-mono{font:400 10px ui-monospace,Menlo,monospace;fill:var(--sky)}
+#does svg *{transform-box:fill-box;transform-origin:center}
+/* The telling frame of every scene, which is what people with reduced motion see. The
+   animations below start from the beginning of each story. */#does .gone{opacity:0}
+/* ---- motion: only for people who did not ask for less ---- */@media (prefers-reduced-motion:no-preference){/* the tiles rise in once when the section first comes into view, and again on a switch of edition */html.js #does .bento .tile,html.js #does .bento .cta{opacity:0}
+html.js #does.seen .bento .tile,html.js #does.seen .bento .cta{opacity:1;animation:dz-rise .7s cubic-bezier(.2,.7,.2,1) calc(var(--i,0)*70ms) backwards}
+@keyframes dz-rise{from{opacity:0;transform:translateY(22px) scale(.98)}}
+/* everything below plays only while the section is in view */#does:not(.live) .scene *{animation-play-state:paused !important}
+/* Home 1: three taps in the bottom-left corner, then the settings open, then back to the page */#does .ring{animation:dz-tap 7s ease-out infinite}
+#does .ring.r1{animation-delay:.4s}
+#does .ring.r2{animation-delay:.8s}
+#does .ring.r3{animation-delay:1.2s}
+@keyframes dz-tap{0%{opacity:0;transform:scale(.3)}3%{opacity:1}10%{opacity:0;transform:scale(1.7)}100%{opacity:0}}
+#does .set.h1{animation:dz-setin 7s cubic-bezier(.2,.8,.2,1) infinite}
+@keyframes dz-setin{0%,26%{opacity:0;transform:translateY(4%)}32%,82%{opacity:1;transform:none}88%,100%{opacity:0;transform:none}}
+#does .chip.a{animation:dz-chipa 7s ease infinite}
+@keyframes dz-chipa{0%,1%{opacity:0}4%,24%{opacity:1}28%,100%{opacity:0}}
+#does .chip.b{animation:dz-chipb 7s ease infinite}
+@keyframes dz-chipb{0%,28%{opacity:0}33%,82%{opacity:1}87%,100%{opacity:0}}
+/* Pro 1: a tap on "An app", the screen becomes the app; a tap on "A web page", back */#does .seg .tapr{animation:dz-segtap 8s ease-out infinite}
+#does .seg i.q .tapr{animation-delay:3.4s}
+#does .seg i.p .tapr{animation-delay:7.4s}
+@keyframes dz-segtap{0%{opacity:0;transform:scale(.4)}3%{opacity:1}9%{opacity:0;transform:scale(1.5)}100%{opacity:0}}
+#does .seg i.p{animation:dz-segp 8s step-end infinite}
+#does .seg i.q{animation:dz-segq 8s step-end infinite}
+@keyframes dz-segp{0%{background:var(--sel);color:var(--on-sel)}45%{background:none;color:var(--sub-night)}95%{background:var(--sel);color:var(--on-sel)}}
+@keyframes dz-segq{0%{background:none;color:var(--sub-night)}45%{background:var(--sel);color:var(--on-sel)}95%{background:none;color:var(--sub-night)}}
+#does .big .dz-swap{animation:dz-swap 8s ease-in-out infinite}
+@keyframes dz-swap{0%,45%{opacity:0}50%,93%{opacity:1}98%,100%{opacity:0}}
+#does .badge{animation:dz-swap 8s ease-in-out infinite}
+/* Business 1: the room is free, then the meeting starts and the sign says so */#does .chip.free{animation:dz-cfree 8s ease infinite}
+@keyframes dz-cfree{0%,44%{opacity:1}48%,96%{opacity:0}100%{opacity:1}}
+#does .chip.busy{animation:dz-cbusy 8s ease infinite}
+@keyframes dz-cbusy{0%,46%{opacity:0}50%,94%{opacity:1}98%,100%{opacity:0}}
+/* Home 2 and Business 5: the page fails or freezes, it is tried again, it is back */#does .frz{animation:dz-frz 6s ease infinite}
+@keyframes dz-frz{0%,16%{opacity:0}22%,58%{opacity:1}64%,100%{opacity:0}}
+#does .rel{animation:dz-rel 6s cubic-bezier(.5,0,.3,1) infinite}
+@keyframes dz-rel{0%,40%{opacity:0;transform:rotate(0)}44%{opacity:1}58%{opacity:1;transform:rotate(360deg)}62%,100%{opacity:0;transform:rotate(360deg)}}
+#does .pg{animation:dz-pg 6s ease infinite}
+@keyframes dz-pg{0%,62%{transform:scale(1)}66%{transform:scale(.92)}72%,100%{transform:scale(1)}}
+#does .cap1{animation:dz-cap1 6s ease infinite}
+@keyframes dz-cap1{0%,18%{opacity:0}22%,58%{opacity:1}62%,100%{opacity:0}}
+#does .cap2{animation:dz-cap2 6s ease infinite}
+@keyframes dz-cap2{0%,64%{opacity:0}70%,94%{opacity:1}100%{opacity:0}}
+#does .cap0{animation:dz-cap0 6s ease infinite}
+@keyframes dz-cap0{0%,14%{opacity:1}18%,96%{opacity:0}100%{opacity:1}}
+/* Pro 3: the server restarts, the panel waits, reloads once the server answers */#does .led{animation:dz-led 6s step-end infinite}
+@keyframes dz-led{0%{fill:var(--green)}16%{fill:var(--red)}52%{fill:var(--green)}}
+#does .p3 .rel{animation-name:dz-rel3}
+@keyframes dz-rel3{0%,52%{opacity:0;transform:rotate(0)}55%{opacity:1}66%{opacity:1;transform:rotate(360deg)}69%,100%{opacity:0;transform:rotate(360deg)}}
+#does .p3 .frz{animation-name:dz-frz3}
+@keyframes dz-frz3{0%,14%{opacity:0}20%,66%{opacity:1}72%,100%{opacity:0}}
+#does .p3 .cap1{animation-name:dz-cap13}
+@keyframes dz-cap13{0%,16%{opacity:0}20%,52%{opacity:1}55%,100%{opacity:0}}
+#does .p3 .cap2{animation-name:dz-cap23}
+@keyframes dz-cap23{0%,70%{opacity:0}74%,94%{opacity:1}100%{opacity:0}}
+#does .p3 .pg{animation-name:dz-pg3}
+@keyframes dz-pg3{0%,68%{transform:scale(1)}71%{transform:scale(.92)}76%,100%{transform:scale(1)}}
+/* Home 3: a hand comes near, the screen lights up, it goes dark again later */#does .hand{animation:dz-hand 6s cubic-bezier(.3,.7,.3,1) infinite}
+@keyframes dz-hand{0%,8%{transform:translateX(70px);opacity:0}24%,52%{transform:none;opacity:1}66%,100%{transform:translateX(70px);opacity:0}}
+#does .lit{animation:dz-lit 6s ease infinite}
+@keyframes dz-lit{0%,22%{opacity:0}30%,86%{opacity:1}96%,100%{opacity:0}}
+/* Home 4: the page, nobody touches it, then the pictures take turns, then the page again */#does .h4page{animation:dz-h4page 12s ease infinite}
+@keyframes dz-h4page{0%,16%{opacity:1}22%,94%{opacity:0}100%{opacity:1}}
+#does .h4idle{animation:dz-h4idle 12s ease infinite}
+@keyframes dz-h4idle{0%,2%{opacity:0}5%,16%{opacity:1}20%,100%{opacity:0}}
+#does .sl{animation:dz-sl1 12s ease-in-out infinite}
+@keyframes dz-sl1{0%,18%{opacity:0;transform:scale(1.08)}22%,44%{opacity:1}48%,100%{opacity:0;transform:scale(1)}}
+#does .sl.s2{animation-name:dz-sl2}
+@keyframes dz-sl2{0%,44%{opacity:0;transform:scale(1.08)}48%,68%{opacity:1}72%,100%{opacity:0;transform:scale(1)}}
+#does .sl.s3{animation-name:dz-sl3}
+@keyframes dz-sl3{0%,68%{opacity:0;transform:scale(1.08)}72%,92%{opacity:1}96%,100%{opacity:0;transform:scale(1)}}
+/* Home 5: the room gets dark, the rule fires, the screen goes off */#does .sun{animation:dz-sun 5s ease infinite}
+@keyframes dz-sun{0%,4%{opacity:1}14%,88%{opacity:.25}96%,100%{opacity:1}}
+#does .lux{animation:dz-lux 5s ease infinite}
+@keyframes dz-lux{0%,4%{transform:scaleX(1)}14%,88%{transform:scaleX(.18)}96%,100%{transform:scaleX(1)}}
+#does .lux{transform-origin:left center}
+#does .when{animation:dz-when 5s ease infinite}
+@keyframes dz-when{0%,14%{stroke:var(--night-edge)}18%,46%{stroke:var(--sky)}54%,100%{stroke:var(--night-edge)}}
+#does .dot{animation:dz-dot 5s cubic-bezier(.5,0,.4,1) infinite}
+@keyframes dz-dot{0%,20%{transform:translateX(0);opacity:0}24%{opacity:1}52%{transform:translateX(28px);opacity:1}56%,100%{transform:translateX(28px);opacity:0}}
+#does .then{animation:dz-then 5s ease infinite}
+@keyframes dz-then{0%,52%{stroke:var(--night-edge)}56%,88%{stroke:var(--sky)}96%,100%{stroke:var(--night-edge)}}
+#does .dark{animation:dz-dark 5s ease infinite}
+@keyframes dz-dark{0%,56%{opacity:0}62%,88%{opacity:1}96%,100%{opacity:0}}
+/* Home 6: a switch flips in the browser, the tablet shows the pictures */#does .knob{animation:dz-knob 6s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes dz-knob{0%,14%{transform:none}22%,84%{transform:translateX(14px)}92%,100%{transform:none}}
+#does .track{animation:dz-track 6s ease infinite}
+@keyframes dz-track{0%,14%{fill:var(--night-3)}22%,84%{fill:var(--ultra)}92%,100%{fill:var(--night-3)}}
+#does .beam{stroke-dasharray:4 6;animation:dz-beam 6s linear infinite}
+@keyframes dz-beam{0%,22%{opacity:0;stroke-dashoffset:0}26%,40%{opacity:1;stroke-dashoffset:-40}46%,100%{opacity:0;stroke-dashoffset:-60}}
+#does .follow{animation:dz-follow 6s ease infinite}
+@keyframes dz-follow{0%,40%{opacity:0}46%,88%{opacity:1}96%,100%{opacity:0}}
+#does .label2{animation:dz-label2 6s step-end infinite}
+@keyframes dz-label2{0%{opacity:0}20%{opacity:1}90%{opacity:0}}
+#does .label1{animation:dz-label1 6s step-end infinite}
+@keyframes dz-label1{0%{opacity:1}20%{opacity:0}90%{opacity:1}}
+/* Pro 2: the clock goes round; the screen is on while the place is open */#does .hd{animation:dz-hd 8s linear infinite;transform-box:view-box;transform-origin:60px 66px}
+@keyframes dz-hd{from{transform:rotate(-90deg)}to{transform:rotate(270deg)}}
+#does .daylit{animation:dz-daylit 8s step-end infinite}
+@keyframes dz-daylit{0%{opacity:1}50%{opacity:0}}
+#does .open{animation:dz-daylit 8s step-end infinite}
+#does .closed{animation:dz-off 8s step-end infinite}
+@keyframes dz-off{0%{opacity:0}50%{opacity:1}}
+/* Pro 4: a message arrives on top of the page, then goes */#does .toast{animation:dz-toast 5s cubic-bezier(.2,.8,.2,1) infinite}
+@keyframes dz-toast{0%,14%{transform:translateY(-46px);opacity:0}24%,72%{transform:none;opacity:1}82%,100%{transform:translateY(-46px);opacity:0}}
+#does .pulse{animation:dz-pulse 5s ease infinite}
+@keyframes dz-pulse{0%,8%{opacity:0;transform:scale(.6)}12%{opacity:1}22%,100%{opacity:0;transform:scale(1.6)}}
+/* Pro 5: something on the network asks for a light, the frame comes on, then goes off */#does .lbeam{stroke-dasharray:4 6;animation:dz-lbeam 6s linear infinite}
+@keyframes dz-lbeam{0%,12%{opacity:0;stroke-dashoffset:0}16%,28%{opacity:1;stroke-dashoffset:-40}32%,100%{opacity:0}}
+#does .dz-glow{animation:dz-glow 6s ease infinite}
+@keyframes dz-glow{0%,26%{opacity:0}32%,80%{opacity:1}88%,100%{opacity:0}}
+#does .ask{animation:dz-ask 6s ease infinite}
+@keyframes dz-ask{0%,10%{opacity:0}14%,32%{opacity:1}38%,100%{opacity:0}}
+/* Pro 6: the playlist runs on the screen */#does .strip{animation:dz-strip 20s linear infinite}
+@keyframes dz-strip{to{transform:translateX(-336px)}}
+#does .play{animation:dz-play 2s ease-in-out infinite}
+@keyframes dz-play{50%{transform:scale(1.12)}}
+/* Business 2: one service goes down, the frame turns red, it comes back */#does .svc{animation:dz-svc 6s step-end infinite}
+@keyframes dz-svc{0%{fill:var(--green)}30%{fill:var(--red)}72%{fill:var(--green)}}
+#does .alarm{animation:dz-alarm 6s step-end infinite}
+@keyframes dz-alarm{0%{opacity:0}32%{opacity:1}72%{opacity:0}}
+/* Business 3: a file is added, a new block appears on the screen */#does .file{animation:dz-file 5s cubic-bezier(.3,.8,.3,1) infinite}
+@keyframes dz-file{0%,10%{transform:translateX(-30px);opacity:0}20%{opacity:1}44%,100%{transform:translateX(62px);opacity:0}}
+#does .newb{animation:dz-newb 5s cubic-bezier(.3,1.5,.5,1) infinite}
+@keyframes dz-newb{0%,44%{transform:scale(0);opacity:0}54%,90%{transform:none;opacity:1}100%{opacity:0}}
+/* Business 4: a tap at the glass is refused; the remote opens it, and the settings show */#does .no{animation:dz-no 7s ease infinite}
+@keyframes dz-no{0%,6%{opacity:0;transform:scale(.5)}10%,26%{opacity:1;transform:none}32%,100%{opacity:0}}
+#does .rbeam{stroke-dasharray:4 6;animation:dz-rbeam 7s linear infinite}
+@keyframes dz-rbeam{0%,34%{opacity:0;stroke-dashoffset:0}38%,50%{opacity:1;stroke-dashoffset:-40}54%,100%{opacity:0}}
+#does .shackle{animation:dz-shackle 7s ease infinite}
+@keyframes dz-shackle{0%,50%{transform:none}54%,58%{transform:translateY(-5px)}100%{transform:translateY(-5px)}}
+#does .lock{animation:dz-lock 7s ease infinite}
+@keyframes dz-lock{0%,58%{opacity:1}62%,100%{opacity:0}}
+#does .rows{animation:dz-rows 7s ease infinite}
+@keyframes dz-rows{0%,60%{opacity:0}66%,92%{opacity:1}98%,100%{opacity:0}}
+/* Business 6: a command is typed, the panel answers and its screen comes on */#does .type{animation:dz-type 6s steps(18) infinite}
+#does .type.t2{animation-delay:.6s}
+@keyframes dz-type{0%{clip-path:inset(0 100% 0 0)}36%,100%{clip-path:inset(0 0 0 0)}}
+#does .scr{animation:dz-scr 6s ease infinite}
+@keyframes dz-scr{0%,48%{opacity:0}54%,92%{opacity:1}100%{opacity:0}}
+#does .ans{animation:dz-ans 6s ease infinite}
+@keyframes dz-ans{0%,52%{opacity:0}58%,92%{opacity:1}100%{opacity:0}}
+
+}
+/* ---- tablet and phone ---- */@media (max-width:1000px){#does .bento{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+#does .tile.big{grid-row:auto}
+#does .tile.big .scene{min-height:0;aspect-ratio:16/10}
+#does .tile.wide{grid-column:span 1}
+#does .tile.wide .scene{height:auto;aspect-ratio:12/7}
+#does .cta{grid-column:span 1}
+}
+@media (max-width:600px){#does{padding:64px 16px 72px}
+#does .bento{display:grid;grid-template-columns:1fr;gap:12px;margin-top:32px}
+#does .tile.big{grid-column:auto}
+#does .tile.big .scene{aspect-ratio:16/11}
+#does .tile.big h3{font-size:1.4rem}
+#does .cta{grid-column:auto;padding:24px}
+#does .chip{font-size:12px}
+#does .tile.wide{grid-column:auto}
+#does .tile.wide .scene{aspect-ratio:auto;height:140px}
+#does .tile:not(.big):not(.wide){flex-direction:row;align-items:center;gap:4px;padding:10px 12px 10px 10px}
+#does .tile:not(.big):not(.wide) .scene{flex:0 0 44%;aspect-ratio:1/1}
+#does .tile:not(.big):not(.wide) h3{font-size:1.05rem;margin:0 6px 4px}
+#does .tile:not(.big):not(.wide) p{font-size:.92rem;line-height:1.45}
+#does .txt{min-width:0}
+}
+
+/* ...and more: integrations laid as a wall of bricks */
+.more{background:var(--wall)}
+.bricks{display:grid;grid-template-columns:repeat(12,1fr);gap:22px 10px;margin-top:56px;
+ --studs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='10'%3E%3Crect x='10' width='24' height='16' rx='3'/%3E%3C/svg%3E") 0 0/44px 10px space no-repeat}
+.brick{--c:var(--sky);position:relative;grid-column:span var(--w);background:var(--c);border-radius:6px;padding:20px 22px 24px;color:var(--ink);box-shadow:inset 0 -6px 0 rgba(18,19,29,.16)}
+.brick::before{content:'';position:absolute;left:10px;right:10px;top:-9px;height:10px;background:var(--c);-webkit-mask:var(--studs);mask:var(--studs)}
+.brick.b{--c:#8b9dff}.brick.c{--c:var(--gold)}
+.brick h3{font-size:1.15rem;margin:0 0 6px}.brick p{margin:0;font-size:.98rem;color:#23263a}
+.more.live .brick{animation:drop .5s cubic-bezier(.3,1.5,.55,1) backwards}
+.more.live .brick:nth-child(2){animation-delay:.09s}.more.live .brick:nth-child(3){animation-delay:.18s}
+.more.live .brick:nth-child(4){animation-delay:.36s}.more.live .brick:nth-child(5){animation-delay:.45s}.more.live .brick:nth-child(6){animation-delay:.54s}
+@keyframes drop{0%{opacity:0;transform:translateY(-34px)}60%{opacity:1}100%{opacity:1;transform:none}}
+/* One brick at a time is picked up, shows on a paper tag what it may do, and is pressed back in
+   with a click and a shine over its studs. Only transform and opacity move, so nothing shifts. */
+.brick{transition:transform .28s cubic-bezier(.3,1.4,.6,1),box-shadow .28s}
+.brick:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+.brick.up{z-index:5;transform:translateY(-10px) rotate(-1.5deg);box-shadow:inset 0 -6px 0 rgba(18,19,29,.16),0 16px 22px -10px rgba(18,19,29,.45)}
+.brick.press{transform:translateY(2px) scale(.97);transition-duration:.18s}
+.brick::after{content:'';position:absolute;left:10px;right:10px;top:-9px;height:16px;pointer-events:none;background:linear-gradient(100deg,transparent 35%,rgba(255,255,255,.75) 50%,transparent 65%) 150% 0/250% 100% no-repeat;-webkit-mask:var(--studs),linear-gradient(#000,#000) 0 9px/100% 7px no-repeat;mask:var(--studs),linear-gradient(#000,#000) 0 9px/100% 7px no-repeat}
+.brick.shine::after{background-position:-50% 0;transition:background-position .45s ease-out}
+.brick .may{position:absolute;left:18px;top:calc(100% + 10px);max-width:min(300px,calc(100% - 8px));margin:0;padding:8px 12px;border-radius:4px;background:var(--white);color:var(--ink);font-size:.9rem;line-height:1.4;box-shadow:0 8px 18px -8px rgba(18,19,29,.45);opacity:0;transform:translateY(-8px) scaleY(.7);transform-origin:top;transition:opacity .2s,transform .2s;pointer-events:none}
+.brick .may::before{content:'';position:absolute;left:22px;top:-12px;width:2px;height:12px;background:#8a8270}
+.brick .may b{display:block;font-size:.78rem;color:var(--sub)}
+.brick.up .may{opacity:1;transform:none}
+
+/* no cloud: a picture per edition */
+.fleet{background:var(--night);color:var(--on-night)}
+/* Wider than the other sections, as the demo is, so the drawings can grow. */
+.fleet .in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:56px;align-items:center;max-width:1480px}
+/* The text keeps the other sections' left edge; the drawing takes the extra width at the right. */
+@media (min-width:1001px){.fleet .in{padding-left:max(24px,min(184px,calc((100vw - 1160px) / 2 + 24px)))}}
+.fleet p{color:var(--sub-night);max-width:50ch}
+.fleet ul{list-style:none;padding:0;margin:22px 0 28px}.fleet li{padding:8px 0 8px 30px;position:relative}
+.fleet li::before{content:'';position:absolute;left:0;top:15px;width:14px;height:8px;border-left:2.5px solid var(--sky);border-bottom:2.5px solid var(--sky);transform:rotate(-45deg)}
+.net{width:100%;height:auto;display:block}
+.net text{font:600 18px 'Atkinson',sans-serif;fill:var(--sub-night)}
+.net .nocloud{stroke:#5e6488;fill:none;stroke-width:2}
+.net .panel{fill:var(--night-2);stroke:var(--night-edge);stroke-width:1.5}
+.net .scr{fill:var(--night-3)}
+.net .tile{opacity:.75}
+.net .orbit{fill:var(--sky);opacity:0}
+.fleet.live .net .orbit{opacity:1;animation:orbit 6s linear infinite}
+.net .o2{animation-duration:7.5s !important;animation-delay:-2s !important}.net .o3{animation-duration:5.2s !important;animation-delay:-4s !important}
+@keyframes orbit{0%{offset-distance:0%}100%{offset-distance:100%}}
+.net .place{fill:none;stroke:var(--night-edge);stroke-width:1.5;stroke-dasharray:4 6}
+.net .mgr{fill:var(--night-3);stroke:var(--sky);stroke-width:2}
+.net .scrn{fill:var(--night-2);stroke:var(--night-edge);stroke-width:1.5}
+.net .scrn-in{fill:var(--night-3)}
+.net .slot{fill:var(--sky)}
+.net .pop{transform-box:fill-box;transform-origin:center}
+.fleet.live .net .pop,.fleet.live .net .slot{animation:pop .5s cubic-bezier(.3,1.5,.55,1) backwards}
+@keyframes pop{0%{opacity:0;transform:scale(.6)}100%{opacity:1;transform:none}}
+.net .ray{stroke:var(--sky);stroke-width:1.5;opacity:.35}
+.net .beam{fill:var(--sky);opacity:0}
+.fleet.live .net .beam{animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%{offset-distance:0%;opacity:0}10%{opacity:1}80%{opacity:1}100%{offset-distance:100%;opacity:0}}
+.net .site{fill:none;stroke:var(--night-edge);stroke-width:1.5}
+.net .page{fill:var(--night-3);stroke:var(--sky);stroke-width:2}
+.net .db{fill:var(--night-3);stroke:var(--gold);stroke-width:2}
+.net .log{stroke:var(--gold);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:3 14;fill:none;opacity:.8}
+.fleet.live .net .log{animation:logs 1.4s linear infinite}
+@keyframes logs{to{stroke-dashoffset:-34}}
+
+/* price */
+.price{border-top:1px solid var(--line)}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px;align-items:start}
+.tier{position:relative;z-index:1;border-radius:20px;padding:32px;border:1.5px solid var(--line);background:var(--white);transition:color .35s,border-color .35s}
+.tier-pic{display:block;width:120px;height:56px;margin-bottom:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;opacity:.75}
+.tier-pic .d{stroke-dasharray:2 4;stroke-linecap:round}.tier-pic .pin{stroke:var(--gold);stroke-width:2.5}
+/* The chosen edition's dark card is one shape behind the three (home.js), so it slides to the card
+   the switch at the top picks; without scripts each card carries its own dark background. */
+.tiers{position:relative}
+.tier-hl{position:absolute;left:0;top:0;z-index:0;border-radius:20px;background:var(--night);transition:transform .35s ease,width .35s ease,height .35s ease}
+html.js .tiers .tier{background:var(--white)}
+html.js[data-mode="home"] .tiers [data-tier="free"],html.js[data-mode="pro"] .tiers [data-tier="pro"],html.js[data-mode="business"] .tiers [data-tier="business"]{background:transparent}
+@media (prefers-reduced-motion:reduce){.tier-hl,.tier{transition:none}}
+.tier h3{font-size:1.4rem}.tier .amount{font:800 2.6rem/1 var(--display);margin:14px 0 4px}
+
+.tier .note{color:var(--sub);font-size:.95rem;margin:0 0 18px}
+.tier ul{margin:0;padding:0;list-style:none}.tier li{padding:8px 0;border-top:1px solid var(--line)}
+.sizes{margin:0 0 18px;padding:0;list-style:none}
+.sizes li{display:flex;justify-content:space-between;gap:12px}
+.sizes b{font-family:var(--display);white-space:nowrap}
+html[data-mode="home"] [data-tier="free"],html[data-mode="pro"] [data-tier="pro"],html[data-mode="business"] [data-tier="business"]
+{background:var(--night);color:var(--on-night);border-color:var(--night)}
+html[data-mode="home"] [data-tier="free"] .note,html[data-mode="pro"] [data-tier="pro"] .note,html[data-mode="business"] [data-tier="business"] .note{color:var(--sub-night)}
+html[data-mode="home"] [data-tier="free"] li,html[data-mode="pro"] [data-tier="pro"] li,html[data-mode="business"] [data-tier="business"] li{border-color:var(--night-line)}
+.price .small{margin-top:24px;color:var(--sub);font-size:.95rem;max-width:66ch}
+
+/* install and requirements */
+.install{background:var(--wall)}
+.ways{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:44px}
+.way{display:flex;flex-direction:column;background:var(--white);border-radius:20px;padding:30px;border:1.5px solid var(--line)}
+.way h3{font-size:1.3rem}.way p{color:var(--sub);margin:10px 0 0}
+/* Each card's action sits at its bottom-left corner, level with the other card's. The Play
+   badge's image carries 41 of its 646 px as a clear margin, so it is pulled out by that much
+   (13 px at 202 px wide, where its visible part is as tall as the button) to line it up with the button. */
+.way .way-act{margin:auto 0 0;padding-top:24px;display:flex;align-items:center;min-height:50px}
+.way .way-act .btn{min-height:50px}
+.way .play{display:block;line-height:0;margin:-13px 0 -13px -13px}
+.way .play img{display:block;width:202px;height:auto}
+/* Each way as a small tablet: a QR and a lock for the full panel, plain app icons for Play. */
+.way-pic{display:block;width:150px;height:auto;margin-bottom:14px}
+.way-pic .t{fill:#14151f}.way-pic .g{fill:#262a3c}.way-pic .q rect{fill:var(--sky)}
+.way-pic .lock{fill:var(--blue)}.way-pic .k{fill:none;stroke:#fff;stroke-width:2;stroke-linejoin:round}
+.way-pic .a rect{fill:#4a4f6a}.way-pic .a .m{fill:var(--sky)}
+.needs-line{margin:40px 0 0;color:var(--sub);font-size:1.05rem}.needs-line a{color:var(--blue);font-weight:700}
+
+/* the end */
+.end{background:var(--night);color:var(--on-night);text-align:center;padding:96px 0 40px}
+/* The page ends as it begins: a tablet switching on with the chosen edition's page, once. */
+.end-tablet{width:min(300px,70vw);margin:0 auto 40px;padding:10px;border-radius:20px}
+.end-tablet .glass img{opacity:0}
+.end.seen .end-tablet .glass img{animation:poweron 1.1s .2s ease-out both}
+@media (prefers-reduced-motion:reduce){.end .end-tablet .glass img{opacity:1;animation:none}}
+.end h2{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;margin:0 auto 26px;line-height:1.05}
+@media (min-width:700px){.end h2{white-space:nowrap}}
+.end .source{max-width:56ch;margin:56px auto 0;color:var(--sub-night);font-size:.95rem}
+.end .small{margin-top:40px;color:var(--sub-night);font-size:.9rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid var(--night-line);padding-top:24px}
+.end .small nav{position:static;background:none;backdrop-filter:none;display:flex;gap:18px;flex-wrap:wrap}
+.end .small a{color:var(--sub-night)}.end .small nav a{display:inline-block;padding-block:10px}.end .small a:hover{color:#fff}
+
+/* The status light, to try: the tablet's frame takes the colour the controls pick, as the panel's
+   own frame does (a band around the edge of the screen, over the page). Home Assistant's light
+   card on one side, Uptime Kuma's monitors on the other; light.js drives both. */
+/* Your other systems: the visitor plays a doorbell, a monitor, a queue or a calendar; the command
+   travels the wire and the drawn panel shows what it does. Results are layers over the tablet's
+   glass, so nothing around them moves. */
+.talk{background:var(--white)}
+.talkdemo{position:relative}
+.scenes{display:flex;flex-wrap:wrap;gap:8px;margin-top:40px}
+.scenes button{font:700 .95rem 'Atkinson',sans-serif;border:1.5px solid var(--line);border-radius:999px;padding:10px 18px;min-height:44px;background:var(--white);color:var(--sub);cursor:pointer}
+.scenes button:hover{border-color:var(--sub);color:var(--ink)}
+.scenes button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.rig{display:grid;grid-template-columns:minmax(250px,300px) minmax(140px,190px) minmax(0,1fr);gap:0;align-items:center;margin-top:28px}
+.svc{display:flex;flex-direction:column;min-height:300px;padding:22px;border-radius:20px;background:var(--paper);border:1.5px solid var(--line)}
+.svc-kind{margin:0 0 14px;color:var(--sub);font-size:.85rem;font-weight:700}
+.svc-body{flex:1}
+.svc-body h3{margin:0 0 4px;font-size:1.2rem}.svc-body p{margin:0;color:var(--sub);font-size:.95rem}
+.svc-body .svc-big{font:700 2rem/1.1 var(--display);color:var(--ink);margin:6px 0 4px}
+.svc-list{list-style:none;margin:6px 0 0;padding:0}
+.svc-list li{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.svc-list li:last-child{border-bottom:0}
+.svc-list i{width:10px;height:10px;border-radius:50%;background:#2fa866;flex:none}
+.svc-list li.down i{background:#d33}.svc-list li.down{font-weight:700}
+.svc-list li span{margin-left:auto;color:var(--sub);font-size:.85rem}
+.svc-slot{display:flex;justify-content:space-between;padding:8px 10px;margin-top:6px;border-radius:8px;background:var(--white);font-size:.92rem}
+.svc-slot.booked{background:#fde3e3;color:#7a1414;font-weight:700}
+.svc-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.svc-acts .btn{padding:10px 18px;min-height:44px;font-size:.95rem}
+.svc-acts .btn[hidden]{display:none}
+.wire{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;height:100%;padding:0 10px;text-align:center}
+.wire .line{position:relative;width:100%;height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px)}
+.wire .line::after{content:'';position:absolute;right:-2px;top:-5px;border:6px solid transparent;border-left:8px solid var(--line);border-right:0}
+.cmds{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:56px;justify-content:flex-end}
+.cmds code{font-size:.8rem;padding:4px 8px;border-radius:6px;background:var(--ink);color:#fff;white-space:nowrap}
+.route{min-height:2.6em;color:var(--sub);font-size:.82rem;line-height:1.3}
+.route .soon-tag{margin:0}
+.talkdemo .tablet{padding:12px;border-radius:22px}
+.talkdemo .glass{container-type:inline-size;background:#0b0f14}
+.talkdemo .glass>*{position:absolute}
+.talkdemo .glass .base{inset:0}
+.talkdemo .page{inset:0;display:flex;flex-direction:column;justify-content:center;gap:2cqw;padding:6cqw 9cqw;background:#10131c;color:#fff;font:400 2.4cqw/1.3 system-ui,sans-serif;line-height:1.3}
+.talkdemo .page[hidden]{display:none}
+.page .pg-title{margin:0;font-weight:800;font-size:6cqw;line-height:1.05}
+.page .pg-sub{margin:0;font-size:2.8cqw;opacity:.8}
+.page.closed{background:#2b2219;color:#f6ead8;text-align:center;align-items:center}
+.page.busy{background:#5e1414;color:#fff}
+.page.busy .pg-tag{align-self:flex-start;padding:1cqw 2.4cqw;border-radius:99px;background:#fff;color:#5e1414;font-weight:800;font-size:2.4cqw}
+.page.status{justify-content:flex-start;background:#0b0f14}
+.page.status .k-banner{margin:0;padding:2cqw;border-radius:1.2cqw;text-align:center;font-weight:700;font-size:2.8cqw;background:#dc3545}
+.page.status ul{list-style:none;margin:0;padding:1cqw 2.4cqw;border-radius:1.2cqw;background:#161b22}
+.page.status li{display:flex;justify-content:space-between;padding:1.4cqw 0;border-bottom:1px solid #2a313b}
+.page.status li:last-child{border-bottom:0}
+.page.status li i{font-style:normal;font-weight:700;padding:.4cqw 1.6cqw;border-radius:99px;background:#5cdd8b;color:#0b2a17}
+.page.status li.down i{background:#dc3545;color:#fff}
+.talkdemo .frame{inset:0;pointer-events:none;opacity:0;transition:opacity .4s ease;box-shadow:inset 0 0 0 1.6cqw rgba(235,55,55,.9),inset 0 0 3.2cqw 1.6cqw rgba(235,55,55,.4)}
+.talkdemo.lit .frame{opacity:1}
+.talkdemo .pop{left:50%;bottom:6cqw;width:46cqw;transform:translateX(-50%);padding:2.4cqw;border-radius:2cqw;background:#fff;color:#191b28;box-shadow:0 2cqw 5cqw rgba(0,0,0,.45);font:400 2.3cqw/1.35 system-ui,sans-serif;cursor:pointer;animation:pop-in .35s cubic-bezier(.3,1.3,.6,1)}
+.talkdemo .pop[hidden]{display:none}
+.pop b{display:block;font-size:2.6cqw;margin-bottom:.6cqw}
+.pop svg{display:block;width:100%;height:auto;border-radius:1.2cqw;margin-bottom:1.4cqw}
+@keyframes pop-in{from{opacity:0;transform:translate(-50%,3cqw)}}
+.talkdemo .say{top:4cqw;right:4cqw;max-width:54cqw;margin:0;padding:1.6cqw 2.4cqw 1.6cqw 6cqw;border-radius:3cqw 3cqw 3cqw .6cqw;background:var(--sky);color:var(--on-sky);font:700 2.3cqw/1.3 system-ui,sans-serif;animation:pop-in-say .35s ease}
+.talkdemo .say[hidden]{display:none}
+.talkdemo .say::before{content:'';position:absolute;left:2cqw;top:50%;width:2.8cqw;height:2.8cqw;transform:translateY(-50%);background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 9v6h4l5 4V5L8 9zM16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 9v6h4l5 4V5L8 9zM16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+@keyframes pop-in-say{from{opacity:0;transform:scale(.9)}}
+.talkdemo .dark{inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .6s ease}
+.talkdemo.off .dark{opacity:1}
+.talkdemo .packet{position:absolute;z-index:3;padding:4px 8px;border-radius:6px;background:var(--blue);color:#fff;font:600 .8rem ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap;pointer-events:none}
+.status{min-height:3em;margin:20px 0 0;color:var(--sub);font-size:.95rem;max-width:66ch}
+.status .ok{display:inline-block;margin-right:6px;padding:2px 10px;border-radius:999px;background:#d7f1e1;color:#0e4a26;font-weight:700;font-size:.85rem}
+.talk-ha{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:40px;align-items:center;margin-top:64px;padding-top:40px;border-top:1px solid var(--line)}
+/* The panel as Home Assistant's device page lists it, drawn: the scenes above change its rows
+   (talk.js), and a changed row lights up once. Home Assistant's own light card colours. */
+.ha-card{background:#fff;color:#212121;border-radius:12px;border:1px solid #e0e0e0;box-shadow:0 2px 10px -4px rgba(0,0,0,.18);padding:14px 0 6px;font:400 .92rem/1.3 'Atkinson',sans-serif}
+.ha-head{display:flex;justify-content:space-between;align-items:baseline;margin:0;padding:0 16px;font-weight:700;font-size:1rem}
+.ha-head small{font-weight:400;color:#727272;font-size:.78rem}
+.ha-cap{margin:8px 0 2px;padding:0 16px;color:#727272;font-size:.82rem}
+.ha-card ul{list-style:none;margin:0;padding:0}
+.ha-card li{display:flex;align-items:center;gap:12px;min-height:46px;padding:4px 16px;transition:background .6s}
+.ha-ic{flex:none;width:22px;height:22px;border-radius:50%;background:#44739e;opacity:.85}
+.ha-name{flex:1}
+.ha-val{flex:none;color:#727272;max-width:52%;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ha-btn{color:#0277bd;font-weight:700;text-transform:uppercase;font-size:.8rem;letter-spacing:.04em}
+.ha-sw{display:inline-block;vertical-align:middle;width:34px;height:14px;border-radius:7px;background:#bdbdbd;position:relative;transition:background .3s}
+.ha-sw::after{content:'';position:absolute;top:-3px;left:-2px;width:20px;height:20px;border-radius:50%;background:#fafafa;box-shadow:0 1px 3px rgba(0,0,0,.4);transition:transform .3s,background .3s}
+.ha-sw.on{background:#9fd7f3}.ha-sw.on::after{transform:translateX(18px);background:#03a9f4}
+.ha-card li.on .ha-ic{background:var(--led,#ffc107);opacity:1}
+.ha-card li.hit{animation:ha-hit 1.6s ease-out}
+@keyframes ha-hit{0%,30%{background:#fff3c4}100%{background:transparent}}
+@media (prefers-reduced-motion:reduce){.ha-card li.hit{animation:none}.ha-sw,.ha-sw::after{transition:none}}
+.talk-ha h3{margin:0 0 8px;font-size:1.3rem}
+.talk-ha p{margin:0 0 12px;max-width:60ch}
+.talk-ha .small{color:var(--sub);font-size:.95rem}
+.soon-tag{display:inline-block;margin-right:6px;padding:2px 10px;border-radius:999px;background:var(--sky);color:var(--on-sky);font-weight:700;font-size:.85rem}
+/* Below 1100 px the bar's links move into a menu under the bar, opened by Menu, as on the other pages. */
+nav .menubtn{display:none;align-items:center;justify-content:center;gap:8px;min-height:44px;min-width:44px;padding:0 14px;border:1px solid var(--night-edge);border-radius:999px;background:none;color:var(--on-night);font:700 .9rem 'Atkinson',sans-serif;cursor:pointer}
+nav .menubtn:hover,nav .menubtn[aria-expanded="true"]{background:var(--night-3)}
+nav .menubtn .bars{width:16px;height:12px;background:linear-gradient(currentColor 0 2px,transparent 2px 5px,currentColor 5px 7px,transparent 7px 10px,currentColor 10px 12px)}
+.homemenu{border-top:1px solid var(--night-line);background:var(--night);max-height:calc(100vh - 64px);overflow-y:auto}
+.homemenu[hidden]{display:none}
+.homemenu .in{display:block;height:auto;padding-top:8px;padding-bottom:20px}
+.homemenu ul{display:block;margin:0;padding:0;list-style:none;font-size:1.05rem}
+.homemenu ul a{display:flex;align-items:center;min-height:48px;color:var(--on-night)}
+.homemenu .menuhead{margin:16px 0 4px;color:var(--sub-night);font-size:.85rem;font-weight:700}
+.homemenu .btn{display:flex;justify-content:center;width:100%;margin-top:16px;min-height:48px}
+@media (max-width:1100px){nav>.in>ul{display:none}nav .menubtn{display:inline-flex}}
+@media (min-width:1101px){.homemenu{display:none}}
+/* The bar keeps its own Get Muralis down to 600 px; the menu repeats it only below. */
+@media (min-width:601px){.homemenu .btn{display:none}}
+@media (max-width:900px){
+ .day .in{grid-template-columns:1fr;gap:24px}
+ .stage{top:64px;z-index:5;background:var(--paper);margin:0 -24px;padding:10px 24px 14px;box-shadow:0 12px 16px -12px rgba(18,19,29,.12)}
+ .room{padding:40px 26px 18px}.room .cordlet{display:none}
+ .steps{margin-top:24px}.step{min-height:46vh}
+ .fleet .in{grid-template-columns:1fr;gap:32px}
+ .rig{grid-template-columns:1fr}.svc{min-height:0}
+ .wire{height:auto;padding:14px 0}.wire .line{width:2px;height:40px;background:repeating-linear-gradient(180deg,var(--line) 0 8px,transparent 8px 14px)}
+ .wire .line::after{right:auto;left:-5px;top:auto;bottom:-2px;border:6px solid transparent;border-top:8px solid var(--line);border-bottom:0}
+ .cmds{min-height:0;flex-direction:row;flex-wrap:wrap;justify-content:center}.route{min-height:0}
+ .talk-ha{grid-template-columns:minmax(0,1fr);gap:20px}
+ .fleet .net{width:calc(100% + 48px);margin-inline:-24px}
+ .tiers,.ways{grid-template-columns:1fr}
+ .brick{grid-column:span 6}
+ section{padding:72px 0}}
+@media (max-width:600px){nav .mode button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}nav .mode button{padding:7px 12px;min-height:44px;min-width:44px}nav>.in>.btn{display:none}nav .in{gap:10px}nav .menubtn{padding:0 12px}nav .menubtn-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}}
+@media (max-width:560px){.brick{grid-column:span 12}.scenes{flex-wrap:nowrap;overflow-x:auto;margin-inline:-24px;padding-inline:24px;scrollbar-width:none}.scenes button{flex:none}}
+@media (prefers-reduced-motion:reduce){
+ *{animation:none !important;transition:none !important}html{scroll-behavior:auto}
+ .brick.up,.brick.press{transform:none}
+ .hero .glass .reel,.socket,.glow{opacity:1}.cord path{stroke-dashoffset:0}}
+
+/* 13 and 14 inch laptops (review, 2026-10-20): sections size to the window's height, so each
+   one designed as a screen fits under the bar and, for the demo, under its sticky guide. */
+@media (min-width:1001px){
+ section{padding:clamp(48px,9vh,96px) 0}
+ #does{padding:clamp(48px,9vh,96px) 16px clamp(56px,10vh,104px)}
+ /* The demo under its guide: 76 px bar, guide and gap make 190 px. */
+ .demo{--fit:calc(100svh - 190px);margin-top:24px}
+ .demo-tablet-col{max-width:min(980px,calc((var(--fit) - 28px) * 1.6 + 28px))}
+ .demo-phone iframe{aspect-ratio:auto;height:min(597px,calc(var(--fit) - 68px))}
+}
+@media (min-width:1001px) and (max-height:900px){
+ /* The bento: its heading on one line, shorter pictures, the wide tile as a row. */
+ #does h2{font-size:clamp(2.3rem,min(5.4vw,8vh),4rem);max-width:none}
+ #does .bento{margin-top:clamp(24px,4vh,48px)}
+ #does .tile:not(.big):not(.wide) .scene{aspect-ratio:auto;height:clamp(96px,16vh,140px)}
+ #does .tile.big .scene{min-height:0}
+ #does .tile.wide{flex-direction:row;align-items:center;gap:8px;padding-bottom:14px}
+ #does .tile.wide .scene{flex:0 0 50%;height:clamp(110px,17vh,150px)}
+ #does .tile.wide .txt h3{margin-top:0}
+ #does .cta{padding:20px 26px}
+ .fleet ul{margin:16px 0 20px}.fleet li{padding:5px 0 5px 30px}.fleet li::before{top:12px}
+ .scenes{margin-top:24px}.rig{margin-top:20px}
+}
+/* Firefox let the big bento tile's picture collapse to nothing on phones and tablets. */
+@media (max-width:1000px){#does .tile.big .scene{flex:none}}

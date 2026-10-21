@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b6fa8"/>
+      <stop offset="0.35" stop-color="#d98a8a"/>
+      <stop offset="0.7" stop-color="#f6b26b"/>
+      <stop offset="1" stop-color="#fde3a0"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fff6d0"/>
+      <stop offset="0.25" stop-color="#ffd98a" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#ffb35c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mFar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b78aa3"/>
+      <stop offset="1" stop-color="#d9a6a0"/>
+    </linearGradient>
+    <linearGradient id="mMid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7b5f86"/>
+      <stop offset="1" stop-color="#a4788a"/>
+    </linearGradient>
+    <linearGradient id="mNear" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4c4468"/>
+      <stop offset="1" stop-color="#5e5272"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f3b878" stop-opacity="0.35"/>
+      <stop offset="0.5" stop-color="#6d6f9c" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#36406e" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="bank" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a7a3c"/>
+      <stop offset="1" stop-color="#3f4a2a"/>
+    </linearGradient>
+    <linearGradient id="coat" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a4038"/>
+      <stop offset="1" stop-color="#2a2024"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffbe6b" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffbe6b" stop-opacity="0.9"/>
+    </linearGradient>
+    <clipPath id="lake"><rect x="0" y="560" width="1600" height="440"/></clipPath>
+    <g id="range">
+      <path d="M0,560 L0,420 L120,360 L230,410 L380,300 L520,400 L640,340 L760,420 L880,330 L1000,390 L1120,300 L1260,380 L1400,320 L1520,370 L1600,350 L1600,560 Z" fill="url(#mFar)"/>
+      <path d="M0,560 L0,470 L160,380 L250,430 L420,250 L560,420 L660,470 L800,560 Z" fill="url(#mMid)"/>
+      <path d="M420,250 L470,310 L445,305 L430,330 L405,300 L385,312 Z" fill="#f6e2e2"/>
+      <path d="M760,560 L940,360 L1020,420 L1110,330 L1250,450 L1380,420 L1600,520 L1600,560 Z" fill="url(#mMid)"/>
+      <path d="M1110,330 L1150,370 L1132,368 L1118,386 L1100,366 L1080,364 Z" fill="#f8e6e0"/>
+      <path d="M940,360 L972,396 L952,392 L940,408 L926,390 L914,390 Z" fill="#f8e6e0"/>
+      <path d="M0,560 L0,500 L80,470 L180,520 L300,490 L420,540 L520,560 Z" fill="url(#mNear)"/>
+      <path d="M1100,560 L1260,500 L1380,520 L1500,480 L1600,500 L1600,560 Z" fill="url(#mNear)"/>
+      <g fill="#3a3656">
+        <path d="M60,560 L80,500 L100,560 Z"/><path d="M95,560 L118,486 L140,560 Z"/><path d="M135,560 L152,508 L170,560 Z"/>
+        <path d="M200,560 L222,494 L244,560 Z"/><path d="M1300,560 L1320,506 L1340,560 Z"/><path d="M1340,560 L1364,490 L1388,560 Z"/>
+        <path d="M1390,560 L1408,512 L1426,560 Z"/>
+      </g>
+    </g>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <circle cx="1190" cy="340" r="320" fill="url(#sunGlow)"/>
+  <circle cx="1190" cy="322" r="52" fill="#fff4cc"/>
+  <g fill="#f9c6a0" opacity="0.7">
+    <path d="M140,170 C220,150 330,160 420,176 C330,186 230,188 140,170 Z"/>
+    <path d="M520,110 C640,92 760,100 860,118 C760,128 620,128 520,110 Z"/>
+    <path d="M1180,200 C1280,184 1380,190 1470,204 C1380,214 1270,214 1180,200 Z"/>
+  </g>
+
+  <!-- water base and reflection -->
+  <rect x="0" y="560" width="1600" height="440" fill="#d79a7a"/>
+  <g clip-path="url(#lake)" opacity="0.75">
+    <use href="#range" transform="translate(0,1120) scale(1,-1)"/>
+  </g>
+  <rect x="0" y="560" width="1600" height="440" fill="url(#water)"/>
+  <use href="#range"/>
+  <rect x="0" y="558" width="1600" height="4" fill="#f9d29a" opacity="0.6"/>
+  <!-- sun path on water -->
+  <g fill="#ffe7b0" transform="translate(190,0)">
+    <rect x="950" y="580" width="100" height="4" rx="2" opacity="0.9"/>
+    <rect x="930" y="604" width="140" height="4" rx="2" opacity="0.8"/>
+    <rect x="960" y="630" width="80" height="4" rx="2" opacity="0.75"/>
+    <rect x="910" y="660" width="170" height="5" rx="2.5" opacity="0.65"/>
+    <rect x="940" y="696" width="120" height="5" rx="2.5" opacity="0.55"/>
+    <rect x="890" y="740" width="200" height="6" rx="3" opacity="0.45"/>
+  </g>
+  <g stroke="#f2c08c" stroke-width="2" opacity="0.4" stroke-linecap="round">
+    <path d="M140,640 L300,640"/><path d="M420,700 L560,700"/><path d="M1220,620 L1380,620"/><path d="M1300,720 L1480,720"/>
+  </g>
+
+  <!-- foreground bank -->
+  <path d="M0,800 C200,780 420,770 640,790 C800,804 960,800 1100,830 C1240,860 1300,900 1340,1000 L0,1000 Z" fill="url(#bank)"/>
+  <path d="M1340,1000 C1380,960 1460,930 1600,920 L1600,1000 Z" fill="#3f4a2a"/>
+  <g fill="#6b6050">
+    <ellipse cx="1150" cy="850" rx="70" ry="28"/><ellipse cx="1240" cy="880" rx="46" ry="20"/>
+  </g>
+  <g fill="#a39478">
+    <ellipse cx="1140" cy="842" rx="56" ry="16"/><ellipse cx="1234" cy="874" rx="34" ry="11"/>
+  </g>
+  <!-- left pines -->
+  <g fill="#2e3246">
+    <path d="M90,820 L160,520 L230,820 Z"/><path d="M110,700 L160,470 L210,700 Z"/>
+    <rect x="152" y="810" width="16" height="30" fill="#2a2420"/>
+    <path d="M230,830 L280,610 L330,830 Z"/><path d="M246,730 L280,570 L314,730 Z"/>
+  </g>
+
+  <ellipse cx="760" cy="852" rx="190" ry="20" fill="#2e2a20" opacity="0.45"/>
+
+  <!-- dog, sitting, looking at the lake -->
+  <g transform="translate(-40,62)">
+    <path d="M690,760 C640,756 596,730 580,690 C574,672 592,664 600,680 C616,710 650,726 696,732 Z" fill="url(#coat)"/>
+    <path d="M700,786 C660,780 650,720 690,680 C720,650 770,655 790,690 C805,720 800,780 760,790 Z" fill="url(#coat)"/>
+    <path d="M700,770 C695,690 730,610 795,575 C840,552 880,575 884,625 C890,690 872,745 858,790 L720,790 Z" fill="url(#coat)"/>
+    <path d="M835,600 C868,600 884,640 880,690 C877,730 866,760 858,788 L828,788 C834,740 830,690 818,650 Z" fill="#f4ebe2"/>
+    <path d="M728,712 C760,700 790,720 795,760 C798,780 790,790 780,792 L705,792 C690,770 700,722 728,712 Z" fill="#3a2c2c"/>
+    <ellipse cx="760" cy="790" rx="42" ry="13" fill="#f4ebe2"/>
+    <path d="M818,680 L842,680 L846,786 L818,786 Z" fill="#e6d8cc"/>
+    <path d="M848,680 L874,680 L870,786 L846,786 Z" fill="#f4ebe2"/>
+    <ellipse cx="832" cy="788" rx="20" ry="10" fill="#f4ebe2"/>
+    <ellipse cx="864" cy="788" rx="21" ry="10" fill="#fffaf4"/>
+    <path d="M880,610 C886,650 884,700 876,740" fill="none" stroke="#ffc27a" stroke-width="5" stroke-linecap="round" opacity="0.8"/>
+    <circle cx="852" cy="525" r="62" fill="url(#coat)"/>
+    <path d="M856,466 C858,496 866,528 880,556 L856,562 C850,530 850,496 856,466 Z" fill="#f4ebe2"/>
+    <path d="M880,520 C930,520 960,535 962,560 C964,585 935,598 900,596 C870,594 858,575 860,555 Z" fill="#f4ebe2"/>
+    <path d="M893,578 C912,588 935,588 950,580" fill="none" stroke="#4a3a36" stroke-width="3.5" stroke-linecap="round"/>
+    <ellipse cx="958" cy="548" rx="15" ry="11" fill="#1d1618"/>
+    <circle cx="886" cy="508" r="8.5" fill="#1d1618"/>
+    <circle cx="889" cy="505" r="2.8" fill="#ffffff"/>
+    <path d="M826,486 C800,470 780,500 786,540 C790,566 806,584 822,578 C838,572 840,540 840,514 C840,498 836,490 826,486 Z" fill="#2a2024"/>
+    <path d="M808,486 C794,500 788,520 788,540" fill="none" stroke="#ffc27a" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+    <path d="M800,612 C826,628 858,630 884,616" fill="none" stroke="#3b7fc4" stroke-width="12" stroke-linecap="round"/>
+  </g>
+
+  <!-- reeds and grass -->
+  <g stroke="#4a5230" stroke-width="5" stroke-linecap="round" fill="none">
+    <path d="M1400,1000 C1396,920 1404,860 1398,800"/><path d="M1430,1000 C1436,930 1428,880 1440,830"/>
+    <path d="M1470,1000 C1466,940 1476,890 1470,850"/><path d="M1520,1000 C1528,930 1518,870 1530,790"/>
+  </g>
+  <g fill="#6b4a2c">
+    <rect x="1391" y="790" width="14" height="50" rx="7"/><rect x="1433" y="820" width="14" height="44" rx="7"/>
+    <rect x="1523" y="780" width="14" height="52" rx="7"/>
+  </g>
+  <g fill="#34401f">
+    <path d="M0,1000 L20,920 L34,1000 L52,900 L66,1000 L86,930 L100,1000 Z"/>
+    <path d="M300,1000 L316,940 L328,1000 L346,920 L360,1000 L378,950 L392,1000 Z"/>
+    <path d="M560,1000 L574,950 L586,1000 L602,930 L616,1000 Z"/>
+    <path d="M1000,1000 L1014,945 L1026,1000 L1044,930 L1058,1000 L1074,955 L1088,1000 Z"/>
+  </g>
+</svg>

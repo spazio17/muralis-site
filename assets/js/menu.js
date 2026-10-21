@@ -4,7 +4,7 @@
  * The panel carries `hidden` in the markup rather than being hidden by CSS, so it is shut
  * before this file runs and a reader with no JavaScript is left with a button that does
  * nothing rather than a panel stuck open across the page. That is the same bargain
- * setup.js and waydeck.js make with their decks.
+ * setup.js makes with its deck.
  *
  * Closing on Escape, on a click outside, and on following a link inside are all the same
  * rule: the panel is a detour, and anything that means "I am done here" should end it.

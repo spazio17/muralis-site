@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800">
+<rect width="1280" height="800" fill="#f4f6f8"/>
+<text x="60" y="100" font-family="Helvetica,Arial,sans-serif" font-size="44" font-weight="700" fill="#1d2a36">Floor 3 rooms</text>
+<text x="1220" y="100" text-anchor="end" font-family="Helvetica,Arial,sans-serif" font-size="32" fill="#5b6b78">Thursday 14:05</text>
+<g font-family="Helvetica,Arial,sans-serif">
+<rect x="60" y="160" width="370" height="270" rx="20" fill="#1f9d63"/><text x="90" y="230" font-size="38" font-weight="700" fill="#fff">Alps</text><text x="90" y="290" font-size="30" fill="#dff7ea">Free until 15:00</text><text x="90" y="400" font-size="26" fill="#dff7ea">8 seats</text>
+<rect x="455" y="160" width="370" height="270" rx="20" fill="#d9534f"/><text x="485" y="230" font-size="38" font-weight="700" fill="#fff">Lagoon</text><text x="485" y="290" font-size="30" fill="#fde4e3">Busy until 14:45</text><text x="485" y="400" font-size="26" fill="#fde4e3">4 seats</text>
+<rect x="850" y="160" width="370" height="270" rx="20" fill="#1f9d63"/><text x="880" y="230" font-size="38" font-weight="700" fill="#fff">Dolomiti</text><text x="880" y="290" font-size="30" fill="#dff7ea">Free all afternoon</text><text x="880" y="400" font-size="26" fill="#dff7ea">12 seats</text>
+<rect x="60" y="460" width="370" height="270" rx="20" fill="#e8a33c"/><text x="90" y="530" font-size="38" font-weight="700" fill="#fff">Prater</text><text x="90" y="590" font-size="30" fill="#fff4e0">Starts in 10 min</text><text x="90" y="700" font-size="26" fill="#fff4e0">6 seats</text>
+<rect x="455" y="460" width="370" height="270" rx="20" fill="#d9534f"/><text x="485" y="530" font-size="38" font-weight="700" fill="#fff">Lido</text><text x="485" y="590" font-size="30" fill="#fde4e3">Busy until 16:00</text><text x="485" y="700" font-size="26" fill="#fde4e3">10 seats</text>
+<rect x="850" y="460" width="370" height="270" rx="20" fill="#1f9d63"/><text x="880" y="530" font-size="38" font-weight="700" fill="#fff">Kahlenberg</text><text x="880" y="590" font-size="30" fill="#dff7ea">Free until 17:30</text><text x="880" y="700" font-size="26" fill="#dff7ea">2 seats</text>
+</g></svg>

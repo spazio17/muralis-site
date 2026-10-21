@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800">
+<rect width="1280" height="800" fill="#eef6f7"/>
+<rect width="1280" height="120" fill="#0f6b74"/><text x="60" y="78" font-family="Helvetica,Arial,sans-serif" font-size="40" font-weight="700" fill="#fff">Dr. Berger, family practice</text>
+<text x="60" y="260" font-family="Helvetica,Arial,sans-serif" font-size="40" fill="#0f6b74">Now calling</text>
+<text x="60" y="470" font-family="Helvetica,Arial,sans-serif" font-size="220" font-weight="700" fill="#0b3d42">A 042</text>
+<text x="60" y="560" font-family="Helvetica,Arial,sans-serif" font-size="40" fill="#0f6b74">Room 2</text>
+<rect x="760" y="200" width="460" height="520" rx="24" fill="#fff"/>
+<text x="800" y="270" font-family="Helvetica,Arial,sans-serif" font-size="32" font-weight="700" fill="#0b3d42">Next</text>
+<g font-family="Helvetica,Arial,sans-serif" font-size="44" fill="#3b5d61"><text x="800" y="360">A 043</text><text x="800" y="450">A 044</text><text x="800" y="540">B 012</text></g>
+<text x="800" y="660" font-family="Helvetica,Arial,sans-serif" font-size="28" fill="#6b8a8e">About 10 minutes</text>
+</svg>

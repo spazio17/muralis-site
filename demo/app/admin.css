@@ -1,0 +1,522 @@
+/* Copied from the Muralis app (app/src/main/res/raw/admin.css at 49f033d) so the demo is drawn exactly as the app is. Do not edit here: copy again. */
+/*
+Material 3 on the app's own palette (decided 2026-09-23, from the drawings in
+media/drafts/material3/). The colours themselves come from admin_palettes.css, generated from
+the ultramarine seed; the roles below are derived from them as KioskTheme derives its own, so
+the two surfaces stay one design: a card is the base lifted a step, a container is the hue at a
+fraction over the base, and the label on a container is the hue's own ink.
+
+Two layouts, one document. Below 840 px the settings are one accordion (a <details> per section,
+one open at a time, no wider than 720 px); from 840 px, and only with scripting, the same
+sections stand in a list on the left and the open one on the right, Material's list-detail. No
+panel ever spans the screen: content lives in a centred column of at most 1016 px, which the app
+bar shares, so the title sits over the list's left edge and the readings over the panel's
+right edge (2026-09-23).
+*/
+:root{color-scheme:light dark;
+--card:color-mix(in srgb,var(--surface) 40%,var(--base));--card-high:var(--surface);
+--outline:var(--border);--outline-variant:color-mix(in srgb,var(--border) 55%,var(--base));
+--primary-container:color-mix(in srgb,var(--accent) 18%,var(--base));--on-primary-container:color-mix(in srgb,var(--accent) 55%,black);
+--secondary-container:color-mix(in srgb,var(--accent-alt) 16%,var(--base));--on-secondary-container:var(--ink-alt);
+--error-container:color-mix(in srgb,var(--bad) 18%,var(--base));--on-error-container:color-mix(in srgb,var(--bad) 60%,black);
+--radius:12px}
+@media (prefers-color-scheme:dark){:root{
+--on-primary-container:color-mix(in srgb,var(--accent) 65%,white);--primary-container:color-mix(in srgb,var(--accent) 35%,var(--base));
+--secondary-container:color-mix(in srgb,var(--accent-alt) 32%,var(--base));
+--error-container:color-mix(in srgb,var(--bad) 35%,var(--base));--on-error-container:color-mix(in srgb,var(--bad) 65%,white)}}
+html[data-theme=light]{color-scheme:light;
+--on-primary-container:color-mix(in srgb,var(--accent) 55%,black);--primary-container:color-mix(in srgb,var(--accent) 18%,var(--base));
+--secondary-container:color-mix(in srgb,var(--accent-alt) 16%,var(--base));
+--error-container:color-mix(in srgb,var(--bad) 18%,var(--base));--on-error-container:color-mix(in srgb,var(--bad) 60%,black)}
+html[data-theme=dark]{color-scheme:dark;
+--on-primary-container:color-mix(in srgb,var(--accent) 65%,white);--primary-container:color-mix(in srgb,var(--accent) 35%,var(--base));
+--secondary-container:color-mix(in srgb,var(--accent-alt) 32%,var(--base));
+--error-container:color-mix(in srgb,var(--bad) 35%,var(--base));--on-error-container:color-mix(in srgb,var(--bad) 65%,white)}
+*{box-sizing:border-box}
+body{margin:0;padding:12px 0 40px;background:var(--base);color:var(--text);font-family:Roboto,system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;line-height:20px}
+/* The column, centred, with a gutter each side: 5% of the window, whatever the shape of it
+   (2026-09-23, with the drawing in media/drafts/material3/). The app bar spans exactly
+   that column, which is what puts the readings over the panel's right edge rather than
+   the window's. It stops growing at 1000 px: past that the gutters take the rest,
+   because a field drawn across a very wide monitor is a bar. */
+main{width:90%;max-width:1000px;margin:0 auto}
+a{color:var(--accent-alt)}
+code{overflow-wrap:anywhere}
+/* ---- type ---- */
+h1{font-size:24px;line-height:32px;font-weight:400;margin:0;color:var(--text)}
+h2{font-size:16px;line-height:24px;font-weight:500;letter-spacing:.15px;margin:0 0 4px}
+/* The panel's id under Muralis, the only subtitle: Title medium, as on the panel (2026-10-01). */
+.sub{color:var(--subtext);font-size:16px;line-height:24px;margin:0;overflow-wrap:anywhere}
+.hint{color:var(--subtext);font-size:12px;line-height:16px;letter-spacing:.4px;margin:8px 0 0}
+.hint.bad{color:var(--bad)}
+.gone{display:none!important}
+/* ---- app bar ---- */
+header.appbar{display:flex;align-items:center;gap:8px;min-height:64px;margin:0 0 8px}
+header.appbar .titles{flex:1;min-width:0}
+header.appbar .titlerow{display:flex;align-items:center;gap:4px;min-width:0}
+header.appbar .titlerow h1{overflow-wrap:anywhere;min-width:0}
+/* The chip: one glyph per row, monochrome, matching StatusIcon on the tablet glyph for glyph. */
+/* At the right on every width, as on the panel; 14 px like its 14 sp readings. */
+.chip{display:flex;flex:none;flex-direction:column;align-items:flex-end;gap:2px;line-height:20px;font-size:14px;color:var(--subtext);margin-right:8px}
+.chip .row{display:flex;align-items:center;gap:6px}.chip .row.pair{gap:14px}.ico{width:17px;height:17px;flex:none;color:var(--text)}
+/* Day and night: one icon button at the end of the settings page's app bar showing the mode in
+   force, each tap the next (themeToggle). It needs the script, so without one it is not shown
+   and the page follows the device. */
+.themetoggle{flex:none}
+html:not(.js) .themetoggle{display:none}
+.themetoggle svg{width:24px;height:24px;margin:0;fill:currentColor;stroke:none}
+.themetoggle>span{display:none}
+html[data-theme=light] .themetoggle .m-light,html[data-theme=dark] .themetoggle .m-dark,html[data-theme=system] .themetoggle .m-system{display:inline-flex}
+/* Material's segmented button with text segments, Dashboard's "The panel shows": outlined, round
+   ends, the chosen segment filled with a check before its words; 40 px drawn. */
+.segmented{display:flex;max-width:360px;height:40px;margin:8px 0 16px;border:1px solid var(--outline);border-radius:20px;overflow:hidden}
+.segmented>form{display:flex;flex:1 1 0;min-width:0;margin:0}
+.segmented button,.segmented>a{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;height:100%;padding:0 8px;margin:0;border:0;border-radius:0;background:none;color:var(--text);font:inherit;font-size:14px;font-weight:500;text-decoration:none;cursor:pointer}
+.segmented>a{border-left:1px solid var(--outline)}
+.segmented [aria-pressed=true]{background:var(--secondary-container);color:var(--on-secondary-container)}
+.segmented svg{width:18px;height:18px;margin:0;fill:none;stroke:currentColor;stroke-width:2}
+.segmented button:hover,.segmented>a:hover{background:color-mix(in srgb,var(--text) 8%,transparent)}
+.segmented [aria-pressed=true]:hover{background:var(--secondary-container)}
+.appline{margin:0 0 4px;font-size:16px;line-height:24px}
+/* The commands (Reload, Restart kiosk, Reboot): Material's overflow menu at the end of the
+   settings page's app bar, its items full-width rows; without scripting the menu cannot open, so
+   its three buttons stand in a row there instead. */
+.overflow{position:relative;flex:none}
+/* On a phone the bar is tight: the readings close up to the two buttons, so the panel's name
+   keeps its line. */
+@media (max-width:599px){header.appbar{gap:4px}header.appbar .chip{margin-right:4px}}
+html:not(.js) .overflow #commands-button{display:none}
+html:not(.js) .overflow .m3menu{display:flex;gap:8px}
+html.js .overflow .m3menu{position:absolute;right:0;top:calc(100% + 4px);z-index:20;min-width:224px;padding:8px 0;border-radius:4px;background:var(--card-high);box-shadow:0 2px 6px 2px rgba(0,0,0,.15),0 1px 2px rgba(0,0,0,.3)}
+html.js .overflow .m3menu:not(.open){display:none}
+html.js .overflow .m3menu form{margin:0}
+html.js .overflow .m3menu button{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;height:auto;min-height:48px;padding:0 12px;border:0;border-radius:0;background:none;color:var(--text);font:inherit;font-size:16px;font-weight:400;letter-spacing:.5px;text-align:left}
+html.js .overflow .m3menu button svg{margin:0;width:24px;height:24px;color:var(--subtext)}
+html.js .overflow .m3menu button:hover,html.js .overflow .m3menu button:focus-visible{background:color-mix(in srgb,var(--text) 8%,transparent);outline:none}
+/* A Save that scripting replaces with storing on change (the panel's name) is for the no-script
+   page alone. */
+html.js .actions.nojs{display:none}
+.field select option{background:var(--card);color:var(--text)}
+/* ---- buttons: filled for a card's one main action, tonal for the second, outlined for a command
+   that acts now and stores nothing, text for navigation, and a 40 px icon button for anything
+   repeated in a row. Red only for Delete: outlined in an editor's row, filled on the confirm
+   screen alone (2026-10-01). ---- */
+button,.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 24px;margin:0;border-radius:999px;border:1px solid var(--outline);background:transparent;color:var(--accent);font-family:inherit;font-size:14px;font-weight:500;letter-spacing:.1px;line-height:20px;cursor:pointer;white-space:nowrap;text-decoration:none}
+button:hover{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+/* A row's 40 px buttons take a 48 px touch, Material's target, without growing. */
+.actions button,.actions .btn{position:relative}.actions button::after,.actions .btn::after{content:"";position:absolute;left:0;right:0;top:-4px;bottom:-4px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+button.primary:hover{background:color-mix(in srgb,var(--accent) 92%,black)}
+button.tonal,a.btn.tonal,label.filebutton{background:var(--secondary-container);border-color:transparent;color:var(--on-secondary-container)}
+button.tonal:hover,a.btn.tonal:hover,label.filebutton:hover{background:color-mix(in srgb,var(--accent-alt) 10%,var(--secondary-container))}
+button.text,a.btn.text{border-color:transparent;padding:0 12px}
+button.danger{border-color:var(--bad);color:var(--bad)}
+button.danger:hover{background:color-mix(in srgb,var(--bad) 8%,transparent)}
+button:disabled{opacity:.38;cursor:default}
+.field select:disabled,.field select:disabled+label{opacity:.38;cursor:default}
+button svg,.btn svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-left:-8px}
+button.text svg{margin:0 -4px 0 0}
+.ib{width:48px;height:48px;padding:0;margin:0;border:0;border-radius:50%;background:transparent;color:var(--subtext);display:inline-flex;align-items:center;justify-content:center;flex:none;cursor:pointer;text-decoration:none}
+.ib svg{width:24px;height:24px;margin:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ib:hover{background:color-mix(in srgb,var(--text) 10%,transparent);color:var(--text)}
+.ib.primary,button.ib.primary{background:transparent;border:0;color:var(--accent)}
+button.ib.primary:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.ib.selected{background:var(--primary-container);color:var(--on-primary-container)}
+.ib.dis{opacity:.38;pointer-events:none}
+.ib:focus-visible,button:focus-visible,input:focus-visible,.folder:focus-visible{outline:2px solid var(--accent-alt);outline-offset:2px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:24px}
+.actions form{display:inline;margin:0}
+.actions.tight{margin-top:8px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.row.tight{gap:0;flex-wrap:nowrap}
+/* ---- cards ---- */
+.card{background:var(--card);border-radius:var(--radius);padding:16px 16px 20px;min-width:0;margin:0}
+.card+.card{margin-top:16px}
+.card .cardhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-6px -6px 4px 0}
+.card .cardhead h2{margin:0}
+.notice{display:flex;align-items:center;gap:10px;background:var(--error-container);color:var(--on-error-container);border-radius:8px;padding:8px 12px;margin:0 0 16px;font-size:14px}
+.card .notice,.body .notice{margin:8px 0 0}
+/* ---- text fields: outlined, the label on the border, helper text 4 px under the box in the
+   field's own slot, keeping its wording (2026-09-23). ---- */
+.field{position:relative;margin-top:24px;min-width:0}
+.field input,.field select{display:block;width:100%;height:56px;margin:0;padding:0 16px;border:1px solid var(--outline);border-radius:4px;background:transparent;color:var(--text);font-family:inherit;font-size:16px;appearance:none;-webkit-appearance:none}
+.field input:focus,.field select:focus{outline:none;border:2px solid var(--accent);padding:0 15px}
+.field label{position:absolute;top:-8px;left:12px;padding:0 4px;background:var(--card);font-size:12px;line-height:16px;color:var(--subtext);pointer-events:none;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.field input:focus+label,.field select:focus+label{color:var(--accent)}
+.field select{padding-right:44px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:24px}
+.field .support{font-size:12px;line-height:16px;color:var(--subtext);margin:4px 16px 0}
+.field .support.bad{color:var(--bad)}
+.field input.check-ok{border-color:var(--ok)}
+.field input.check-bad,.field select.check-bad,input.check-bad{border-color:var(--bad)}
+.field.dense{margin-top:0}
+.field.dense input{height:40px;padding:0 12px;font-size:14px}
+.field.dense input:focus{padding:0 11px}
+/* A button beside a field sits on the box's centre line; neither the floating label above the box
+   nor a helper line under it counts, which is why the button is placed from the top: 24 px for the
+   field's own margin and 8 px for half the difference between the 56 px box and the 40 px button. */
+.beside{display:flex;align-items:flex-start;gap:8px;margin-top:8px;flex-wrap:wrap}
+.beside .field{flex:1 1 120px}
+.beside button{margin-top:32px}
+/* ---- selection controls ---- */
+label.check{display:flex;align-items:center;gap:12px;min-height:48px;color:var(--text);cursor:pointer;margin:0}
+input[type=checkbox]{appearance:none;-webkit-appearance:none;width:18px;height:18px;margin:0 3px;flex:none;border:2px solid var(--subtext);border-radius:2px;background:transparent;cursor:pointer;display:inline-grid;place-items:center}
+input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
+input[type=checkbox]:checked::after{content:"";width:5px;height:10px;border:solid var(--on-accent);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+input[type=checkbox]:indeterminate{background:var(--accent);border-color:var(--accent)}
+input[type=checkbox]:indeterminate::after{content:"";width:10px;height:2px;background:var(--on-accent)}
+label.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;color:var(--text);cursor:pointer;margin:0;border-bottom:1px solid var(--outline-variant)}
+label.switch:last-of-type{border-bottom:0}
+/* Switches as the Pixel draws them (2026-10-04, measured on his, Android 17): Material 3's switch with icons, a 52 by 32 track outlined and dark when off, a 24 px handle in both states with a 16 px check or cross in it, each part in Material's colour role. */
+label.switch input{appearance:none;-webkit-appearance:none;box-sizing:border-box;width:52px;height:32px;margin:0;flex:none;border-radius:16px;border:2px solid var(--outline);background:var(--surface);position:relative;cursor:pointer;display:inline-block}
+label.switch input::after{content:"";position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:var(--subtext);transition:left .12s}
+label.switch input:checked{background:var(--accent);border-color:var(--accent)}
+label.switch input:checked::after{left:22px;top:2px;width:24px;height:24px;border:0;transform:none;background:var(--on-accent)}
+.radios{margin-top:4px}
+label.radio{display:flex;align-items:center;gap:12px;min-height:48px;margin:0;color:var(--text);font-size:16px;cursor:pointer;border-bottom:1px solid var(--outline-variant)}
+label.radio:last-child{border-bottom:0}
+input[type=radio]{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;margin:0 10px;border:2px solid var(--subtext);border-radius:50%;background:transparent;cursor:pointer;display:inline-grid;place-items:center}
+input[type=radio]:checked{border-color:var(--accent)}
+input[type=radio]:checked::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent)}
+label.slider{display:block;margin-top:16px;color:var(--text)}
+label.slider .readout{color:var(--subtext);font-size:12px;margin-left:6px}
+label.slider input[type=range]{display:block;width:100%;min-width:0;height:44px;margin:0;appearance:none;-webkit-appearance:none;background:transparent}
+label.slider input[type=range]::-webkit-slider-runnable-track{height:16px;border-radius:8px;background:var(--primary-container)}
+label.slider input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:4px;height:44px;margin-top:-14px;border-radius:2px;background:var(--text);border:0}
+label.slider input[type=range]::-moz-range-track{height:16px;border-radius:8px;background:var(--primary-container)}
+label.slider input[type=range]::-moz-range-progress{height:16px;border-radius:8px;background:var(--accent)}
+label.slider input[type=range]::-moz-range-thumb{width:4px;height:44px;border-radius:2px;background:var(--text);border:0}
+label.slider input[type=range]:disabled{opacity:.38}
+/* ---- lists ---- */
+ul.list,ul.pictures,ul.folders{list-style:none;margin:0;padding:0}
+ul.list li{display:flex;align-items:center;gap:12px;min-height:56px;padding:4px 0;border-bottom:1px solid var(--outline-variant)}
+ul.list li form.use{display:inline-flex;align-items:center;margin:0}
+.switches{margin-top:16px}
+/* The Fleet box's membership and Join code: the panel's Join screen, centred, the
+   QR dark on white with its quiet zone in both themes, the digits large and evenly spaced. */
+.fleet-member{margin-top:16px}.fleet-member>p{margin:0}.fleet-member>.actions{margin-top:12px}
+.fleet-join{text-align:center;margin-top:16px}.fleet-member [hidden],.fleet-invite [hidden]{display:none}
+.fleet-join img{display:block;margin:0 auto;width:240px;height:240px;image-rendering:pixelated;border-radius:8px}
+.join-code{font-size:34px;line-height:44px;font-variant-numeric:tabular-nums;margin:12px 0 0}
+.fleet-join .actions{justify-content:center;margin-top:16px}
+/* The Fleet page's picture of a panel's screen: at most 160 px high, its own shape. */
+.fleet-shot{margin-top:8px}.fleet-shot img{display:block;max-height:160px;max-width:100%;width:auto;border-radius:8px;background:var(--surface-alt)}
+.fleet-shot img[hidden],.fleet-shot p[hidden],#fleet-identify-all[hidden]{display:none}.fleet-shot p.hint{white-space:pre-line}#fleet-identify-all{white-space:pre-line}
+ul.list li:last-child{border-bottom:0}
+ul.list li.two{min-height:72px}
+.lead{flex:none;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;color:var(--subtext)}
+.lead svg,.trail svg,.sections svg,summary svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.text{flex:1;min-width:0}
+/* A rule whose sensor is not running while the display sleeps: the panel's mark and note */
+.text .s .stops{display:inline-flex;vertical-align:-3px;margin-right:6px;color:var(--warn)}
+.text .s .stops svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.stopsnote .lead{color:var(--warn)}
+.text .h,.text .s{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* A name wraps rather than ends in dots: "Bluetooth ..." on a 360 px phone said nothing; so does
+   a second line a person has to read or copy whole (an address, a tag's id). */
+.text .h,.text .s.wrap{white-space:normal;overflow-wrap:anywhere}
+.text .h{font-size:16px;line-height:24px;color:var(--text)}
+.text .s{font-size:14px;line-height:20px;color:var(--subtext)}
+.trail{display:inline-flex;align-items:center;flex:none;gap:0;color:var(--subtext);font-size:12px}
+.trail form{margin:0;display:inline-flex}
+.inuse{color:var(--ok);font-weight:500}
+li.link .h,a.rowlink{color:var(--accent)}
+a.rowlink{text-decoration:none;display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+/* ---- the settings menu ---- */
+.menu{display:block;max-width:720px;margin:0 auto}
+.menu .sections{display:none}
+/* The groups (the UI round, 2026-10-15): Material's list subheader in the primary colour, then
+   the group's sections as segments, each its own surface, 16 px corners at the group's ends and
+   4 px inside, 2 px apart, as the panel draws them; About this panel stands alone. */
+.subhead{margin:0;padding:20px 16px 8px;font-size:14px;line-height:20px;font-weight:500;color:var(--accent)}
+.boxes .grp:first-child .subhead{padding-top:4px}
+.boxes .grp:not(:has(.subhead)){margin-top:16px}
+details.box{background:var(--card);border-radius:4px;margin-top:2px;overflow:hidden}
+.grp details.box:first-of-type{border-radius:16px 16px 4px 4px;margin-top:0}
+.grp details.box:last-of-type{border-radius:4px 4px 16px 16px}
+.grp details.box:only-of-type{border-radius:16px}
+.empty .h{margin:0;font-size:16px;line-height:24px}.empty .s{margin:4px 0 0;color:var(--subtext)}
+details.box>summary{list-style:none;display:flex;align-items:center;gap:12px;min-height:72px;padding:8px 16px;cursor:pointer}
+details.box>summary::-webkit-details-marker{display:none}
+details.box>summary .chev{color:var(--subtext);display:inline-flex;transition:transform .2s}
+details.box[open]>summary{background:var(--card-high)}
+details.box[open]>summary .chev{transform:rotate(180deg)}
+details.box>.body{padding:8px 16px 24px 68px}
+/* A phone has no width for the indent past the glyph: the full row, as the panel's accordion. */
+@media (max-width:599px){details.box>.body{padding-left:16px}}
+details.box>.body .field label{background:var(--card)}
+header.appbar .field label{background:var(--base)}
+.sections{background:var(--card);border-radius:var(--radius);padding:8px}
+.sections .item{display:flex;align-items:center;gap:12px;min-height:64px;padding:4px 12px;border-radius:999px;text-decoration:none;color:inherit}
+.sections .item:hover{background:color-mix(in srgb,var(--text) 6%,transparent)}
+.sections .item.on{background:var(--secondary-container)}
+.sections .item.on .h{color:var(--on-secondary-container);font-weight:500}
+.sections .item .s{font-size:13px;line-height:18px}
+.sections .subhead{padding:16px 16px 4px}.sections .subhead:first-child{padding-top:8px}.sections .subhead.gap{padding:0;height:12px}
+@media (min-width:840px){
+/* The list is half the open section, the pair filling the column, Material's 24 px gutter
+   between them (his drawing: menu 30, gap 5, content 60). */
+html.js .menu{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:24px;align-items:start;max-width:none}
+html.js .menu .sections{display:block}
+html.js .menu .boxes{background:transparent;border-radius:0;overflow:visible}
+html.js details.box,html.js .grp details.box{border-bottom:0;background:var(--card);border-radius:var(--radius);margin:0}
+html.js .boxes .subhead{display:none}html.js .boxes .grp{margin:0}
+html.js details.box:not([open]){display:none}
+html.js details.box>summary{display:none}
+html.js details.box>.body{padding:16px 16px 20px}
+html.js details.box>.body::before{content:attr(data-title);display:block;font-size:16px;line-height:24px;font-weight:500;letter-spacing:.15px;margin:0 0 4px}
+}
+/* ---- pages with two columns ---- */
+.two{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+.two>*{min-width:0}
+.two>.card+.card{margin-top:0}
+@media (min-width:840px){
+.two{grid-template-columns:1fr 1fr}
+.two.playlist{grid-template-rows:min-content 1fr}
+#playlist-folders{grid-column:1;grid-row:1}#playlist-content{grid-column:2;grid-row:1/span 2}#playlist-held{grid-column:1;grid-row:2}
+}
+/* ---- stats readout ---- */
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:18px;background:var(--lowest);border-radius:8px;padding:12px 14px;color:var(--subtext);margin:8px 0 0}
+.mono.wrap{overflow-wrap:anywhere}
+#stats,#log{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:18px;white-space:pre-wrap;background:var(--lowest);border-radius:8px;padding:12px 14px;overflow-x:auto;color:var(--subtext);margin:8px 0 0}
+#log{max-height:320px;min-height:72px;overflow:auto;overflow-wrap:anywhere;color:var(--subtext)}
+#log .lv-W{color:var(--warn)}#log .lv-E,#log .lv-F{color:var(--bad)}#log .lv-I{color:var(--text)}
+#log b{font-weight:600}
+.logcount{font-size:12px;color:var(--subtext);white-space:nowrap}
+.logbar{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+/* Paused, the button shows the play glyph and is named Follow, as on the panel. */
+#log-pause svg+svg,#log-pause.on svg:first-child{display:none}#log-pause.on svg+svg{display:block}
+.levels{display:inline-flex;border:1px solid var(--outline);border-radius:20px;overflow:hidden}
+.lvl{height:40px;min-width:44px;padding:0 12px;border:0;background:transparent;color:var(--subtext);font:inherit;font-size:14px;cursor:pointer}
+.lvl+.lvl{border-left:1px solid var(--outline)}.lvl[aria-pressed=true]{background:var(--secondary-container);color:var(--on-secondary-container)}
+.logsearch{display:flex;align-items:center;gap:8px;flex:1;min-width:120px;height:40px;padding:0 10px;border:1px solid var(--outline);border-radius:20px;color:var(--subtext)}
+.logsearch svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.logsearch input{flex:1;min-width:0;border:0;background:transparent;color:var(--text);font:inherit;font-size:14px;outline:none}
+.ib.on{background:var(--secondary-container);color:var(--on-secondary-container)}
+/* ---- the rename pencil beside the title: a <details>, so it works with no scripting ---- */
+details.rename{display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:0 1 auto;min-width:0}
+details.rename[open]{flex:1 1 20rem}
+details.rename summary{list-style:none;display:inline-flex}
+details.rename summary::-webkit-details-marker{display:none}
+details.rename form{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;margin:0;flex:1 1 16rem;min-width:0}
+details.rename form .field{flex:1 1 10rem;margin-top:8px}
+details.rename form .field input{height:48px;font-size:20px}
+details.rename form button{margin-bottom:4px}
+details.rename .hint{flex:1 1 100%;margin:0}
+.titlerow:has(details[open]) h1{display:none}
+/* ---- folders: places, not actions, so they are links; the open one is a pill ---- */
+ul.folders li{border-bottom:1px solid var(--outline-variant)}
+ul.folders li:last-child{border-bottom:0}
+/* The folder tree: a caret in front of every folder that has folders under it, opening and closing
+   its branch and leaving the pictures alone; a closed branch's rows are hidden. The carets and the
+   head's button need the script, so without it they are not there and the tree simply follows the
+   open folder, which the server opens the way down to (2026-09-23). */
+ul.folders li.row{display:flex;align-items:center}
+ul.folders li.hidden{display:none}
+ul.folders .caret{flex:none;width:32px;height:44px;display:inline-flex;align-items:center;justify-content:center;color:var(--subtext);cursor:pointer;border-radius:999px}
+ul.folders .caret:hover{background:color-mix(in srgb,var(--text) 6%,transparent)}
+ul.folders .caret svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transform:rotate(-90deg);transition:transform .15s}
+ul.folders li.open>.caret svg{transform:none}
+ul.folders .caret.none{cursor:default}
+ul.folders .caret.none:hover{background:transparent}
+html:not(.js) ul.folders .caret{visibility:hidden}
+html:not(.js) #tree-toggle{display:none}
+a.folder{display:flex;flex:1;min-width:0;align-items:center;gap:12px;min-height:44px;padding:2px 8px 2px 0;color:var(--text);text-decoration:none;border-radius:999px}
+a.folder:hover{background:color-mix(in srgb,var(--text) 6%,transparent)}
+a.folder.open{background:var(--secondary-container);color:var(--on-secondary-container);font-weight:500}
+a.folder .lead{width:40px}
+a.folder .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--surface-alt);color:var(--text);font-size:11px;line-height:16px;font-weight:500;text-align:center;font-variant-numeric:tabular-nums}
+.badge.zero{background:transparent;color:var(--subtext)}
+/* ---- the open folder ---- */
+.where{margin:0 0 4px;font-size:12px;color:var(--subtext)}
+ul.pictures li{display:flex;align-items:center;gap:12px;min-height:56px;padding:4px 0;border-bottom:1px solid var(--outline-variant)}
+ul.pictures li:last-child{border-bottom:0}
+ul.pictures.details li{min-height:72px}
+ul.pictures li .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px}
+ul.pictures li form{margin:0;display:inline-flex;align-items:center}
+ul.pictures li .acts{display:inline-flex;align-items:center;margin-left:auto}
+ul.pictures.selecthead li{min-height:40px;border-bottom:1px solid var(--outline-variant)}
+ul.pictures.selecthead .s{color:var(--subtext);font-size:14px}
+img.thumb{display:block;width:40px;height:40px;border-radius:8px;object-fit:cover;background:var(--surface-alt);flex:none}
+ul.pictures.details img.thumb{width:48px;height:48px}
+.tiles{display:grid;gap:10px;margin-top:8px}
+.tiles.small{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+.tiles.big{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.tile{display:flex;flex-direction:column;gap:4px;font-size:12px;min-width:0;position:relative}
+.tile .pic{position:relative;display:block;width:100%;aspect-ratio:1/1;border-radius:8px;overflow:hidden;background:var(--surface-alt);transition:transform .15s}
+.tiles.big .tile .pic{aspect-ratio:4/3}
+.tile .pic img{display:block;width:100%;height:100%;object-fit:cover}
+.tile.in .pic{transform:scale(.9)}
+.tile form.pick{position:absolute;top:6px;left:6px;margin:0}
+.tile form.pick input[type=checkbox]{width:22px;height:22px;margin:0;border-radius:50%;border-color:#fff;background:rgba(30,30,46,.55)}
+.tile form.pick input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
+.tile form.bin{position:absolute;top:2px;right:2px;margin:0}
+.tile form.bin .ib{width:32px;height:32px;background:rgba(30,30,46,.55);color:#fff}
+.tile form.bin .ib svg{width:18px;height:18px}
+.tile .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.tile small{color:var(--subtext);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pager{display:flex;align-items:center;gap:8px;color:var(--subtext);font-size:14px;margin-top:8px}
+.pager span{flex:1;text-align:center}
+.sizes{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.sizes a.size{display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--outline);font-size:14px;font-weight:500;color:var(--subtext);text-decoration:none;font-variant-numeric:tabular-nums}
+.sizes a.size.on{background:var(--secondary-container);border-color:transparent;color:var(--on-secondary-container)}
+.sizes a.size.on::before{content:"\2713";font-size:12px}
+/* ---- what the playlist holds, in the order it is shown: the grip and the picture, the path, then
+   the credit field, which stores itself when it lets go, the credit's eye and the remove button,
+   all 40 px on one line. The grip, Material's six dots, and the thumbnail are the handle a picture is dragged
+   by; admin_pictures.js marks the list movable when it holds more than one, and without scripting
+   there is no grip and nothing here looks draggable. ---- */
+ul.held li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"pic name name" "pic cap acts";column-gap:12px;row-gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--outline-variant);background:var(--card)}
+ul.held li:last-child{border-bottom:0}
+ul.held .grab{grid-area:pic;align-self:start;margin-top:2px;display:flex;align-items:center;border-radius:8px}
+ul.held .grip{display:none;width:20px;height:40px;align-items:center;justify-content:center;margin-right:4px;color:var(--subtext)}
+ul.held .grip svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:3.5;stroke-linecap:round}
+html.js ul.held.movable .grip{display:flex}
+html.js ul.held.movable .grab{cursor:grab;touch-action:none}
+html.js ul.held.movable .grab:focus-visible{outline:2px solid var(--accent-alt);outline-offset:2px}
+ul.held li.dragging{position:relative;z-index:2;border-radius:8px;box-shadow:0 6px 16px rgba(0,0,0,.28);border-bottom-color:transparent}
+ul.held li.dragging .grab{cursor:grabbing}
+ul.held li.shifting{transition:transform .12s ease-out}
+ul.held .name{grid-area:name;font-size:14px;line-height:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ul.held form.caption{grid-area:cap;display:block;margin:0;min-width:0}
+ul.held .acts{grid-area:acts;display:flex;align-items:center;gap:4px}
+ul.held .acts form{margin:0}
+/* On a phone the credit line starts under the grip and the picture, so the name box keeps the
+   width its label needs; beside them it was 120 px and the label was cut. */
+@media (max-width:479px){ul.held li{grid-template-areas:"pic name name" "cap cap acts"}ul.held .grab{align-self:center;margin-top:0}}
+.field.off input{color:var(--subtext);border-style:dashed;background:transparent}
+.field input::placeholder{color:var(--subtext);opacity:.7}
+.ib:disabled{opacity:.38;cursor:default;background:transparent}
+/* A state shown by a glyph alone, in a card head where a button would sit: the shuffle mark. */
+.mark{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;flex:none;color:var(--subtext)}
+.mark svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* ---- upload: Browse is the file input's label, the input itself off screen but focusable ---- */
+.uploadrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+input.offscreen{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+label.filebutton{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;border-radius:999px;border:1px solid transparent;font-size:14px;font-weight:500;cursor:pointer;margin:0}
+label.filebutton svg{width:18px;height:18px;margin-left:-8px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+input.offscreen:focus-visible+label.filebutton{outline:2px solid var(--accent-alt);outline-offset:2px}
+.uploadrow .chosen{flex:1 1 auto;min-width:0;color:var(--subtext);font-size:12px;overflow-wrap:anywhere}
+.uploadrow button{margin-left:auto}
+/* ---- the banner that answers an upload or a refusal, red only for a failure ---- */
+.banner{display:flex;align-items:center;gap:10px;margin:12px 0 0;padding:8px 12px;border-radius:8px;background:var(--secondary-container);color:var(--on-secondary-container);font-size:14px}
+.banner span{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.banner.bad{background:var(--error-container);color:var(--on-error-container)}
+.banner .dismiss{flex:none;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:transparent;color:inherit;font-size:18px;line-height:1}
+.banner .dismiss:hover{background:color-mix(in srgb,var(--text) 10%,transparent)}
+/* ---- a page's only panel: centred at the legal pages' width (2026-09-28) ---- */
+.one{max-width:640px;margin-left:auto;margin-right:auto}
+/* ---- the legal pages ---- */
+div.doc h2{color:var(--accent);font-size:13px;letter-spacing:.1em;margin:26px 0 6px;font-weight:500}
+p.doc{margin:8px 0}
+
+ul.list.gap{margin-top:16px}
+
+/* ---- sensors and automations (2026-09-27) ---- */
+/* A sensor this device has not: its words in the quieter colour, still readable (axe contrast). */
+ul.list li.dim .h,ul.list li.dim .s{color:var(--subtext)}ul.list li.dim .lead{opacity:.55}
+ul.list .text .s:empty{display:none}
+a.rowlink.plain .h{color:var(--text)}
+.trail .divider{width:1px;height:32px;background:var(--outline-variant);margin:0 12px 0 4px}
+input.sw{appearance:none;-webkit-appearance:none;box-sizing:border-box;width:52px;height:32px;margin:0;flex:none;border-radius:16px;border:2px solid var(--outline);background:var(--surface);position:relative;cursor:pointer;display:inline-block}
+input.sw::after{content:"";position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:var(--subtext);transition:left .12s}
+input.sw:checked{background:var(--accent);border-color:var(--accent)}
+input.sw:checked::after{left:22px;top:2px;width:24px;height:24px;border:0;transform:none;background:var(--on-accent)}
+/* The handle's mark, a cross when off and a check when on, as the Pixel's Settings draws it
+   (2026-10-04): a mask over the handle, so its colour follows the palette. */
+label.switch input::before,input.sw::before{content:"";position:absolute;top:6px;left:6px;width:16px;height:16px;z-index:1;background:var(--surface);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7l10 10M17 7L7 17' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") center/16px no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7l10 10M17 7L7 17' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") center/16px no-repeat;transition:left .12s}
+label.switch input:checked::before,input.sw:checked::before{left:26px;background:var(--on-primary-container);-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12l5 5L20 7' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12l5 5L20 7' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+input.sw:disabled{opacity:.38;cursor:default}
+.trail .allow{font-size:13px;color:var(--subtext);white-space:nowrap}
+.card .count{font-size:12px;color:var(--subtext)}
+.actions.tight{margin-top:8px}
+/* A refused switch: the border red, and the reason on a line under its row for a few seconds,
+   where the title a phone never shows could not say it (review, 2026-10-01). */
+input.sw.check-bad{border-color:var(--bad)}
+ul.list li.refusal{display:block;color:var(--bad);font-size:12px;line-height:16px;padding:4px 16px 8px;min-height:0}
+/* The detail's own row beside the list carries no switch, so it says the sensor's name, not the
+   switch's words (the panel's rule: one switch per sensor on a page). */
+.pagename{display:none}
+/* A choice of five or fewer as radios, with its label over them, the panel's shape. */
+.choice{margin-top:16px}.choice>.label{font-size:12px;line-height:16px;font-weight:500;color:var(--subtext);margin:0 0 4px}
+/* A choice this panel cannot take, greyed. */
+label.radio:has(input:disabled){opacity:.38;cursor:default}
+.certificate{margin-top:16px}.certificate .uploadrow{margin-top:8px}
+/* The upload's names and end date wrap, as on the panel, so the date is never cut off. */
+.certificate label.radio .s{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+input.offscreen:disabled+label.filebutton{opacity:.38;cursor:default}
+label.radio .text{display:flex;flex-direction:column}label.radio .s{font-size:14px;line-height:20px;color:var(--subtext)}label.radio .s.bad{color:var(--bad)}
+/* Segments: every row of a list marked seg (the ones the panel segments, addListRow and
+   addMenuRow) is its own surface with 2 px of the card between, 16 px corners at the ends and
+   4 px inside, as the Pixel's settings do. html:root keeps the weight these rules always had. */
+html:root ul.list.seg li{border-bottom:0;background:var(--card-high);border-radius:4px;margin-top:2px;padding:4px 16px}
+html:root ul.list.seg li:first-child{border-radius:16px 16px 4px 4px;margin-top:0}
+html:root ul.list.seg li:last-child{border-radius:4px 4px 16px 16px}
+html:root ul.list.seg li:only-child{border-radius:16px}
+/* A hovered row keeps its segment's shape (the rowlink hover below would round it to 12 px), and
+   a refusal line under the last row takes no shape of its own, the row above it keeping the ends. */
+html:root ul.list.seg li:has(>a.rowlink):hover{background:color-mix(in srgb,var(--text) 6%,var(--card-high));border-radius:4px}
+html:root ul.list.seg li:first-child:has(>a.rowlink):hover{border-radius:16px 16px 4px 4px}
+html:root ul.list.seg li:last-child:has(>a.rowlink):hover{border-radius:4px 4px 16px 16px}
+html:root ul.list.seg li:only-child:has(>a.rowlink):hover{border-radius:16px}
+html:root ul.list.seg li.refusal{background:none;border-radius:0;margin-top:0;padding:4px 16px 8px}
+html:root ul.list.seg li:has(+ li.refusal:last-child){border-radius:4px 4px 16px 16px}
+html:root ul.list.seg li:first-child:has(+ li.refusal:last-child){border-radius:16px}
+/* A text button keeps its own width: the class it shares with a row's words (.text, which fills its row) once spread a row's buttons across the card (the UI round, 2026-10-15). */
+.actions .btn.text,.actions button.text,button.text{flex:0 0 auto}
+/* The editor's row: Delete at the start, Cancel then Save at the end; Save is first in the DOM so Enter saves */
+.actions.editor{justify-content:flex-end}.actions.editor .danger{order:0;margin-right:auto}.actions.editor .text{order:1}.actions.editor .primary{order:2}
+.card.gap{margin-top:16px}
+/* The chosen sensor's events alone where the script runs; every group without it, so a rule
+   can still be made (review, 2026-10-01). A sensor with one event shows it as a line, the radio
+   there for the form alone. Words for a screen reader only, where a glyph has a tooltip. */
+html.js .events{display:none}html.js .events.on{display:block}
+label.radio.one input{position:absolute;opacity:0;pointer-events:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.text .field{margin-top:8px}
+.text .field .support{margin-top:2px}
+
+/* ---- list-detail pages: Sensors, Automations (2026-09-27) and Screensaver (2026-09-28) ---- */
+.ld{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+.ld[data-page=list] .detail{display:none}
+.ld[data-page=detail] .nav{display:none}
+@media (min-width:600px) and (max-width:839px){.ld{max-width:640px;margin:0 auto}}
+@media (min-width:840px){
+.ld{grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:24px}
+.ld[data-page] .nav,.ld[data-page] .detail{display:block}
+.ld .detail{grid-column:2}
+.ld.one{grid-template-columns:minmax(0,1fr)}.ld.one .detail{grid-column:1}
+.ld .nav{padding:8px}
+/* The list's name and count stay at the head of the list from 840 px too, as on the panel. */
+.ld .nav .cardhead{padding:8px 12px 4px}
+.ld .nav ul.list li.refusal,.ld .nav ul.list li.refusal:hover{min-height:0;padding:4px 16px 8px;border-radius:0;cursor:default;background:none}
+.ld .nav .chev,.ld .nav .divider{display:none}
+.ld .nav ul.list li,.ld .nav ul.list li.two{min-height:64px;padding:4px 12px;cursor:pointer}
+/* The Screensaver page's playlists are the panel's left menu there (addMenuRow): 64 px rows. */
+#playlist-table ul.list li.two{min-height:64px}
+/* The left menu's chosen row is a tinted segment, as Android marks a selected row (addMenuRow). */
+html:root .ld .nav ul.list li.on{background:var(--secondary-container)}
+html:root .ld .nav ul.list li:hover{background:color-mix(in srgb,var(--text) 6%,var(--card-high))}
+html:root .ld .nav ul.list li.on:hover{background:var(--secondary-container)}
+.ld .nav ul.list li.on .h{color:var(--on-secondary-container);font-weight:500}
+.ld .nav .actions{padding:8px 12px 4px}
+.ld .detail .pageswitch{display:none}
+.ld .detail .pagename{display:inline}.ld .detail .switchname{display:none}
+.ld .detail>.pane>section.card:first-child,.ld .detail>.pane>form>.field:first-of-type{margin-top:0}
+.pane[hidden]{display:none}
+}
+ul.list li:has(>a.rowlink):hover{background:color-mix(in srgb,var(--text) 6%,transparent);border-radius:12px}
+details.older{margin-top:8px}details.older>summary{cursor:pointer;color:var(--accent);font-weight:500;padding:12px 0;list-style:none}details.older>summary::-webkit-details-marker{display:none}
+/* The full-screen QR (admin_qr.js): dark on white in both themes, the code as large as the
+   window allows up to 12 cm (the panel's QR_FULL_MAX_CM), beside the time left, Close at the top start. */
+img[id].qr-open,img#fleet-join-qr,img#setup-qr,img#fleet-invite-qr{cursor:zoom-in}
+dialog.qr-full{position:fixed;inset:0;width:100vw;height:100vh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#fff;color:rgba(0,0,0,.87)}
+dialog.qr-full::backdrop{background:#fff}
+.qr-full-box{display:grid;justify-items:center;align-content:center;gap:8px;height:100%;padding:64px 16px 16px;box-sizing:border-box}
+.qr-full-box img{width:min(92vw,calc(92vh - 144px),12cm);height:auto;aspect-ratio:1;background:#fff;cursor:default}
+.qr-full-left{margin:0;font-size:.875rem;color:rgba(0,0,0,.6);text-align:center}
+.qr-full-left[hidden]{display:none}
+dialog.qr-full .qr-full-close{position:absolute;top:8px;inset-inline-start:8px;min-height:48px;color:rgba(0,0,0,.87);background:transparent;border-color:transparent}
+dialog.qr-full .qr-full-close svg{color:rgba(0,0,0,.87)}
+/* The Cameras page's left list: the groups under a head of their own, 24 px below the cameras. */
+.ld .nav .cardhead.groups{margin-top:16px}

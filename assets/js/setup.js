@@ -3,10 +3,9 @@
  *
  * Buttons choose a maker and one panel shows at a time. Ordinary tab semantics,
  * so the markup is already correct without this file: every panel stays visible
- * and the page reads as one long list, which is longer but not broken. The same
- * bargain assets/js/clips.js makes, and the reason no panel carries `hidden` in
- * the HTML: hiding is this file's doing, so a reader with no JavaScript is never
- * left with a deck that shows nothing.
+ * and the page reads as one long list, which is longer but not broken. That is
+ * why no panel carries `hidden` in the HTML: hiding is this file's doing, so a
+ * reader with no JavaScript is never left with a deck that shows nothing.
  */
 (function () {
   var deck = document.querySelector('.vendordeck');

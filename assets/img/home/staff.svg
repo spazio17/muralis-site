@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800">
+<!-- A screen in the practice's back office: Muralis showing two cameras of the waiting area as
+     its main view, the way the staff keep an eye on it. Drawn, no real camera picture. -->
+<defs>
+<g id="chair"><rect x="0" y="0" width="52" height="58" rx="8" fill="#4f7f86"/><rect x="-4" y="48" width="60" height="16" rx="6" fill="#3e6a70"/><rect x="6" y="64" width="6" height="22" fill="#2f4d52"/><rect x="40" y="64" width="6" height="22" fill="#2f4d52"/></g>
+<g id="person"><circle cx="26" cy="-6" r="15" fill="#e3c9b0"/><rect x="6" y="10" width="40" height="52" rx="14"/></g>
+</defs>
+<rect width="1280" height="800" fill="#000"/>
+<!-- Left camera: the waiting room, seen from a corner. -->
+<g transform="translate(0,221)">
+<rect width="638" height="358" fill="#111"/>
+<rect width="638" height="190" fill="#c9d3d6"/>
+<polygon points="0,190 638,190 638,358 0,358" fill="#a3afb3"/>
+<polygon points="0,190 638,190 600,220 40,220" fill="#b3bec2"/>
+<rect x="44" y="36" width="170" height="104" rx="6" fill="#e9eef0" stroke="#8a9a9e" stroke-width="4"/>
+<path d="M60 120l40-46 32 34 22-20 44 32z" fill="#7fa7ad"/><circle cx="178" cy="66" r="12" fill="#e0b85c"/>
+<use href="#chair" x="250" y="132"/><use href="#chair" x="318" y="132"/><use href="#chair" x="386" y="132"/><use href="#chair" x="454" y="132"/>
+<use href="#person" x="250" y="132" fill="#5d6d9a"/><use href="#person" x="386" y="132" fill="#a36b5a"/>
+<rect x="556" y="150" width="46" height="60" rx="8" fill="#8a6a4f"/><path d="M579 150c-30-24-22-60 0-74 22 14 30 50 0 74z" fill="#5f8f5a"/><path d="M579 150c-6-36 26-52 44-46-6 26-26 40-44 46z" fill="#6e9e64"/>
+<rect x="90" y="250" width="200" height="60" rx="10" fill="#8e9ca0"/><rect x="104" y="238" width="60" height="16" rx="4" fill="#d9e2e4"/>
+</g>
+<!-- Right camera: the entrance and the desk. -->
+<g transform="translate(642,221)">
+<rect width="638" height="358" fill="#111"/>
+<rect width="638" height="200" fill="#d3dcdf"/>
+<polygon points="0,200 638,200 638,358 0,358" fill="#aab6b9"/>
+<rect x="420" y="40" width="120" height="166" fill="#7c8f93"/><rect x="430" y="50" width="100" height="146" fill="#b9d3d8"/><circle cx="520" cy="128" r="5" fill="#3b4b4f"/>
+<rect x="60" y="150" width="280" height="80" rx="8" fill="#5f7f84"/><rect x="60" y="140" width="280" height="16" rx="6" fill="#4b686d"/>
+<rect x="110" y="100" width="70" height="44" rx="4" fill="#26323a"/><rect x="116" y="106" width="58" height="32" fill="#7fb6c0"/>
+<use href="#person" x="214" y="92" fill="#3f6f9a"/>
+<use href="#person" x="372" y="188" fill="#8a7a5a"/>
+<text x="74" y="200" font-family="Helvetica,Arial,sans-serif" font-size="22" font-weight="700" fill="#e9f1f2">Reception</text>
+</g>
+<!-- The names on the tiles, as the camera view writes them. -->
+<g font-family="Helvetica,Arial,sans-serif" font-size="24" fill="#fff">
+<rect x="16" y="523" width="170" height="40" rx="6" fill="#000" fill-opacity=".6"/><text x="30" y="551">Waiting room</text>
+<rect x="658" y="523" width="118" height="40" rx="6" fill="#000" fill-opacity=".6"/><text x="672" y="551">Entrance</text>
+</g>
+<text x="24" y="250" font-family="Helvetica,Arial,sans-serif" font-size="20" fill="#fff" fill-opacity=".85">10:24:31</text>
+<text x="666" y="250" font-family="Helvetica,Arial,sans-serif" font-size="20" fill="#fff" fill-opacity=".85">10:24:31</text>
+</svg>

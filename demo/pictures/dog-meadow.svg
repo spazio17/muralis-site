@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5aa7e6"/>
+      <stop offset="0.6" stop-color="#a9d6f5"/>
+      <stop offset="1" stop-color="#e4f3fb"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fffbe6"/>
+      <stop offset="0.35" stop-color="#fff3b8" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#fff3b8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9cc3a8"/>
+      <stop offset="1" stop-color="#b9d6bd"/>
+    </linearGradient>
+    <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#77ad6a"/>
+      <stop offset="1" stop-color="#8fbf73"/>
+    </linearGradient>
+    <linearGradient id="meadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8cc45a"/>
+      <stop offset="1" stop-color="#4f9a3a"/>
+    </linearGradient>
+    <linearGradient id="fur" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e3a457"/>
+      <stop offset="1" stop-color="#c47f35"/>
+    </linearGradient>
+    <linearGradient id="furDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b8722c"/>
+      <stop offset="1" stop-color="#9a5c22"/>
+    </linearGradient>
+    <g id="daisy">
+      <circle r="9" fill="#fff" cx="0" cy="-9"/><circle r="9" fill="#fff" cx="9" cy="0"/>
+      <circle r="9" fill="#fff" cx="0" cy="9"/><circle r="9" fill="#fff" cx="-9" cy="0"/>
+      <circle r="8" fill="#fff" cx="6" cy="-6"/><circle r="8" fill="#fff" cx="6" cy="6"/>
+      <circle r="8" fill="#fff" cx="-6" cy="6"/><circle r="8" fill="#fff" cx="-6" cy="-6"/>
+      <circle r="6" fill="#f5c22b"/>
+    </g>
+    <g id="poppy">
+      <circle r="11" fill="#e8442e" cx="-5" cy="-3"/><circle r="11" fill="#f05a3c" cx="5" cy="-3"/>
+      <circle r="10" fill="#d9392a" cx="0" cy="5"/><circle r="4" fill="#3a2a22"/>
+    </g>
+    <g id="bell">
+      <path d="M-8,-10 Q0,-16 8,-10 L10,6 L4,2 L0,8 L-4,2 L-10,6 Z" fill="#8b7ae0"/>
+    </g>
+    <g id="dot"><circle r="6" fill="#ffd34d"/><circle r="2.5" fill="#e59a1c"/></g>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <circle cx="1270" cy="170" r="220" fill="url(#sun)"/>
+  <circle cx="1270" cy="170" r="62" fill="#fffbe8"/>
+
+  <g fill="#ffffff" opacity="0.92">
+    <g><ellipse cx="320" cy="200" rx="140" ry="30"/><circle cx="260" cy="185" r="42"/><circle cx="330" cy="165" r="58"/><circle cx="405" cy="188" r="38"/></g>
+    <g><ellipse cx="730" cy="135" rx="115" ry="24"/><circle cx="680" cy="122" r="34"/><circle cx="738" cy="104" r="48"/><circle cx="800" cy="124" r="30"/></g>
+    <g opacity="0.8"><ellipse cx="1100" cy="300" rx="100" ry="20"/><circle cx="1055" cy="290" r="28"/><circle cx="1105" cy="274" r="40"/><circle cx="1158" cy="292" r="25"/></g>
+  </g>
+
+  <path d="M0,520 C150,440 300,430 460,470 C620,510 720,420 900,410 C1080,400 1200,470 1360,450 C1470,436 1540,420 1600,430 L1600,640 L0,640 Z" fill="url(#hillFar)"/>
+  <path d="M0,600 C200,520 380,540 560,580 C760,620 900,540 1100,540 C1300,540 1450,600 1600,570 L1600,720 L0,720 Z" fill="url(#hillMid)"/>
+  <g fill="#5e9653">
+    <ellipse cx="300" cy="560" rx="34" ry="44"/><rect x="296" y="590" width="8" height="24" fill="#6b4a2c"/>
+    <ellipse cx="350" cy="566" rx="26" ry="34"/><rect x="347" y="590" width="6" height="20" fill="#6b4a2c"/>
+    <ellipse cx="1240" cy="548" rx="30" ry="40"/><rect x="1236" y="576" width="8" height="22" fill="#6b4a2c"/>
+  </g>
+  <path d="M0,680 C260,640 520,650 800,665 C1080,680 1340,640 1600,650 L1600,1000 L0,1000 Z" fill="url(#meadow)"/>
+  <path d="M0,760 C300,730 600,750 900,745 C1200,740 1400,720 1600,735 L1600,1000 L0,1000 Z" fill="#5fa640" opacity="0.55"/>
+
+  <g opacity="0.85">
+    <use href="#dot" x="120" y="720" transform="scale(1)"/>
+    <use href="#dot" x="260" y="705"/><use href="#dot" x="420" y="715"/>
+    <use href="#dot" x="1120" y="712"/><use href="#dot" x="1290" y="700"/><use href="#dot" x="1460" y="718"/>
+    <use href="#bell" x="190" y="745"/><use href="#bell" x="1370" y="742"/><use href="#bell" x="560" y="730"/>
+  </g>
+
+  <!-- shadow -->
+  <ellipse cx="800" cy="792" rx="190" ry="26" fill="#3d7a2b" opacity="0.45"/>
+
+  <!-- dog, sitting, facing right -->
+  <g>
+    <path d="M690,760 C640,750 600,720 588,670 C584,652 600,648 606,662 C622,700 650,724 696,732 Z" fill="url(#furDark)"/>
+    <path d="M700,786 C660,780 650,720 690,680 C720,650 770,655 790,690 C805,720 800,780 760,790 Z" fill="url(#fur)"/>
+    <path d="M700,770 C695,690 730,610 795,575 C840,552 880,575 884,625 C890,690 872,745 858,790 L720,790 Z" fill="url(#fur)"/>
+    <path d="M835,600 C868,600 884,640 880,690 C877,730 866,760 858,788 L828,788 C834,740 830,690 818,650 Z" fill="#fbf1e2"/>
+    <path d="M728,712 C760,700 790,720 795,760 C798,780 790,790 780,792 L705,792 C690,770 700,722 728,712 Z" fill="#c98438"/>
+    <ellipse cx="760" cy="790" rx="42" ry="13" fill="#d89048"/>
+    <path d="M818,680 L842,680 L846,786 L818,786 Z" fill="#d4913f"/>
+    <path d="M848,680 L874,680 L870,786 L846,786 Z" fill="#e3a457"/>
+    <ellipse cx="832" cy="788" rx="20" ry="10" fill="#fbf1e2"/>
+    <ellipse cx="864" cy="788" rx="21" ry="10" fill="#fbf1e2"/>
+    
+    <circle cx="852" cy="525" r="62" fill="url(#fur)"/>
+    <path d="M880,520 C930,520 960,535 962,560 C964,585 935,598 900,596 C870,594 858,575 860,555 Z" fill="#f6dfc0"/>
+    <path d="M893,575 C915,590 940,588 952,578" fill="none" stroke="#6b3d1a" stroke-width="3.5" stroke-linecap="round"/>
+    <ellipse cx="958" cy="548" rx="15" ry="11" fill="#2b1d16"/>
+    <ellipse cx="954" cy="544" rx="5" ry="3" fill="#6d5a50"/>
+    <path d="M915,586 C918,604 934,610 942,596" fill="#e46a73"/>
+    <circle cx="884" cy="510" r="9" fill="#2b1d16"/>
+    <circle cx="887" cy="507" r="3" fill="#ffffff"/>
+    <path d="M870,492 C880,486 894,488 900,496" fill="none" stroke="#9a5c22" stroke-width="4" stroke-linecap="round"/>
+    <path d="M798,612 C825,628 858,630 884,616" fill="none" stroke="#c0392b" stroke-width="13" stroke-linecap="round"/>
+    <circle cx="848" cy="636" r="9" fill="#f2c230"/>
+    <path d="M818,478 C790,470 772,500 776,545 C779,575 792,598 812,596 C830,594 834,560 836,530 C838,500 834,484 818,478 Z" fill="url(#furDark)"/>
+  </g>
+
+  <!-- foreground flowers -->
+  <g>
+    <g stroke="#3f8a2e" stroke-width="4" fill="none" stroke-linecap="round">
+      <path d="M90,1000 C95,940 100,900 96,860"/><path d="M200,1000 C210,950 205,920 212,880"/>
+      <path d="M330,1000 C325,960 335,920 330,900"/><path d="M480,1000 C484,960 480,930 486,905"/>
+      <path d="M1130,1000 C1125,950 1132,920 1128,890"/><path d="M1260,1000 C1268,960 1262,930 1270,870"/>
+      <path d="M1400,1000 C1395,960 1402,930 1398,900"/><path d="M1520,1000 C1528,950 1522,910 1530,860"/>
+      <path d="M620,1000 C622,970 618,950 622,930"/><path d="M990,1000 C992,975 988,955 994,925"/>
+    </g>
+    <use href="#daisy" x="96" y="858"/><use href="#poppy" x="212" y="878"/>
+    <use href="#daisy" x="330" y="898"/><use href="#poppy" x="486" y="903"/>
+    <use href="#daisy" x="1128" y="888"/><use href="#poppy" x="1270" y="868"/>
+    <use href="#daisy" x="1398" y="898"/><use href="#poppy" x="1530" y="858"/>
+    <use href="#daisy" x="622" y="928"/><use href="#poppy" x="994" y="923"/>
+    <use href="#daisy" x="40" y="930"/><use href="#daisy" x="1580" y="940"/>
+    <use href="#bell" x="420" y="850"/><use href="#bell" x="1190" y="845"/>
+    <use href="#dot" x="560" y="860"/><use href="#dot" x="700" y="900"/><use href="#dot" x="900" y="880"/>
+    <use href="#dot" x="1060" y="860"/><use href="#dot" x="260" y="830"/><use href="#dot" x="1340" y="830"/>
+    <use href="#daisy" x="640" y="820"/><use href="#daisy" x="980" y="830"/>
+    <use href="#poppy" x="560" y="800"/><use href="#poppy" x="1040" y="805"/>
+  </g>
+  <g fill="#4b9234">
+    <path d="M0,1000 L15,940 L25,1000 L40,930 L52,1000 L70,950 L82,1000 Z"/>
+    <path d="M700,1000 L712,950 L722,1000 L736,940 L748,1000 L762,955 L774,1000 Z"/>
+    <path d="M1500,1000 L1512,945 L1524,1000 L1538,935 L1550,1000 L1566,950 L1580,1000 Z"/>
+  </g>
+</svg>

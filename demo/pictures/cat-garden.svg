@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26315e"/>
+      <stop offset="0.22" stop-color="#4f4580"/>
+      <stop offset="0.4" stop-color="#b56a8c"/>
+      <stop offset="0.5" stop-color="#ee9a66"/>
+      <stop offset="0.58" stop-color="#ffcf88"/>
+      <stop offset="1" stop-color="#ffdb98"/>
+    </linearGradient>
+    <radialGradient id="dusk" cx="0.5" cy="1" r="0.6">
+      <stop offset="0" stop-color="#ffe2a0" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#ffb070" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lawn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5f7a4a"/>
+      <stop offset="1" stop-color="#2e4630"/>
+    </linearGradient>
+    <linearGradient id="ginger" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2a250"/>
+      <stop offset="1" stop-color="#cf7430"/>
+    </linearGradient>
+    <linearGradient id="gingerHead" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6ad5c"/>
+      <stop offset="1" stop-color="#d87c35"/>
+    </linearGradient>
+    <g id="tuft">
+      <path d="M0,0 C-4,-50 -20,-100 -44,-140 C-12,-104 4,-60 8,0 Z"/>
+      <path d="M6,0 C8,-60 18,-120 30,-170 C26,-110 22,-60 20,0 Z"/>
+      <path d="M16,0 C30,-40 52,-80 84,-110 C60,-74 40,-40 30,0 Z"/>
+      <path d="M-6,0 C-20,-30 -40,-56 -70,-76 C-40,-52 -24,-28 -16,0 Z"/>
+    </g>
+    <g id="cosmos">
+      <ellipse rx="7" ry="16" cy="-14" fill="#f07fae"/>
+      <ellipse rx="7" ry="16" cy="-14" fill="#f07fae" transform="rotate(60)"/>
+      <ellipse rx="7" ry="16" cy="-14" fill="#e8679e" transform="rotate(120)"/>
+      <ellipse rx="7" ry="16" cy="-14" fill="#f07fae" transform="rotate(180)"/>
+      <ellipse rx="7" ry="16" cy="-14" fill="#e8679e" transform="rotate(240)"/>
+      <ellipse rx="7" ry="16" cy="-14" fill="#f07fae" transform="rotate(300)"/>
+      <circle r="7" fill="#f6c23a"/>
+    </g>
+    <g id="cosmosW">
+      <ellipse rx="7" ry="16" cy="-14" fill="#fbeef2"/>
+      <ellipse rx="7" ry="16" cy="-14" fill="#f3dbe4" transform="rotate(60)"/>
+      <ellipse rx="7" ry="16" cy="-14" fill="#fbeef2" transform="rotate(120)"/>
+      <ellipse rx="7" ry="16" cy="-14" fill="#f3dbe4" transform="rotate(180)"/>
+      <ellipse rx="7" ry="16" cy="-14" fill="#fbeef2" transform="rotate(240)"/>
+      <ellipse rx="7" ry="16" cy="-14" fill="#f3dbe4" transform="rotate(300)"/>
+      <circle r="7" fill="#f6c23a"/>
+    </g>
+    <g id="lavender">
+      <path d="M0,0 L0,-150" stroke="#4b6a3e" stroke-width="3"/>
+      <g fill="#9a7fd6">
+        <ellipse cx="-4" cy="-110" rx="5" ry="8"/><ellipse cx="4" cy="-120" rx="5" ry="8"/>
+        <ellipse cx="-4" cy="-130" rx="5" ry="8"/><ellipse cx="4" cy="-140" rx="5" ry="8"/>
+        <ellipse cx="0" cy="-152" rx="4" ry="7"/>
+      </g>
+    </g>
+    <radialGradient id="fly" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fff6b0"/>
+      <stop offset="0.3" stop-color="#ffe680" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#ffe680" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <ellipse cx="800" cy="560" rx="900" ry="240" fill="url(#dusk)"/>
+  <g fill="#fff8e0">
+    <circle cx="120" cy="70" r="2.2"/><circle cx="300" cy="140" r="1.6"/><circle cx="470" cy="60" r="2"/>
+    <circle cx="640" cy="120" r="1.5"/><circle cx="980" cy="50" r="1.8"/><circle cx="1120" cy="130" r="1.4"/>
+    <circle cx="1420" cy="80" r="2.2"/><circle cx="1540" cy="170" r="1.6"/><circle cx="820" cy="190" r="1.3"/>
+    <circle cx="220" cy="230" r="1.3"/>
+  </g>
+  <path d="M1290,150 a52,52 0 1 0 40,86 a42,42 0 1 1 -40,-86 Z" fill="#fff1c4"/>
+
+  <!-- distant trees and hedge -->
+  <path d="M0,560 C60,500 120,520 160,480 C210,430 280,470 320,500 C360,470 420,480 450,520 L520,540 C600,520 700,540 800,548 C900,540 1000,520 1100,536 C1150,490 1220,470 1270,500 C1320,460 1400,470 1440,510 C1500,490 1560,500 1600,520 L1600,640 L0,640 Z" fill="#3d3a5c"/>
+  <g fill="#4a4064">
+    <ellipse cx="240" cy="520" rx="120" ry="70"/><ellipse cx="1350" cy="520" rx="140" ry="74"/>
+  </g>
+  <!-- fence -->
+  <g fill="#6a5070">
+    <rect x="0" y="584" width="1600" height="10"/>
+    <rect x="0" y="616" width="1600" height="10"/>
+    <path d="M40,640 L40,570 L52,558 L64,570 L64,640 Z"/>
+    <path d="M140,640 L140,570 L152,558 L164,570 L164,640 Z"/>
+    <path d="M240,640 L240,570 L252,558 L264,570 L264,640 Z"/>
+    <path d="M340,640 L340,570 L352,558 L364,570 L364,640 Z"/>
+    <path d="M440,640 L440,570 L452,558 L464,570 L464,640 Z"/>
+    <path d="M540,640 L540,570 L552,558 L564,570 L564,640 Z"/>
+    <path d="M640,640 L640,570 L652,558 L664,570 L664,640 Z"/>
+    <path d="M740,640 L740,570 L752,558 L764,570 L764,640 Z"/>
+    <path d="M840,640 L840,570 L852,558 L864,570 L864,640 Z"/>
+    <path d="M940,640 L940,570 L952,558 L964,570 L964,640 Z"/>
+    <path d="M1040,640 L1040,570 L1052,558 L1064,570 L1064,640 Z"/>
+    <path d="M1140,640 L1140,570 L1152,558 L1164,570 L1164,640 Z"/>
+    <path d="M1240,640 L1240,570 L1252,558 L1264,570 L1264,640 Z"/>
+    <path d="M1340,640 L1340,570 L1352,558 L1364,570 L1364,640 Z"/>
+    <path d="M1440,640 L1440,570 L1452,558 L1464,570 L1464,640 Z"/>
+    <path d="M1540,640 L1540,570 L1552,558 L1564,570 L1564,640 Z"/>
+  </g>
+
+  <!-- lawn -->
+  <path d="M0,630 C300,620 600,628 900,624 C1200,620 1400,628 1600,624 L1600,1000 L0,1000 Z" fill="url(#lawn)"/>
+
+  <!-- back tufts and flowers -->
+  <g fill="#4c6a40">
+    <use href="#tuft" x="380" y="700"/><use href="#tuft" x="460" y="690"/><use href="#tuft" x="1120" y="690"/>
+    <use href="#tuft" x="1200" y="700"/><use href="#tuft" x="1300" y="690"/><use href="#tuft" x="300" y="690"/>
+  </g>
+  <use href="#lavender" x="420" y="700"/><use href="#lavender" x="440" y="696"/><use href="#lavender" x="1180" y="700"/>
+  <use href="#lavender" x="1160" y="694"/><use href="#lavender" x="1260" y="698"/>
+  <g stroke="#4b6a3e" stroke-width="3" fill="none">
+    <path d="M330,700 C334,660 328,620 336,580"/><path d="M1330,700 C1326,650 1334,610 1326,570"/>
+    <path d="M500,705 C496,670 504,640 500,610"/>
+  </g>
+  <use href="#cosmos" x="336" y="578"/><use href="#cosmosW" x="1326" y="568"/><use href="#cosmos" x="500" y="608"/>
+
+  <!-- cat shadow -->
+  <ellipse cx="800" cy="782" rx="290" ry="24" fill="#1f2e22" opacity="0.5"/>
+
+  <!-- cat, lying down, head towards the viewer -->
+  <g>
+    <path d="M940,770 C1010,776 1080,778 1120,760 C1150,746 1156,716 1140,706 C1128,700 1118,714 1120,726 C1118,742 1080,752 1020,752 C990,752 960,752 940,750 Z" fill="url(#ginger)"/>
+    <path d="M1060,750 L1066,770 M1096,744 L1104,764 M1128,716 L1146,722" stroke="#b5622a" stroke-width="7" stroke-linecap="round"/>
+    <path d="M600,758 C600,744 620,740 640,742 L700,746 C716,748 716,778 700,778 L620,778 C604,778 600,770 600,758 Z" fill="#e8913f"/>
+    <path d="M560,770 C560,756 580,752 600,754 L680,758 C700,760 704,788 680,788 L582,788 C566,788 560,782 560,770 Z" fill="#f09a48"/>
+    <path d="M640,776 C610,730 640,660 720,640 C800,622 900,628 960,660 C1010,688 1016,750 980,776 Z" fill="url(#ginger)"/>
+    <ellipse cx="930" cy="730" rx="62" ry="50" fill="#e0893f"/>
+    <path d="M880,700 C900,690 930,688 950,696" fill="none" stroke="#c46a2c" stroke-width="5" stroke-linecap="round"/>
+    <g stroke="#c46a2c" stroke-width="10" stroke-linecap="round" fill="none">
+      <path d="M760,636 C766,652 768,666 764,680"/><path d="M810,630 C818,648 820,664 816,680"/>
+      <path d="M860,634 C870,652 872,668 866,684"/><path d="M908,646 C918,662 918,676 912,690"/>
+    </g>
+    <ellipse cx="958" cy="774" rx="36" ry="12" fill="#f2c08a"/>
+    <!-- front paws -->
+    <ellipse cx="616" cy="760" rx="22" ry="14" fill="#fbe6cc"/>
+    <ellipse cx="578" cy="774" rx="22" ry="14" fill="#fff1de"/>
+    <path d="M570,768 L570,782 M582,766 L582,782 M608,754 L608,768 M620,752 L620,768" stroke="#e0b994" stroke-width="2"/>
+    <!-- chest -->
+    <path d="M660,700 C700,690 740,710 740,746 C740,766 720,778 690,778 C664,778 648,760 650,736 C650,720 652,708 660,700 Z" fill="#fbe6cc"/>
+    <!-- head -->
+    <path d="M576,610 L586,520 C588,510 598,508 604,516 L646,566 L690,520 C696,512 706,514 708,524 L716,610 Z" fill="#e58a3a"/>
+    <path d="M594,590 L598,538 L630,574 Z" fill="#f2a0a5"/>
+    <path d="M700,590 L696,538 L664,574 Z" fill="#f2a0a5"/>
+    <ellipse cx="646" cy="626" rx="86" ry="72" fill="url(#gingerHead)"/>
+    <g stroke="#c46a2c" stroke-width="7" stroke-linecap="round" fill="none">
+      <path d="M646,560 L646,584"/><path d="M628,564 L632,586"/><path d="M664,564 L660,586"/>
+      <path d="M564,624 L588,628"/><path d="M566,646 L588,646"/><path d="M728,624 L704,628"/><path d="M726,646 L704,646"/>
+    </g>
+    <path d="M646,636 C680,636 704,656 704,676 C704,694 676,700 646,700 C616,700 588,694 588,676 C588,656 612,636 646,636 Z" fill="#fbe6cc"/>
+    <path d="M594,620 C600,602 634,602 640,620 C634,636 600,636 594,620 Z" fill="#f7c64b"/>
+    <path d="M652,620 C658,602 692,602 698,620 C692,636 658,636 652,620 Z" fill="#f7c64b"/>
+    <ellipse cx="617" cy="620" rx="4.5" ry="13" fill="#1d1a18"/>
+    <ellipse cx="675" cy="620" rx="4.5" ry="13" fill="#1d1a18"/>
+    <circle cx="621" cy="613" r="3" fill="#fff"/><circle cx="679" cy="613" r="3" fill="#fff"/>
+    <path d="M594,620 C600,604 634,604 640,620 M652,620 C658,604 692,604 698,620" fill="none" stroke="#7a3f18" stroke-width="3.5"/>
+    <path d="M634,652 L658,652 L646,666 Z" fill="#e47d8a"/>
+    <path d="M646,666 L646,676 M646,676 C640,684 630,684 624,678 M646,676 C652,684 662,684 668,678" fill="none" stroke="#6b3a24" stroke-width="3" stroke-linecap="round"/>
+    <g stroke="#fff8ee" stroke-width="2.2" stroke-linecap="round" opacity="0.9">
+      <path d="M606,666 L538,654"/><path d="M606,674 L536,678"/><path d="M608,682 L544,700"/>
+      <path d="M686,666 L754,654"/><path d="M686,674 L756,678"/><path d="M684,682 L748,700"/>
+    </g>
+  </g>
+
+  <!-- tall grass in front -->
+  <g fill="#3c5a34">
+    <use href="#tuft" x="520" y="820"/><use href="#tuft" x="880" y="826"/>
+    <use href="#tuft" x="1050" y="822"/><use href="#tuft" x="1180" y="830"/>
+  </g>
+  <g fill="#2f4a2c">
+    <use href="#tuft" transform="translate(80,1000) scale(1.6)"/><use href="#tuft" transform="translate(260,1010) scale(1.4)"/>
+    <use href="#tuft" transform="translate(440,1000) scale(1.2)"/><use href="#tuft" transform="translate(620,1010) scale(1.1)"/>
+    <use href="#tuft" transform="translate(980,1010) scale(1.1)"/><use href="#tuft" transform="translate(1160,1000) scale(1.3)"/>
+    <use href="#tuft" transform="translate(1340,1010) scale(1.5)"/><use href="#tuft" transform="translate(1520,1000) scale(1.7)"/>
+    <use href="#tuft" transform="translate(800,1010) scale(1)"/>
+  </g>
+  <g stroke="#3d5d36" stroke-width="4" fill="none">
+    <path d="M150,1000 C156,920 146,860 154,800"/><path d="M250,1000 C244,930 254,880 246,840"/>
+    <path d="M1360,1000 C1366,920 1356,870 1364,810"/><path d="M1460,1000 C1454,930 1464,890 1456,850"/>
+    <path d="M360,1000 C362,950 356,910 362,880"/><path d="M1240,1000 C1236,950 1244,910 1238,875"/>
+  </g>
+  <use href="#cosmos" transform="translate(154,798) scale(1.4)"/><use href="#cosmosW" transform="translate(246,838) scale(1.2)"/>
+  <use href="#cosmos" transform="translate(1364,808) scale(1.4)"/><use href="#cosmosW" transform="translate(1456,848) scale(1.2)"/>
+  <use href="#cosmosW" transform="translate(362,878) scale(1.1)"/><use href="#cosmos" transform="translate(1238,873) scale(1.1)"/>
+  <use href="#lavender" transform="translate(60,1000) scale(1.5)"/><use href="#lavender" transform="translate(84,1000) scale(1.3)"/>
+  <use href="#lavender" transform="translate(1540,1000) scale(1.5)"/><use href="#lavender" transform="translate(1516,1000) scale(1.3)"/>
+
+  <!-- fireflies -->
+  <g>
+    <circle cx="420" cy="520" r="14" fill="url(#fly)"/><circle cx="560" cy="440" r="10" fill="url(#fly)"/>
+    <circle cx="1040" cy="480" r="13" fill="url(#fly)"/><circle cx="1220" cy="600" r="11" fill="url(#fly)"/>
+    <circle cx="280" cy="760" r="12" fill="url(#fly)"/><circle cx="1400" cy="720" r="12" fill="url(#fly)"/>
+    <circle cx="900" cy="420" r="9" fill="url(#fly)"/>
+  </g>
+</svg>
