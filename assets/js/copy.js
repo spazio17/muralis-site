@@ -6,7 +6,7 @@
   if (!navigator.clipboard || !navigator.clipboard.writeText) return;
   document.querySelectorAll('.code-scroll').forEach(function (block) {
     var code = block.querySelector('pre > code');
-    if (!code || block.closest('dialog')) return;
+    if (!code) return;
     var button = document.createElement('button');
     button.type = 'button';
     button.className = 'copy';

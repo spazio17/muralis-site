@@ -7,7 +7,8 @@ Plain static HTML and CSS. No Jekyll (`.nojekyll` is present), no dependencies, 
 ## Layout
 
 ```
-index.html                product page
+index.html                product page (its own style and script: assets/css/home.css, assets/js/home.js)
+features/index.html       Free, Pro and Business compared, and what a tablet needs
 api/index.html            the remote-control reference: HTTP, commands, settings, stats, MQTT
 setup/index.html          the device setup page: battery limits, WebView, what to turn off
 download/                 the Play-signed APK, and everything derived from it (see below)
@@ -15,34 +16,31 @@ privacy/index.html        privacy policy, the public URL Play requires, in addit
 terms/index.html          terms
 imprint/index.html        imprint
 legal/*.txt               the canonical privacy and terms texts the two pages are generated from
-assets/css/site.css       all styles (see the palette note below)
+demo/                     the live demo on the product page: the panel and its web admin, drawn with the app's own stylesheet
+assets/css/home.css       the product page's styles, with its fonts in assets/fonts/
+assets/css/site.css       the other pages' styles
 assets/js/theme.js        light/dark toggle wiring; light unless a reader chose Dark
 assets/js/menu.js         the site menu behind the Menu button
 assets/js/copy.js         the Copy button on every code block
-assets/js/waydeck.js      the two-way install tabs
-assets/js/clips.js        the demo clip deck
-assets/js/lightbox.js     opens a screenshot full size
-assets/js/recipes.js      fills the blueprint overlay, and the copy button in it
+assets/js/home.js         the product page: the hero tablet, the day, Home/Pro/Business, the bricks, the price cards
+assets/js/demo.js         the demo's guide, tours, room light and reset, around the two demo frames
+assets/js/talk.js         the scenes where another system talks to the panel, and the Home Assistant card
 assets/js/setup.js        the setup page's own wiring
-assets/img/               icon, badge, screenshots
-assets/video/             the demo clips and their poster frames
-blueprints/*.yaml         copies of the Home Assistant blueprints, shown by the recipes section
-scripts/                  the generators and the checks CI runs (legal text, blueprints, download/)
+assets/img/               icon, badge, Play banner; home/ holds the product page's screens
+assets/video/             the QR setup clip on the download page
+scripts/                  the generators and the checks CI runs (legal text, download/)
 .github/workflows/        the checks, and pages-deploy.yml, which builds and publishes the site
 .nojekyll                 serve the files as-is instead of running them through Jekyll
 ```
 
 ## The palette
 
-Since the rebrand of 2026-09-09 the site has its own palette: light first, a near-white page,
-violet-black text and one violet accent, the violet of the app icon. Dark is a choice a reader
-makes in the menu, not something inherited from the system, so every first visit sees the same
-page. The tablet UI and the web admin (`KioskTheme.java` and `PAGE_CSS` in `HttpAdminServer.java`
-in [`spazio17/muralis`](https://github.com/spazio17/muralis)) have the app's own palette, dark-first
-with the same violet; bringing them in line is app work, tracked there.
-
-No webfont and nothing from a third party: the privacy page promises that every byte comes from
-this domain, and the stylesheet keeps the promise with a system font stack.
+One palette with the app: the ultramarine seed `#1C39BB` and its Material 3 tones. The product page
+has night bands (`#12131d`) for the panel in the dark, plaster (`#f7f3ea`, `#efe7d6`) for the wall
+by day, ultramarine for what you press, and fresco gold (`#e0a93b`) only as light on the wall.
+Headings are Archivo, text Atkinson Hyperlegible, both self-hosted in `assets/fonts/` (SIL Open Font
+License, its text beside them): the privacy page promises that every byte comes from this domain.
+The other pages keep `site.css`, light by default with a dark choice in the menu.
 
 ## Legal text is a copy, not a source
 
@@ -50,38 +48,16 @@ this domain, and the stylesheet keeps the promise with a system font stack.
 `app/src/main/res/raw/privacy_policy.txt` and `app/src/main/res/raw/terms.txt`. The app is the
 source; this repo is a publication of it. When that text changes, update these pages to match, Play requires the public copy and the in-app copy to say the same thing.
 
-The privacy policy was finalized on 2026-08-31: reviewed line by line against the app's source,
-dated, and given a rights section; its draft banner is gone. The terms still carry theirs, and the
-governing-law section is still a placeholder on purpose. **Do not remove the terms' draft banner
-until reviewed text lands in `legal/terms.txt`.**
+`legal-check.yml` fails when the generated pages differ from what `scripts/generate-legal.py`
+makes of `legal/*.txt`.
 
-## Automation recipes are copies too
+## Screens
 
-The recipes section offers two Home Assistant blueprints. The files in `blueprints/` are **copies**,
-and the originals live in [`spazio17/muralis-blueprints`](https://github.com/spazio17/muralis-blueprints),
-a separate public repository.
-
-That split is forced, not a preference. Home Assistant imports a blueprint from GitHub, from a gist
-or from its own forums, and from nowhere else, so an Add to Home Assistant button cannot hand it a
-file served from this site. The button hands it the repository; the page shows the copy so a reader
-can see what they are about to import without leaving.
-
-A copy is a thing that drifts, so `.github/workflows/blueprint-check.yml` fails closed on two counts.
-It diffs every file in `blueprints/` against the same file upstream, and it runs
-`scripts/check-recipes.py`, which checks that every card names a blueprint that exists, that the
-import link and the On GitHub link beside it name that same blueprint, and that no blueprint in the
-repository has been published and then quietly forgotten. Same instinct as `legal-check.yml`.
-
-To add a recipe: commit the YAML upstream first, copy it into `blueprints/`, then add a card that
-names it in all three places. The check will tell you if you missed one.
-
-## Screenshots
-
-`assets/img/screenshots/` holds the gallery images. Slots on the product page that are still waiting
-for a capture are marked `class="pending"` and render as a labelled dashed frame; to fill one,
-replace its `<div class="placeholder">…</div>` with `<img src="…" alt="…">` and drop the `pending`
-class. Portrait captures (the tablet's own screens) additionally take `class="portrait"` for a taller
-frame.
+`assets/img/home/` holds the product page's screens: WebP captures of a real panel (`page` and
+`stats` for the stats switch; `settings`, `escape`, `automations`, `ambient`, `fleet` and
+`webadmin`, each also at 640 pixels for the gallery) and the drawn example pages the hero tablet and the day show (SVG). The
+captures come from the Play screenshot set, sanitized: demo dashboard only, documentation
+addresses.
 
 ## download/ is built, not committed
 
