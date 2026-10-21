@@ -4,7 +4,9 @@ WHAT YOU MAY DO
 
 Install and run Muralis on as many devices as you like, whether you own them or administer them for somebody else, for private or commercial purposes. You do not need an account, you do not need to register, and this does not expire.
 
-Muralis's source code is available under the Fair Core License (FCL-1.0-ALv2), published with the code: you may read it, change it for yourself and contribute. You may not sell the app or a product made from it, offer it as a service, remove or work around the Pro lock, or pass it off as your own work. The copyright stays with the developer.
+Muralis's source code is available under the PolyForm Shield License 1.0.0 (https://polyformproject.org/licenses/shield/1.0.0), published with the code: you may read it, learn from it, change it, use parts of it in your own projects and be paid to install and set up Muralis for others. You may not use it, or any part of it, for a product that competes with Muralis or with Muralis Pro and Business, even a free one. You may not remove or work around the Pro or Business lock, or pass Muralis off as your own work. The licence gives no right to use the name Muralis or its icon for another product. The copyright stays with the developer.
+
+Required Notice: Copyright 2026 Juri Calleri (spazio17) (https://github.com/spazio17/muralis)
 
 MURALIS PRO
 
