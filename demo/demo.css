@@ -1,0 +1,58 @@
+/* What the demo adds to the app's own stylesheet: greyed parts, the wall with its corners, the
+   panel's Open dashboard row, the pictures, the change highlight, the guide's ring and the message
+   line. Everything else is the app's. */
+body{margin:0}
+main{padding-bottom:24px}
+/* Greyed: drawn as in the app at Material's 38 percent, and answered with a message when touched. */
+.demo-off,.item.demo-dim,details.box.demo-dim>summary,li.demo-dim,.demo-dimbtn,[aria-disabled="true"].sw{opacity:.38}
+.demo-off *{pointer-events:none}
+.demo-off,.demo-dimbtn{cursor:not-allowed}
+li.demo-dim .rowlink{pointer-events:none}
+.demo-escape{color:var(--subtext);font-size:14px;line-height:22px;margin:0 0 4px}
+.demo-reading{font-size:28px;line-height:36px;margin:0 0 8px;color:var(--text)}
+/* The panel's Open dashboard: a menu row of one entry, in the main colour (openDashboardRow). */
+.demo-opendash{display:flex;align-items:center;justify-content:flex-start;gap:20px;width:100%;min-height:72px;padding:8px 24px 8px 28px;margin-top:16px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);font-family:inherit;font-size:16px;font-weight:500;line-height:24px;letter-spacing:.15px;text-align:left;cursor:pointer}
+.demo-opendash svg{width:24px;height:24px;flex:0 0 24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.demo-opendash:hover{background:color-mix(in srgb,var(--on-accent) 8%,var(--accent))}
+.demo-leftcol>.demo-opendash{display:none}
+.demo-opendash-foot{padding:0 16px}
+@media (min-width:840px){html.js .demo-leftcol>.demo-opendash{display:flex}.demo-opendash-foot{display:none}}
+.demo-leftcol{min-width:0}
+/* The wall: the page the panel shows, full screen and always dark, with the corners of the way out. */
+#wall{position:fixed;inset:0;background:#000;overflow:hidden}
+#wall>picture{display:contents}#wall>picture>img{width:100%;height:100%;object-fit:cover;display:block}
+.demo-explain{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#12131d;color:#e2e1ef;text-align:center;padding:24px;font-size:16px}
+.demo-corner{position:absolute;width:64px;height:64px;border:0;background:transparent;cursor:pointer;z-index:4}
+.demo-corner.tl{top:0;left:0}.demo-corner.tr{top:0;right:0}.demo-corner.bl{bottom:0;left:0}.demo-corner.br{bottom:0;right:0}
+.demo-corner:focus-visible{outline:3px solid #b9c3ff;outline-offset:-6px;border-radius:12px}
+.demo-black{position:absolute;inset:0;background:#000;cursor:pointer}
+.demo-ambient{position:absolute;inset:0;cursor:pointer}
+.demo-ambient img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease}
+.demo-ambient img.on{opacity:1}
+/* The system stats over the page, the panel's overlay. */
+.demo-overlay{position:absolute;top:8px;right:8px;margin:0;padding:8px 10px;border-radius:6px;background:rgba(40,42,54,.82);color:#e8e9f3;font:12px/17px ui-monospace,SFMono-Regular,Menlo,monospace;z-index:3;pointer-events:none}
+/* The status light, a coloured frame around the screen. */
+.demo-statuslight{position:absolute;inset:0;box-shadow:inset 0 0 0 10px rgb(var(--led));pointer-events:none;z-index:2}
+/* The playlist's pictures, picked by ticking them. */
+.demo-picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin:8px 0}
+.demo-pick{position:relative;display:block;border-radius:12px;overflow:hidden;cursor:pointer;background:var(--card-high)}
+.demo-pick img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}
+.demo-pick span{display:block;padding:6px 10px 8px;font-size:13px;color:var(--subtext)}
+.demo-pick input{position:absolute;top:8px;left:8px;width:22px;height:22px;accent-color:var(--accent);margin:0}
+.demo-pick:has(input:checked){outline:3px solid var(--accent);outline-offset:-3px}
+/* A change made on the other screen: a short highlight on what changed. Colour only, so it stays
+   under reduced motion. */
+.demo-flash{animation:demo-flash 1.4s ease-out}
+@keyframes demo-flash{0%,30%{background:color-mix(in srgb,var(--accent) 30%,transparent)}100%{background:transparent}}
+/* The guide's ring: the control the step points to. Static under reduced motion. */
+.demo-ring{outline:3px solid #e0a93b!important;outline-offset:-3px;border-radius:12px;animation:demo-ring 1.6s ease-in-out infinite}
+@keyframes demo-ring{50%{outline-color:rgba(224,169,59,.35)}}
+@media (prefers-reduced-motion:reduce){.demo-ring{animation:none}.demo-ambient img{transition:none}.demo-flash{animation-duration:2.4s}}
+.demo-snack{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);padding:14px 16px;border-radius:4px;background:var(--text);color:var(--base);font-size:14px;line-height:20px;box-shadow:0 3px 6px rgba(0,0,0,.3);z-index:30;pointer-events:none}
+/* Long log lines wrap inside the card, as on a narrow screen they would scroll sideways otherwise. */
+.mono{white-space:pre-wrap;overflow-wrap:anywhere}
+/* A tablet turned upright gets the sample page drawn upright, shown whole rather than cropped. */
+@media (orientation:portrait){#wall>picture>img{object-fit:contain}}
+/* The demo's own note, apart from the app's words: a chip and a dashed edge. */
+.demo-aside{display:flex;align-items:center;gap:8px;margin:4px 0 8px;padding:6px 10px;border:1px dashed color-mix(in srgb,#e0a93b 70%,transparent);border-radius:8px;font-size:13px;color:var(--subtext)}
+.demo-aside span{padding:1px 8px;border-radius:999px;background:#e0a93b;color:#1a1200;font-weight:600;font-size:12px}

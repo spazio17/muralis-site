@@ -1,575 +1,454 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-mode="home">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Muralis, an Android kiosk that locks a tablet to one web page</title>
-<meta name="description" content="Muralis turns an Android tablet into a wall panel for any web page and keeps it there: locked, self-recovering, controllable over HTTP and MQTT. A dashboard, a board, a menu, a page on your own network. Made in Austria.">
+<title>Muralis, any web page or app on a tablet on the wall</title>
+<meta name="description" content="Muralis turns an Android tablet into a wall panel for any web page or app and keeps it there: locked, self-recovering, run from your own network. Free on every panel; Pro puts up to six on one page. No cloud. Made in Austria.">
 <link rel="canonical" href="https://muralis.spazio17.org/">
 <link rel="icon" href="assets/img/icon-512.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/icon-512.png">
-<link rel="stylesheet" href="assets/css/site.css?v=34">
+<link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/home.css?v=53">
+<meta name="theme-color" content="#12131d">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Muralis, lock a tablet to one page and leave it">
-<meta property="og:description" content="An Android kiosk for any web page. Locked, self-recovering, controllable over HTTP and MQTT.">
+<meta property="og:title" content="Muralis, hang it up, and leave it">
+<meta property="og:description" content="Any web page or app on a tablet on the wall. Locked, self-recovering, no cloud.">
 <meta property="og:url" content="https://muralis.spazio17.org/">
-<meta property="og:image" content="https://muralis.spazio17.org/assets/img/icon-512.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://muralis.spazio17.org/assets/img/feature-graphic.png">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta name="twitter:card" content="summary_large_image">
 <script>
-  /* An explicit choice from the menu is applied before first paint. Without one the page
-     follows the system, through prefers-color-scheme in the stylesheet. */
-  try {
-    var t = localStorage.getItem('muralis-theme');
-    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  } catch (e) { /* private mode: follow the system */ }
+  document.documentElement.classList.add('js');
+  /* Home, Pro or Business, chosen before anything is drawn: ?for= in the address wins, then the last choice, then Home. */
+  (function () {
+    var m = new URLSearchParams(location.search).get('for');
+    if (m !== 'home' && m !== 'pro' && m !== 'business') { try { m = localStorage.getItem('muralis-mode'); } catch (e) { m = null; } }
+    document.documentElement.dataset.mode = (m === 'pro' || m === 'business') ? m : 'home';
+  })();
+  /* The greeting drawn by the scroll: the big tablet at the top of the page, smaller as the page scrolls. Not with reduced motion. */
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('scrollhero');
 </script>
 </head>
 <body>
+<a class="skip" href="#main">Skip to the content</a>
+<nav aria-label="Main"><div class="in"><a class="logo" href="./"><img src="assets/img/icon.svg" alt="" width="30" height="30">Muralis</a>
+<ul><li><a href="#day">How it works</a></li><li><a href="#look">Try it</a></li><li><a href="#price">Price</a></li><li class="drop"><button type="button" aria-expanded="false" aria-controls="product-menu">Product<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><ul id="product-menu" hidden><li><a href="features/"><b>Features</b><span>Everything Muralis does, and what a tablet needs</span></a></li><li><a href="download/"><b>Download</b><span>The app, its setup QR and how to check them</span></a></li></ul></li><li class="drop"><button type="button" aria-expanded="false" aria-controls="docs-menu">Documentation<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><ul id="docs-menu" hidden><li><a href="setup/"><b>Setup</b><span>Android settings for each tablet maker</span></a></li><li><a href="api/"><b>API</b><span>Every command over HTTP and MQTT</span></a></li><li><a href="https://github.com/spazio17/muralis"><b>GitHub</b><span>The source code</span></a></li></ul></li></ul>
+<div class="mode" role="group" aria-label="Show Muralis for"><span class="thumb"></span><button type="button" data-mode="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4zM10 20v-6h4v6"/></svg><span>Home</span></button><button type="button" data-mode="pro"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9l1.5-5h13L20 9M4 9v11h16V9M4 9h16M9 20v-6h6v6"/></svg><span>Pro</span></button><button type="button" data-mode="business"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V9h6v11M9 20V4h8v16M17 20v-8h4v8M5 12h2M5 16h2M12 8h2M12 12h2M12 16h2"/></svg><span>Business</span></button></div><a class="btn primary" href="#install">Get Muralis</a><button class="menubtn" type="button" aria-expanded="false" aria-controls="homemenu"><span class="bars" aria-hidden="true"></span><span class="menubtn-label">Menu</span></button></div>
+<div class="homemenu" id="homemenu" hidden><div class="in"><ul><li><a href="#day">How it works</a></li><li><a href="#look">Try it</a></li><li><a href="#price">Price</a></li></ul><p class="menuhead">Product</p><ul><li><a href="features/">Features</a></li><li><a href="download/">Download</a></li></ul><p class="menuhead">Documentation</p><ul><li><a href="setup/">Setup</a></li><li><a href="api/">API</a></li><li><a href="https://github.com/spazio17/muralis">GitHub</a></li></ul><a class="btn primary" href="#install">Get Muralis</a></div></div></nav>
 
-<header class="masthead">
-  <div class="wrap">
-    <a class="brand" href="./">
-      <img src="./assets/img/icon-512.png" alt="">
-      Muralis
-    </a>
-    <nav class="pagenav" aria-label="Pages">
-      <a href="./" aria-current="page">Overview</a>
-      <a href="api/">API</a>
-      <a href="setup/">Setup</a>
-      <a href="download/">Download</a>
-    </nav>
-    <button class="menubtn" type="button" aria-expanded="false" aria-controls="sitemenu">
-      <span class="bars" aria-hidden="true"></span>
-      <span class="menubtn-label">Menu</span>
-    </button>
-  </div>
-  <div class="sitemenu" id="sitemenu" hidden>
-    <div class="wrap menuwrap">
-      <nav class="menugroup" aria-label="On this page">
-        <p class="menuhead">On this page</p>
-        <a href="#for">Who it is for</a>
-        <a href="#features">What it does</a>
-        <a href="#remote">Remote control</a>
-        <a href="#motion">In motion</a>
-        <a href="#look">Screens</a>
-        <a href="#home-assistant">Home Assistant</a>
-        <a href="#pricing">Free &amp; Pro</a>
-        <a href="#install">Install</a>
-        <a href="#requirements">Requirements</a>
-        <a href="#status">Availability</a>
-      </nav>
-      <nav class="menugroup" aria-label="Pages">
-        <p class="menuhead">Pages</p>
-        <a href="./" aria-current="page">Overview</a>
-        <a href="api/">API</a>
-        <a href="setup/">Setup</a>
-        <a href="download/">Download</a>
-      </nav>
-      <div class="menugroup">
-        <p class="menuhead">Appearance</p>
-        <div class="themepick" role="group" aria-label="Colour theme">
-          <button type="button" data-theme="auto" aria-pressed="false">Auto</button>
-          <button type="button" data-theme="light" aria-pressed="false">Light</button>
-          <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<main id="main">
+<div class="hero-track">
+<header class="hero dark">
+ <div class="in">
+  <h1>Muralis</h1>
+  <div data-for="home"><p class="line"><span>The free kiosk app for Android tablets.</span> <span>No cloud.</span></p><p class="lead">Any web page or app on the wall, always on, fixing itself when something goes wrong. A dashboard, a board, or any page you like.</p></div><div data-for="pro"><p class="line"><span>Up to six screens, managed from one.</span> <span>Bought once. No cloud.</span></p><p class="lead">A practice, a shop, a workshop, a big home: up to six panels, set and watched from any of them, bought once.</p></div><div data-for="business"><p class="line"><span>Screens for every room of your company.</span> <span>Coming soon.</span></p><p class="lead">For companies with many screens in several places: every location on one page, the logs on your own servers. A yearly plan, coming after Pro.</p></div>
+  <div class="acts"><a class="btn primary" href="#install">Get Muralis</a><a class="btn quiet" href="#day">See how it works</a></div>
+  <ul class="facts" data-for="home"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Android 8 and up</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Free on every panel</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>No account</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>No cloud</li></ul><ul class="facts" data-for="pro"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>One purchase</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Up to 6 panels</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Managed from any of them</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>No cloud</li></ul><ul class="facts" data-for="business"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Coming soon</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Up to 99 screens</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>Every location on one page</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>No cloud</li></ul>
+ </div>
+ <div class="hall"><div class="glow"></div>
+  <div class="tablet"><div class="glass"><div class="greet" aria-hidden="true"><img src="assets/img/icon.svg" alt="" width="96" height="96"><p>Welcome to Muralis</p></div><div class="reel" data-for="home"><img class="on" src="assets/img/home/page.webp" alt="Home Assistant&#x27;s demo dashboard on a tablet held by Muralis"><img src="assets/img/home/openhab.svg" alt="An openHAB overview with the rooms of a home" loading="lazy"><img src="assets/img/home/kuma.svg" alt="A status page with the services of a home, all up" loading="lazy"><img src="assets/img/home/mirror.svg" alt="A family board with the clock, the weather and what is coming up" loading="lazy"></div><div class="reel" data-for="pro"><img class="on" src="assets/img/home/waiting.svg" alt="A waiting room screen calling the next patient" loading="lazy"><img src="assets/img/home/shop.svg" alt="A shop window board with the week&#x27;s offer" loading="lazy"><img src="assets/img/home/kuma.svg" alt="A status board with the services of a small business, all up" loading="lazy"><img src="assets/img/home/bakery.svg" alt="A bakery board with what is fresh, the offer and the opening hours" loading="lazy"></div><div class="reel" data-for="business"><img class="on" src="assets/img/home/room.svg" alt="A meeting-room dashboard: the room is free, with the day&#x27;s bookings" loading="lazy"><img src="assets/img/home/board.svg" alt="A meeting-room dashboard in a company&#x27;s dark style: in use, with what comes next" loading="lazy"><img src="assets/img/home/floor.svg" alt="A floor overview: which meeting rooms are free and which are busy" loading="lazy"><img src="assets/img/home/atelier.svg" alt="A meeting-room dashboard in a studio&#x27;s warm style: the next meeting in 25 minutes" loading="lazy"></div></div></div>
+  <svg class="sidecord" aria-hidden="true"><path/><g class="socket"><rect width="52" height="36" rx="9" fill="#252839" stroke="#474c68" stroke-width="1.5"/><circle cx="17" cy="18" r="3.5" fill="#0a0b12"/><circle cx="35" cy="18" r="3.5" fill="#0a0b12"/></g></svg>
+  <svg class="cord" viewBox="0 0 140 150" aria-hidden="true"><path d="M70 0 C70 46 30 58 48 92 S70 112 70 118" fill="none" stroke="#343850" stroke-width="6" stroke-linecap="round"/>
+   <g class="socket"><rect x="44" y="112" width="52" height="36" rx="9" fill="#252839" stroke="#474c68" stroke-width="1.5"/><circle cx="61" cy="130" r="3.5" fill="#0a0b12"/><circle cx="79" cy="130" r="3.5" fill="#0a0b12"/></g></svg>
+ </div>
 </header>
+</div>
 
-<main>
+<section class="day" id="day"><div class="in">
+ <div class="stage"><div class="room" data-state="ready">
+  <span class="clock" aria-hidden="true">04:12</span>
+  <div class="tablet"><div class="glass">
+   <div class="screen dash" data-for="home"><img src="assets/img/home/page.webp" alt="" loading="lazy"></div><div class="screen dash" data-for="pro"><img src="assets/img/home/waiting.svg" alt="" loading="lazy"></div><div class="screen dash" data-for="business"><img src="assets/img/home/room.svg" alt="" loading="lazy"></div>
+   <div class="screen s-ready"><img src="assets/img/icon-512.png" alt="">Ready</div>
+   <div class="screen s-reload"><span class="bar"></span><span class="note" data-for="home">The home server not answering. Waiting.</span><span class="note" data-for="pro">The booking server not answering. Waiting.</span><span class="note" data-for="business">The booking system not answering. Waiting.</span></div>
+   <div class="screen s-ambient" data-for="home"><img src="assets/img/home/dusk.svg" alt="" loading="lazy"></div><div class="screen s-ambient" data-for="pro"><img src="assets/img/home/dusk.svg" alt="" loading="lazy"></div><div class="screen s-ambient" data-for="business"><img src="assets/img/home/city.svg" alt="" loading="lazy"></div>
+   <div class="screen s-notify"><p class="pop" data-for="home"><b>Washing machine</b>The wash is done.</p><p class="pop" data-for="pro"><b>Dr. Berger</b>Running about 20 minutes late.</p><p class="pop" data-for="business"><b>Weekly planning</b>Starts at 14:00, Luca, 9 people.</p></div>
+   <div class="screen s-frozen"><span class="note">Page stopped changing. Reloading.</span></div>
+   <div class="screen s-off"></div>
+  </div></div>
+  <svg class="cordlet" viewBox="0 0 60 44" aria-hidden="true"><path d="M30 0 C30 18 18 22 24 34 S30 40 30 44" fill="none" stroke="#343850" stroke-width="4" stroke-linecap="round"/></svg>
+ </div></div>
+ <div>
+  <div class="day-head"><h2 class="big">A day on the wall</h2>
+  <p class="intro" data-for="home">An ordinary day for a panel in the hallway. Scroll through it.</p><p class="intro" data-for="pro">An ordinary day for the screen in a waiting room. Scroll through it.</p><p class="intro" data-for="business">An ordinary day for the screen beside a meeting room. Scroll through it.</p></div>
+  <ol class="steps" data-for="home"><li class="step" data-state="ready" data-time="04:12"><time>04:12</time><h3>Ready for the morning</h3><p>All night it kept an eye on the page and fixed what went wrong. It is ready before anyone wakes up.</p></li><li class="step" data-state="wake" data-time="07:30"><time>07:30</time><h3>Someone walks up</h3><p>Someone moves in front of the camera, or a hand comes near the glass, and the screen wakes.</p></li><li class="step" data-state="reload" data-time="10:05"><time>10:05</time><h3>The home server restarts</h3><p>Muralis notices, and loads the page again once it answers.</p></li><li class="step" data-state="notify" data-time="13:30"><time>13:30</time><h3>Washing machine done</h3><p>The machine says it has finished. The panel lights up green and shows a message.</p></li><li class="step" data-state="ambient" data-time="15:30"><time>15:30</time><h3>Nobody home</h3><p>Your own pictures, from a playlist, until someone comes back.</p></li><li class="step" data-state="frozen" data-time="20:50"><time>20:50</time><h3>The page froze</h3><p>It stopped changing, so it is loaded again. Nobody had to notice.</p></li><li class="step" data-state="off" data-time="23:00"><time>23:00</time><h3>Lights out</h3><p>The display goes off for the night at the time you set, and comes back in the morning.</p></li></ol><ol class="steps" data-for="pro"><li class="step" data-state="ready" data-time="06:45"><time>06:45</time><h3>Ready before the doors open</h3><p>All night it kept an eye on the page and fixed what went wrong. It is ready before the first patient arrives.</p></li><li class="step" data-state="wake" data-time="08:00"><time>08:00</time><h3>The first patient</h3><p>Someone walks in, and the screen wakes with the queue.</p></li><li class="step" data-state="reload" data-time="10:05"><time>10:05</time><h3>The booking server restarts</h3><p>Muralis waits, and loads the page again once the server answers.</p></li><li class="step" data-state="notify" data-time="11:15"><time>11:15</time><h3>Running late</h3><p>The doctor is behind. The panel lights up amber and tells the waiting room how long.</p></li><li class="step" data-state="ambient" data-time="12:30"><time>12:30</time><h3>Lunch break</h3><p>Nobody waiting: your own pictures, until the afternoon.</p></li><li class="step" data-state="frozen" data-time="15:20"><time>15:20</time><h3>The page froze</h3><p>It stopped changing, so it is loaded again. Nobody had to notice.</p></li><li class="step" data-state="off" data-time="18:30"><time>18:30</time><h3>Closed</h3><p>The screens go off for the night. If one of them went offline today, you were told once.</p></li></ol><ol class="steps" data-for="business"><li class="step" data-state="ready" data-time="06:30"><time>06:30</time><h3>Ready before you are</h3><p>All night every screen kept an eye on its page and fixed what went wrong. All are ready before the first person arrives.</p></li><li class="step" data-state="wake" data-time="08:45"><time>08:45</time><h3>The first meeting</h3><p>Someone walks up, and the screen wakes with the day's bookings.</p></li><li class="step" data-state="reload" data-time="10:05"><time>10:05</time><h3>The booking system restarts</h3><p>Muralis waits, and loads the page again once the server answers.</p></li><li class="step" data-state="ambient" data-time="12:30"><time>12:30</time><h3>Lunch break</h3><p>Nobody around: your own pictures, until someone comes back.</p></li><li class="step" data-state="notify" data-time="13:55"><time>13:55</time><h3>The next meeting is close</h3><p>Five minutes before the next booking, the panel lights up red and says who comes next.</p></li><li class="step" data-state="frozen" data-time="16:10"><time>16:10</time><h3>The page froze</h3><p>It stopped changing, so it is loaded again. Nobody had to call IT.</p></li><li class="step" data-state="off" data-time="19:00"><time>19:00</time><h3>Closing time</h3><p>The screens go off for the night, and are back on in the morning.</p></li></ol>
+ </div>
+</div></section>
 
-  <div class="hero">
-    <div class="wrap">
-      <div class="herocopy">
-        <p class="eyebrow">Android kiosk for any web page</p>
-        <h1>Lock a tablet to one page. Then leave it.</h1>
-        <p class="lede">Muralis turns an Android tablet into a wall panel for any web page: a dashboard, a board, a menu, a page on your own network. It holds the screen on that page, recovers by itself, and takes commands over HTTP and MQTT.</p>
-        <div class="actions">
-          <a class="button" href="#install">See how it installs</a>
-          <a class="button secondary" href="api/">Read the API</a>
-        </div>
-        <ul class="facts">
-          <li>Android 8 and up</li>
-          <li>No root</li>
-          <li>Any URL, local or internet</li>
-          <li>HTTP + MQTT</li>
-          <li>Made in Austria</li>
-        </ul>
-      </div>
-      <figure class="device">
-        <div class="bezel"><img src="assets/img/screenshots/panel-room.png" alt="A meeting-room board filling the whole tablet screen, with no browser bar and no Android bars" width="1920" height="1200"></div>
-        <figcaption>One page. The whole screen. Nothing else.</figcaption>
-      </figure>
-    </div>
+<section class="look" id="look"><div class="in">
+ <h2 class="big">The panel, as it is</h2>
+ <p class="intro">Try it: Muralis on a tablet, and its web admin on a phone. A change on one shows on the other.</p>
+ <div class="demo-guide" role="region" aria-label="Guide">
+  <p class="demo-step" aria-live="polite"><b class="demo-count"></b> <span class="demo-text"></span></p>
+  <div class="demo-guide-acts">
+   <div class="demo-tours"><button type="button" class="demo-gbtn" aria-expanded="false" aria-controls="demo-tour-list">Tours<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><ul id="demo-tour-list" hidden></ul></div>
+   <button type="button" class="demo-gbtn demo-next">Next</button>
+   <button type="button" class="demo-gbtn demo-skip" aria-label="Hide the guide">Hide</button>
   </div>
+ </div>
+ <div class="demo-switch" role="group" aria-label="Show"><button type="button" aria-pressed="true" data-show="panel">Panel</button><button type="button" aria-pressed="false" data-show="web">Web admin</button></div>
+ <div class="demo" data-show="panel">
+  <div class="demo-tablet-col"><div class="tablet demo-tablet"><iframe src="demo/surface.html?surface=panel" title="Muralis on the panel (demo)" loading="lazy"></iframe><svg class="demo-arrow l" viewBox="0 0 60 80" aria-hidden="true"><path d="M56 77c-15-3-26-13-26-30S28 15 30 4"/><path d="M23.5 11 30 3l6.5 8"/></svg><svg class="demo-arrow r" viewBox="0 0 60 80" aria-hidden="true"><path d="M56 77c-15-3-26-13-26-30S28 15 30 4"/><path d="M23.5 11 30 3l6.5 8"/></svg></div>
+   <div class="demo-taps"><p><span><b>Settings</b> tap 3×<span class="demo-sr">: tap the bottom-left corner of the tablet 3 times</span></span></p><p class="r"><span><b>Exit</b> tap 3×<span class="demo-sr">: tap the bottom-right corner of the tablet 3 times</span></span></p></div></div>
+  <div class="demo-phone"><div class="demo-urlbar"><span>https://hallway-panel.local:8080</span></div><iframe src="demo/surface.html?surface=web" title="Muralis web admin on a phone (demo)" loading="lazy"></iframe></div>
+ </div>
+ <div class="demo-under">
+  <label class="demo-lux"><span>Light in the room</span><input type="range" min="0" max="600" step="10" value="320" aria-describedby="demo-lux-now"><output id="demo-lux-now">320 lx</output></label>
+  <button type="button" class="demo-gbtn demo-show" hidden>Show the guide</button>
+  <button type="button" class="demo-gbtn demo-reset">Reset the demo</button>
+ </div>
+ <p class="demo-note">A demo in your browser: nothing here reaches a real panel.</p>
+</div></section>
 
-  <section id="for" class="audience">
-    <div class="wrap">
-      <p class="eyebrow">Who it is for</p>
-      <h2>One screen, one page, nobody looking after it</h2>
-      <p class="intro">Muralis does not care what is on the page. If a browser can show it, a tablet on the wall can hold it.</p>
-      <div class="cards">
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-5h4v5"/></svg>
-          <div>
-            <h3>Smart-home dashboards</h3>
-            <p>Home Assistant, openHAB, ioBroker, Domoticz. To Muralis they are all a page.</p>
-          </div>
-        </div>
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M6 16V9"/><path d="M11 16V5"/><path d="M16 16v-7"/><path d="M21 16v-4"/></svg>
-          <div>
-            <h3>Office and workshop boards</h3>
-            <p>A Grafana board, a build monitor, a ticket queue, on the wall of the room that needs it.</p>
-          </div>
-        </div>
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10 5.5 5h13L20 10"/><path d="M4 10c0 1.4 1.1 2.5 2.5 2.5S9 11.4 9 10c0 1.4 1.3 2.5 3 2.5s3-1.1 3-2.5c0 1.4 1.1 2.5 2.5 2.5S20 11.4 20 10"/><path d="M6 12.5V19h12v-6.5"/><path d="M10 19v-4h4v4"/></svg>
-          <div>
-            <h3>Front desk and shop</h3>
-            <p>A welcome screen, a menu, today&#8217;s schedule, on a tablet nobody has to babysit.</p>
-          </div>
-        </div>
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/></svg>
-          <div>
-            <h3>Your own network</h3>
-            <p>An intranet page or a local server. Nothing has to be on the internet.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+<section class="does" id="does"><div class="in">
+ <h2>Everything a wall screen needs</h2>
+ <p class="intro" data-for="home">Free on every panel you own, with no limit.</p>
+ <p class="intro" data-for="pro">For the screen in a practice, a shop or a workshop. All of it is free on one panel; Pro adds the fleet.</p>
+ <p class="intro" data-for="business">For screens beside meeting rooms, at the reception and in the lobby. Business is coming after Pro.</p>
 
-  <section id="features">
-    <div class="wrap">
-      <p class="eyebrow">What it does</p>
-      <h2>Built to be left alone</h2>
-      <p class="intro">Wall panels drift. A browser stops repainting, a network blip leaves an error page, an update reboots into the stock launcher. Muralis handles each of those without anyone walking over.</p>
-      <div class="cards">
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-          <div>
-            <h3>Locked to one page</h3>
-            <p>Home app, lock task, no system UI to reach. Back by itself after a reboot.</p>
-          </div>
-        </div>
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>
-          <div>
-            <h3>Recovers unattended</h3>
-            <p>Failed loads retry, hung loads time out, a dead renderer is rebuilt.</p>
-          </div>
-        </div>
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>
-          <div>
-            <h3>Catches a frozen page</h3>
-            <p>A page that was updating and stopped is reloaded. One that never changes is left alone.</p>
-          </div>
-        </div>
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
-          <div>
-            <h3>Restarts itself nightly</h3>
-            <p>A full restart in the small hours, and a rebuild whenever memory runs low.</p>
-          </div>
-        </div>
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><circle cx="12" cy="12" r="2"/></svg>
-          <div>
-            <h3>A way out you choose</h3>
-            <p>Three to twelve corner taps, recorded on the device. Nothing is hardcoded.</p>
-          </div>
-        </div>
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/></svg>
-          <div>
-            <h3>Display off, done properly</h3>
-            <p>A real screen-off where the tablet can be trusted to sleep, a black film where it cannot. It says which.</p>
-          </div>
-        </div>
-        <div class="card">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.5"/></svg>
-          <div>
-            <h3>Something to look at when nobody is</h3>
-            <p>Dimmed page, black film, another page, or pictures: your folders in playlists, or a picture of the day, credited.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+ <!-- ================= HOME ================= -->
+ <div class="bento" data-for="home">
+  <article class="tile big" style="--i:0">
+   <div class="scene">
+    <div class="tab"><div class="dz-glass"><img src="assets/img/home/mirror.svg" alt="">
+     <span class="ring r1" style="left:7%;top:92%"></span><span class="ring r2" style="left:7%;top:92%"></span><span class="ring r3" style="left:7%;top:92%"></span>
+     <div class="set h1" aria-hidden="true">
+      <div class="ab"><div><b>Muralis</b><small>hallway-panel</small></div><span>83% charging<br>192.0.2.42</span></div>
+      <div class="nav"><div class="lab">What the panel shows</div><div class="row on"><i></i>Dashboard</div><div class="row"><i></i>Display</div><div class="row"><i></i>Ambient</div><div class="row"><i></i>Way out</div><div class="od">Open dashboard</div></div>
+      <div class="det"><b>Dashboard</b><div class="fld"><em>Dashboard URL</em>http://home.sample/</div><span class="btn2">Open once</span></div>
+     </div>
+    </div></div>
+    <span class="chip a gone">Tap the bottom-left corner three times</span>
+    <span class="chip b">The settings open</span>
+   </div>
+   <div class="txt"><h3>One page, locked</h3><p>Any page or app, full screen. Your corner taps open it.</p></div>
+  </article>
 
-  <section id="remote" class="remote">
-    <div class="wrap">
-      <p class="eyebrow">Remote control, Pro</p>
-      <h2>Every setting, from anywhere on your network</h2>
-      <p class="intro">The web admin is a page the panel serves itself. The same commands and settings answer over HTTP and MQTT, and the reference shows each one with the panel&#8217;s real reply.</p>
-      <div class="split">
-        <div>
-          <ul class="points">
-            <li><b>One command set.</b> The same names over HTTP and MQTT. A refused command says why.</li>
-            <li><b>Every setting.</b> The page, brightness, orientation, display off, the screensaver and its playlists, the broker, the escape combinations.</li>
-            <li><b>Live status.</b> Battery, memory, storage, network, temperature and page health, as JSON.</li>
-            <li><b>Telemetry to automate on.</b> Battery, memory, storage, network, CPU, thermal, screen and page health, once a minute and sooner when something changes.</li>
-            <li><b>Nothing leaves your network, and nothing is on until you set it up.</b> No default credentials; broker and admin secrets encrypted in the Android keystore. No cloud, no account.</li>
-          </ul>
-          <div class="actions">
-            <a class="button" href="api/">Open the reference</a>
-          </div>
-        </div>
-        <div>
-          <div class="code-scroll" tabindex="0" role="region" aria-label="Change the page over HTTP"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=kiosk.open_url \
-     -d url=https://muralis.spazio17.org</code></pre></div>
-          <p class="reply">The panel answers:</p>
-          <div class="code-scroll" tabindex="0" role="region" aria-label="The panel's reply"><pre><code>{"status":"accepted","detail":""}</code></pre></div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <article class="tile" style="--i:1"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <rect class="s-frame" x="40" y="10" width="160" height="102" rx="10"/><rect class="s-glass" x="48" y="18" width="144" height="86" rx="4"/>
+    <g class="pg"><rect class="s-block b" x="56" y="26" width="60" height="32" rx="3"/><rect class="s-block" x="122" y="26" width="62" height="32" rx="3"/><rect class="s-block" x="56" y="64" width="128" height="14" rx="3"/><rect class="s-block" x="56" y="84" width="80" height="12" rx="3"/></g>
+    <g class="frz gone"><rect x="48" y="18" width="144" height="86" rx="4" fill="#20232f"/><circle cx="120" cy="52" r="11" fill="none" stroke="#e0a93b" stroke-width="2"/><path d="M120 46v7M120 57v1" stroke="#e0a93b" stroke-width="2.4" stroke-linecap="round"/></g>
+    <g class="rel gone"><circle cx="120" cy="61" r="20" fill="#12131d"/><path class="s-stroke" d="M131 55a12 12 0 1 0 1 9M132 48v8h-8"/></g>
+    <text class="s-cap cap0 gone" x="120" y="130" text-anchor="middle">The page</text>
+    <text class="s-cap cap1 gone" x="120" y="130" text-anchor="middle" fill="#e0a93b">The page froze</text>
+    <text class="s-cap cap2" x="120" y="130" text-anchor="middle">Loaded again, by itself</text>
+   </svg></div>
+   <div class="txt"><h3>Fixes itself</h3><p>Failed or frozen pages come back by themselves.</p></div></article>
 
-  <section id="motion">
-    <div class="wrap">
-      <p class="eyebrow">In motion</p>
-      <h2>Four clips off a real panel</h2>
-      <p class="intro">Recorded over the cable. They loop, there is no sound, and nothing in them is a mock-up.</p>
-      <div class="clipdeck">
-        <div class="clipdeck-list" role="tablist" aria-label="Choose a clip" aria-orientation="vertical">
-          <button type="button" role="tab" id="tab-self-healing" aria-controls="panel-self-healing" aria-selected="true" tabindex="0">
-            <b>Recovers unattended</b>
-            <span>A page that breaks comes back on its own.</span>
-          </button>
-          <button type="button" role="tab" id="tab-magic-taps" aria-controls="panel-magic-taps" aria-selected="false" tabindex="-1">
-            <b>A way out you choose</b>
-            <span>Corner taps you record yourself.</span>
-          </button>
-          <button type="button" role="tab" id="tab-http-command" aria-controls="panel-http-command" aria-selected="false" tabindex="-1">
-            <b>Answers to HTTP</b>
-            <span>One request moves the panel.</span>
-          </button>
-          <button type="button" role="tab" id="tab-mqtt-command" aria-controls="panel-mqtt-command" aria-selected="false" tabindex="-1">
-            <b>And to MQTT</b>
-            <span>The broker you already run.</span>
-          </button>
-        </div>
-        <div class="clipdeck-stage">
-        <div class="clip-panel" role="tabpanel" id="panel-self-healing" aria-labelledby="tab-self-healing" tabindex="0">
-          <figure class="clip">
-            <div class="frame"><video src="assets/video/self-healing.mp4?v=2" poster="assets/video/poster/self-healing.jpg?v=2" preload="none" muted loop playsinline width="1280" height="800"></video></div>
-          </figure>
-          <p class="clip-note">The page fails and nobody touches the tablet. About ten seconds later the panel loads the configured page again by itself. The waiting runs at five times speed, and the badge counts the real seconds as they pass.</p>
-        </div>
-        <div class="clip-panel" role="tabpanel" id="panel-magic-taps" aria-labelledby="tab-magic-taps" tabindex="0">
-          <figure class="clip">
-            <div class="frame"><video src="assets/video/magic-taps.mp4?v=2" poster="assets/video/poster/magic-taps.jpg?v=2" preload="none" muted loop playsinline width="1280" height="800"></video></div>
-          </figure>
-          <p class="clip-note">Five taps in one corner opens the settings. You choose the corners on the device, and the page underneath carries on as if nothing happened.</p>
-        </div>
-        <div class="clip-panel" role="tabpanel" id="panel-http-command" aria-labelledby="tab-http-command">
-          <figure class="clip">
-            <div class="frame"><video src="assets/video/http-command.mp4?v=2" poster="assets/video/poster/http-command.jpg?v=2" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
-          </figure>
-          <p class="clip-note">A POST to the panel&#8217;s own web admin and it changes page, with nobody near it. The reply under the command is the panel&#8217;s own.</p>
-          <div class="code-scroll" tabindex="0" role="region" aria-label="The HTTP command, as a shell line"><pre><code>curl -k -u :your-admin-password -X POST https://192.0.2.42:8080/api/command \
-     -d cmnd=kiosk.open_url \
-     -d url=https://muralis.spazio17.org</code></pre></div>
-        </div>
-        <div class="clip-panel" role="tabpanel" id="panel-mqtt-command" aria-labelledby="tab-mqtt-command">
-          <figure class="clip">
-            <div class="frame"><video src="assets/video/mqtt-command.mp4?v=2" poster="assets/video/poster/mqtt-command.jpg?v=2" preload="none" muted loop playsinline width="1280" height="1000"></video></div>
-          </figure>
-          <p class="clip-note">One message on the panel&#8217;s command topic. It does as it is told and answers on its own result topic.</p>
-          <div class="code-scroll" tabindex="0" role="region" aria-label="The MQTT command, as a shell line"><pre><code>mosquitto_pub -h test.mosquitto.org \
-    -t kiosk/hallway-panel/command \
-    -m '{"command":"kiosk.open_url","args":{"url":"https://muralis.spazio17.org"}}'</code></pre></div>
-        </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <article class="tile" style="--i:2"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <rect class="s-frame" x="30" y="16" width="150" height="108" rx="10"/><rect x="38" y="24" width="134" height="92" rx="4" fill="#06070c"/>
+    <g class="lit"><rect class="s-glass" x="38" y="24" width="134" height="92" rx="4"/><rect class="s-block b" x="46" y="32" width="56" height="30" rx="3"/><rect class="s-block" x="108" y="32" width="56" height="30" rx="3"/><rect class="s-block" x="46" y="68" width="118" height="40" rx="3"/></g>
+    <g class="hand"><path d="M186 64c6-4 14-4 22-2l20 4M184 74c8-2 18-1 30 1M186 84c8-1 16 0 26 2M190 56c5-6 12-8 18-6" class="s-stroke"/></g>
+   </svg></div>
+   <div class="txt"><h3>Wakes when you come</h3><p>Movement or a hand wakes it. Dark at night.</p></div></article>
 
-  <section id="look">
-    <div class="wrap">
-      <p class="eyebrow">Screens</p>
-      <h2>The tablet, the web admin, and what they produce</h2>
-      <div class="shots">
-        <figure class="shot trio">
-          <div class="frames">
-            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a Grafana dashboard on the locked tablet"><img src="assets/img/screenshots/panel-grafana.png" alt="A Grafana dashboard filling the tablet, with no browser chrome" loading="lazy"></button></div>
-            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a Home Assistant dashboard on the locked tablet"><img src="assets/img/screenshots/panel-home-assistant.png" alt="Home Assistant&#8217;s demo dashboard filling the tablet" loading="lazy"></button></div>
-            <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: openHAB&#8217;s demo on the locked tablet"><img src="assets/img/screenshots/panel-openhab.png" alt="openHAB&#8217;s public demo filling the tablet" loading="lazy"></button></div>
-          </div>
-          <figcaption><b>In place.</b> A Grafana board, a Home Assistant dashboard, an openHAB home: three pages, one panel, nothing else reachable.</figcaption>
-        </figure>
-        <figure class="shot contain">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the web admin in a desktop browser, every setting and a live status block"><img src="assets/img/screenshots/web-admin.png" alt="The web admin in a desktop browser: every setting and a live status block" loading="lazy"></button></div>
-          <figcaption><b>Web admin.</b> Every setting, without touching the panel.</figcaption>
-        </figure>
-        <figure class="shot">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the on-device settings, reached through the corner-tap combination"><img src="assets/img/screenshots/config-screen.png" alt="The on-device settings, reached through the corner-tap combination" loading="lazy"></button></div>
-          <figcaption><b>On the device.</b> The same settings, in your hand.</figcaption>
-        </figure>
-        <figure class="shot">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Escape sequences page on the tablet, the two recorded corner-tap combinations and the optional PIN"><img src="assets/img/screenshots/escape-sequences.png" alt="The Escape sequences page on the tablet: the two recorded corner-tap combinations and the optional PIN" loading="lazy"></button></div>
-          <figcaption><b>The way out.</b> Corner taps you record yourself, and a PIN if you want one.</figcaption>
-        </figure>
-        <figure class="shot">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the screensaver settings on the tablet, the five modes, the playlists and the options for pictures"><img src="assets/img/screenshots/screensaver.png" alt="The screensaver settings on the tablet: the five modes, the playlists, and the options for pictures" loading="lazy"></button></div>
-          <figcaption><b>Screensaver.</b> Pictures from the panel&#8217;s own folders, in playlists, or a picture of the day.</figcaption>
-        </figure>
-        <figure class="shot contain">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: the Muralis device page in Home Assistant, controls, sensors and diagnostics, all created by MQTT discovery"><img src="assets/img/screenshots/home-assistant.png" alt="The Muralis device page in Home Assistant: controls, sensors and diagnostics, all created by MQTT discovery" loading="lazy"></button></div>
-          <figcaption><b>In Home Assistant.</b> Discovered, not declared.</figcaption>
-        </figure>
-        <figure class="shot">
-          <div class="frame"><button type="button" class="shot-open" aria-label="Open a larger view: a Gatus status page on the locked tablet"><img src="assets/img/screenshots/panel-gatus.png" alt="A Gatus health dashboard filling the tablet, every endpoint green" loading="lazy"></button></div>
-          <figcaption><b>A status page.</b> Gatus, on the wall of the room that runs the servers.</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
+  <article class="tile" style="--i:3"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <defs><clipPath id="h4clip"><rect x="38" y="16" width="164" height="96" rx="4"/></clipPath></defs>
+    <rect class="s-frame" x="30" y="8" width="180" height="112" rx="10"/>
+    <g clip-path="url(#h4clip)">
+     <image class="sl s1" href="demo/pictures/dog-meadow.svg" x="38" y="16" width="164" height="96" preserveAspectRatio="xMidYMid slice"/>
+     <image class="sl s2 gone" href="demo/pictures/cat-forest.svg" x="38" y="16" width="164" height="96" preserveAspectRatio="xMidYMid slice"/>
+     <image class="sl s3 gone" href="demo/pictures/dog-lake.svg" x="38" y="16" width="164" height="96" preserveAspectRatio="xMidYMid slice"/>
+     <g class="h4page gone"><rect class="s-glass" x="38" y="16" width="164" height="96"/><rect class="s-block b" x="46" y="24" width="70" height="34" rx="3"/><rect class="s-block" x="122" y="24" width="72" height="34" rx="3"/><rect class="s-block" x="46" y="64" width="148" height="40" rx="3"/></g>
+    </g>
+    <text class="s-cap h4idle gone" x="120" y="134" text-anchor="middle">Nobody touched it for 2 minutes</text>
+   </svg></div>
+   <div class="txt"><h3>Your pictures</h3><p>Your photos, while nobody is looking.</p></div></article>
 
-  <section id="home-assistant">
-    <div class="wrap">
-      <p class="eyebrow">For Home Assistant users</p>
-      <h2>Discovered, not declared</h2>
-      <p class="intro">Over MQTT the panel appears in Home Assistant as one device, with no YAML: sensors for battery, memory, storage and temperature, controls for brightness, orientation, display off and the page, buttons for reload, restart and reboot. The two recipes below are ready-made automations built on them. Import one and Home Assistant asks you which entities to use.</p>
+  <article class="tile" style="--i:4"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <g class="sun" style="opacity:.25"><circle cx="34" cy="28" r="7" fill="#e0a93b"/><path d="M34 15v-3M34 44v-3M21 28h-3M50 28h-3M25 19l-2-2M45 39l-2-2M25 37l-2 2M45 17l-2 2" stroke="#e0a93b" stroke-width="2" stroke-linecap="round"/></g>
+    <rect x="56" y="24" width="80" height="8" rx="4" fill="#252839"/><rect class="lux" x="56" y="24" width="80" height="8" rx="4" fill="#e0a93b" style="transform:scaleX(.18)"/>
+    <text class="s-sub" x="142" y="32">Light in the room</text>
+    <rect class="when" x="14" y="58" width="92" height="40" rx="12" fill="#1b1d2b" stroke="#b9c3ff" stroke-width="1.5"/>
+    <text class="s-sub" x="26" y="74">When</text><text class="s-text" x="26" y="89">it gets dark</text>
+    <rect class="then" x="134" y="58" width="92" height="40" rx="12" fill="#1b1d2b" stroke="#b9c3ff" stroke-width="1.5"/>
+    <text class="s-sub" x="146" y="74">Then</text><text class="s-text" x="146" y="89">display off</text>
+    <path class="s-line" d="M106 78h28"/><circle class="dot s-sky gone" cx="106" cy="78" r="4" style="transform-box:view-box;transform-origin:0 0"/>
+    <rect class="s-frame" x="160" y="106" width="40" height="28" rx="4"/><rect x="164" y="110" width="32" height="20" rx="2" fill="#3b4374"/><rect class="dark" x="164" y="110" width="32" height="20" rx="2" fill="#000"/>
+   </svg></div>
+   <div class="txt"><h3>Small rules, no server</h3><p>When this, then that, on the panel itself.</p></div></article>
 
-      <div class="cards recipes">
+  <article class="tile wide" style="--i:5"><div class="scene">
+   <svg viewBox="0 0 480 150" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+    <defs><clipPath id="h6clip"><rect x="308" y="42" width="124" height="72" rx="4"/></clipPath></defs>
+    <rect x="40" y="22" width="190" height="108" rx="10" fill="#1b1d2b" stroke="#343850" stroke-width="1.5"/><circle cx="56" cy="36" r="3" fill="#474c68"/><circle cx="66" cy="36" r="3" fill="#474c68"/><circle cx="76" cy="36" r="3" fill="#474c68"/>
+    <text class="s-sub" x="56" y="66">Ambient</text><text class="s-text label1 gone" x="56" y="82">Off</text><text class="s-text label2" x="56" y="82">Pictures</text>
+    <rect class="track" x="180" y="66" width="32" height="18" rx="9" fill="#2e4ad6"/><circle class="knob" cx="190" cy="75" r="6" fill="#e4e6f6" style="transform:translateX(14px)"/>
+    <rect x="56" y="98" width="150" height="10" rx="5" fill="#252839"/>
+    <path class="beam gone" d="M232 76H300" stroke="#b9c3ff" stroke-width="2" fill="none"/>
+    <rect class="s-frame" x="300" y="34" width="140" height="88" rx="10"/><rect x="308" y="42" width="124" height="72" rx="4" fill="#3b4374"/>
+    <rect class="s-block b" x="314" y="48" width="54" height="26" rx="3"/><rect class="s-block" x="372" y="48" width="54" height="26" rx="3"/><rect class="s-block" x="314" y="80" width="112" height="28" rx="3"/>
+    <image class="follow" clip-path="url(#h6clip)" href="demo/pictures/cat-garden.svg" x="308" y="42" width="124" height="72" preserveAspectRatio="xMidYMid slice"/>
+   </svg></div>
+   <div class="txt"><h3>From your browser</h3><p>Every setting in the web admin.</p></div></article>
 
-        <article class="card">
-          <p class="tag">Needs Pro</p>
-          <h3>Wake on presence, blank when empty</h3>
-          <p class="what">A panel that glows all night is a nightlight nobody asked for. This wakes the screen when someone is in the room and blanks it again once the room has been empty for a while. The page stays loaded and comes straight back.</p>
-          <p class="asks-label">It asks you for</p>
-          <ul class="asks">
-            <li>a motion or occupancy sensor</li>
-            <li>the panel&#8217;s <b>Display on</b> and <b>Display off</b> buttons</li>
-            <li>how long the room must be empty first</li>
-            <li>optionally, something that keeps it dark regardless</li>
-          </ul>
-          <div class="recipe-actions">
-            <a class="ha-add" href="https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fspazio17%2Fmuralis-blueprints%2Fblob%2Fmain%2Fscreen-presence.yaml">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.7 2.7 12a1 1 0 0 0 .7 1.7H5v7a1.3 1.3 0 0 0 1.3 1.3h11.4A1.3 1.3 0 0 0 19 20.7v-7h1.6a1 1 0 0 0 .7-1.7L12 2.7Z"/></svg>
-              Add to Home Assistant
-            </a>
-            <button type="button" class="read-yaml" data-blueprint="blueprints/screen-presence.yaml" data-title="Wake on presence, blank when empty">Read the YAML</button>
-            <a class="plain" href="https://github.com/spazio17/muralis-blueprints/blob/main/screen-presence.yaml">On GitHub</a>
-          </div>
-        </article>
+  <a class="cta" href="features/" style="--i:6"><strong>See every feature<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></strong><span>What is free stays free. And what a tablet needs.</span></a>
+ </div>
 
-        <article class="card">
-          <p class="tag">Needs Pro</p>
-          <h3>Keep the battery in a healthy band</h3>
-          <p class="what">A tablet left plugged in forever sits at 100 percent and warms up, and after a year or two the battery swells and lifts the screen off the front. This charges it only between two thresholds instead. The panel keeps running throughout; only the charger is switched.</p>
-          <p class="asks-label">It asks you for</p>
-          <ul class="asks">
-            <li>the panel&#8217;s battery level sensor</li>
-            <li>the smart plug feeding its charger</li>
-            <li>the floor and the ceiling, 20 and 80 by default</li>
-          </ul>
-          <div class="recipe-actions">
-            <a class="ha-add" href="https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fspazio17%2Fmuralis-blueprints%2Fblob%2Fmain%2Fbattery-band.yaml">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.7 2.7 12a1 1 0 0 0 .7 1.7H5v7a1.3 1.3 0 0 0 1.3 1.3h11.4A1.3 1.3 0 0 0 19 20.7v-7h1.6a1 1 0 0 0 .7-1.7L12 2.7Z"/></svg>
-              Add to Home Assistant
-            </a>
-            <button type="button" class="read-yaml" data-blueprint="blueprints/battery-band.yaml" data-title="Keep the battery in a healthy band">Read the YAML</button>
-            <a class="plain" href="https://github.com/spazio17/muralis-blueprints/blob/main/battery-band.yaml">On GitHub</a>
-          </div>
-        </article>
+ <!-- ================= PRO ================= -->
+ <div class="bento" data-for="pro">
+  <article class="tile big" style="--i:0">
+   <div class="scene">
+    <div class="tab"><div class="dz-glass"><img src="assets/img/home/waiting.svg" alt=""><img class="dz-swap" src="assets/img/home/shop.svg" alt=""><span class="badge">The shop's own app</span></div></div>
+    <span class="seg"><i class="p">A web page<span class="tapr"></span></i><i class="q">An app<span class="tapr"></span></i></span>
+   </div>
+   <div class="txt"><h3>Your page or your app</h3><p>The queue, the booking page or one app.</p></div>
+  </article>
 
-      </div>
+  <article class="tile" style="--i:1"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <circle cx="60" cy="66" r="36" fill="#1b1d2b" stroke="#474c68" stroke-width="1.5"/>
+    <circle cx="60" cy="38" r="4" fill="#e0a93b"/><path d="M57 90a5 5 0 1 0 6 6 4 4 0 0 1-6-6z" fill="#b9c3ff"/>
+    <path class="hd" d="M60 66h22" stroke="#b9c3ff" stroke-width="3" stroke-linecap="round" style="transform-box:view-box;transform-origin:60px 66px;transform:rotate(-30deg)"/><circle cx="60" cy="66" r="3.5" fill="#b9c3ff"/>
+    <rect class="s-frame" x="118" y="26" width="104" height="80" rx="9"/><rect x="125" y="33" width="90" height="66" rx="4" fill="#06070c"/>
+    <g class="daylit"><rect class="s-glass" x="125" y="33" width="90" height="66" rx="4"/><rect class="s-block b" x="132" y="40" width="40" height="22" rx="3"/><rect class="s-block" x="176" y="40" width="32" height="22" rx="3"/><rect class="s-block" x="132" y="68" width="76" height="24" rx="3"/></g>
+    <text class="s-cap open" x="170" y="124" text-anchor="middle">Open: on</text>
+    <text class="s-cap closed gone" x="170" y="124" text-anchor="middle" fill="#b4b8d2">Closed: off</text>
+   </svg></div>
+   <div class="txt"><h3>Open and closed</h3><p>On when you open, off when you close.</p></div></article>
 
-      <p class="intro footnote">Both read the panel&#8217;s own entities, so both need Pro. Home Assistant imports blueprints from GitHub rather than from any website, which is why the buttons above hand it <a href="https://github.com/spazio17/muralis-blueprints">the repository</a> and not this page.</p>
-    </div>
-  </section>
+  <article class="tile p3" style="--i:2"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <rect x="14" y="36" width="40" height="52" rx="6" fill="#1b1d2b" stroke="#474c68" stroke-width="1.5"/><path class="s-line" d="M22 52h24M22 64h24"/><circle class="led" cx="34" cy="78" r="4" fill="#3fbf7f"/>
+    <path class="s-line" d="M54 62h18" stroke-dasharray="3 4"/>
+    <rect class="s-frame" x="72" y="10" width="154" height="102" rx="10"/><rect class="s-glass" x="80" y="18" width="138" height="86" rx="4"/>
+    <g class="pg"><rect class="s-block b" x="88" y="26" width="58" height="32" rx="3"/><rect class="s-block" x="152" y="26" width="58" height="32" rx="3"/><rect class="s-block" x="88" y="64" width="122" height="32" rx="3"/></g>
+    <g class="frz gone"><rect x="80" y="18" width="138" height="86" rx="4" fill="#20232f"/><circle cx="137" cy="61" r="2.5" fill="#b4b8d2"/><circle cx="149" cy="61" r="2.5" fill="#b4b8d2"/><circle cx="161" cy="61" r="2.5" fill="#b4b8d2"/></g>
+    <g class="rel gone"><circle cx="149" cy="61" r="20" fill="#12131d"/><path class="s-stroke" d="M160 55a12 12 0 1 0 1 9M161 48v8h-8"/></g>
+    <text class="s-cap cap1 gone" x="120" y="130" text-anchor="middle" fill="#e0a93b">The server restarts: it waits</text>
+    <text class="s-cap cap2" x="120" y="130" text-anchor="middle">The server answers: page back</text>
+   </svg></div>
+   <div class="txt"><h3>Nobody has to notice</h3><p>Frozen pages and restarted servers, handled.</p></div></article>
 
-  <section id="pricing">
-    <div class="wrap">
-      <p class="eyebrow">Free, and Pro</p>
-      <h2>The kiosk is free. Reaching it from a distance is Pro.</h2>
-      <p class="intro">A panel on a wall is meant to be left alone, and the kiosk does that for free. Pro is how you reach it anyway: a browser, a broker or an automation, without walking up to it.</p>
-      <div class="tiers">
+  <article class="tile" style="--i:3"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <rect class="s-frame" x="40" y="16" width="160" height="108" rx="10"/><rect class="s-glass" x="48" y="24" width="144" height="92" rx="4"/>
+    <rect class="s-block" x="56" y="58" width="128" height="20" rx="3"/><rect class="s-block" x="56" y="84" width="90" height="22" rx="3"/>
+    <g class="toast"><rect x="58" y="30" width="124" height="34" rx="8" fill="#e4e6f6"/><text x="70" y="44" font-family="Atkinson,sans-serif" font-size="9" fill="#4b4e60">Message</text><text x="70" y="57" font-family="Atkinson,sans-serif" font-weight="700" font-size="11" fill="#191b28">Number 42, room 2</text></g>
+    <circle class="pulse gone" cx="120" cy="20" r="10" fill="none" stroke="#b9c3ff" stroke-width="2"/>
+   </svg></div>
+   <div class="txt"><h3>A message on top</h3><p>A text, a picture or a camera on top.</p></div></article>
 
-        <div class="tier free">
-          <h3>Muralis</h3>
-          <p class="price">Free</p>
-          <p class="what">Everything that makes a tablet a wall panel. Not a trial, not a cut-down edition.</p>
-          <ul>
-            <li>Locked to one page, with the system UI out of reach</li>
-            <li>Recovers on its own: retries, timeouts, frozen-page detection, a nightly restart</li>
-            <li>The recorded corner-tap way out</li>
-            <li>Display off, real or black film, chosen for you and explained</li>
-            <li>Optional stats overlay, drawn on the panel itself</li>
-            <li><b>No Google account needed</b>, on a de-Googled tablet or any other</li>
-            <li>A screensaver: dimmed page, black film, a web page, or pictures from your own folders and from Bing or Wikimedia Commons</li>
-            <li><b>No watermark, no expiry, no sign-in, nothing that phones home</b></li>
-          </ul>
-        </div>
+  <article class="tile" style="--i:4"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <rect x="10" y="50" width="30" height="40" rx="5" fill="#1b1d2b" stroke="#474c68" stroke-width="1.5"/><path class="s-line" d="M17 62h16M17 70h16"/>
+    <path class="lbeam gone" d="M42 70H62" stroke="#e0a93b" stroke-width="2" fill="none"/>
+    <rect class="s-frame" x="64" y="16" width="160" height="108" rx="10"/><rect class="s-glass" x="72" y="24" width="144" height="92" rx="4"/>
+    <rect class="s-block b" x="82" y="34" width="56" height="30" rx="3"/><rect class="s-block" x="144" y="34" width="62" height="30" rx="3"/><rect class="s-block" x="82" y="70" width="124" height="36" rx="3"/>
+    <rect class="dz-glow" x="74" y="26" width="140" height="88" rx="3" fill="none" stroke="#e0a93b" stroke-width="5"/>
+    <text class="s-cap ask gone" x="12" y="104">Washer</text><text class="s-cap ask gone" x="12" y="116">done</text>
+   </svg></div>
+   <div class="txt"><h3>A light for attention</h3><p>A coloured frame, set from your systems.</p></div></article>
 
-        <div class="tier paid">
-          <h3>Muralis Pro</h3>
-          <p class="price">&euro;4.99 once*</p>
-          <p class="taxnote">* Before tax.</p>
-          <p class="what">The remote surfaces. Worth it if the panel should be one more thing you can reach from your desk; irrelevant if you want a page on a wall.</p>
-          <ul>
-            <li>The built-in web admin</li>
-            <li>Commands over HTTP and MQTT: reload, restart, set the page, brightness, display off, the screensaver, reboot</li>
-            <li>Telemetry to your broker: battery, memory, network, thermal, page health</li>
-            <li>Home Assistant discovery, so entities appear without YAML</li>
-            <li><b>One purchase covers every panel on the same Google account</b></li>
-          </ul>
-        </div>
+  <article class="tile wide" style="--i:5"><div class="scene">
+   <svg viewBox="0 0 480 150" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+    <defs><clipPath id="p6clip"><rect x="98" y="21" width="284" height="108" rx="4"/></clipPath></defs>
+    <rect class="s-frame" x="90" y="13" width="300" height="124" rx="12"/>
+    <g clip-path="url(#p6clip)"><rect x="98" y="21" width="284" height="108" fill="#000"/>
+     <g class="strip" style="transform-box:view-box;transform-origin:0 0">
+      <image href="demo/pictures/cat-garden.svg" x="98" y="21" width="80" height="108" preserveAspectRatio="xMidYMid slice"/>
+      <image href="demo/pictures/dog-meadow.svg" x="182" y="21" width="80" height="108" preserveAspectRatio="xMidYMid slice"/>
+      <image href="demo/pictures/cat-forest.svg" x="266" y="21" width="80" height="108" preserveAspectRatio="xMidYMid slice"/>
+      <image href="demo/pictures/dog-lake.svg" x="350" y="21" width="80" height="108" preserveAspectRatio="xMidYMid slice"/>
+      <image href="demo/pictures/cat-garden.svg" x="434" y="21" width="80" height="108" preserveAspectRatio="xMidYMid slice"/>
+      <image href="demo/pictures/dog-meadow.svg" x="518" y="21" width="80" height="108" preserveAspectRatio="xMidYMid slice"/>
+      <image href="demo/pictures/cat-forest.svg" x="602" y="21" width="80" height="108" preserveAspectRatio="xMidYMid slice"/>
+      <image href="demo/pictures/dog-lake.svg" x="686" y="21" width="80" height="108" preserveAspectRatio="xMidYMid slice"/>
+     </g>
+    </g>
+    <g class="play"><circle cx="240" cy="75" r="22" fill="rgba(18,19,29,.85)" stroke="#b9c3ff" stroke-width="2"/><path d="M233 64l17 11-17 11z" fill="#b9c3ff"/></g>
+   </svg></div>
+   <div class="txt"><h3>Pictures and videos <span class="soon">Coming</span></h3><p>Your playlist on every screen of the fleet.</p></div></article>
 
-      </div>
-      <p class="intro footnote">Muralis is in closed testing on Google Play, and nothing is on sale yet: the price and the split above are the plan, not a shop. A panel that never buys Pro is never nagged and never stops working.</p>
-    </div>
-  </section>
+  <a class="cta" href="features/" style="--i:6"><strong>See every feature<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></strong><span>Everything free, what Pro adds, and what a tablet needs.</span></a>
+ </div>
 
-  <section id="install">
-    <div class="wrap">
-      <p class="eyebrow">Install</p>
-      <h2>Two ways onto a tablet</h2>
-      <p class="intro">They are not the same. Only the QR makes a locked panel; the app from Play is for trying it.</p>
+ <!-- ================= BUSINESS ================= -->
+ <div class="bento" data-for="business">
+  <article class="tile big" style="--i:0">
+   <div class="scene">
+    <div class="tab"><div class="dz-glass"><img src="assets/img/home/room.svg" alt=""><img class="dz-swap" src="assets/img/home/board.svg" alt=""></div></div>
+    <span class="chip free">09:58: the room is free</span>
+    <span class="chip busy gone">10:00: the meeting starts, the sign says so</span>
+   </div>
+   <div class="txt"><h3>Room signs <span class="soon">Coming</span></h3><p>Free or busy, beside the door.</p></div>
+  </article>
 
-      <div class="waydeck">
-        <div class="waypick" role="tablist" aria-label="How to install Muralis">
-          <button type="button" role="tab" id="tab-qr" aria-controls="panel-qr" aria-selected="true" tabindex="0">By QR, the full panel</button>
-          <button type="button" role="tab" id="tab-play" aria-controls="panel-play" aria-selected="false" tabindex="-1">From Google Play, to try it</button>
-        </div>
+  <article class="tile" style="--i:1"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <rect class="s-frame" x="40" y="10" width="160" height="102" rx="10"/><rect class="s-glass" x="48" y="18" width="144" height="86" rx="4"/>
+    <circle cx="64" cy="38" r="5" fill="#3fbf7f"/><text class="s-text" x="76" y="42">Website</text>
+    <circle class="svc" cx="64" cy="62" r="5" fill="#ef5b5b"/><text class="s-text" x="76" y="66">Booking server</text>
+    <circle cx="64" cy="86" r="5" fill="#3fbf7f"/><text class="s-text" x="76" y="90">Mail</text>
+    <rect class="alarm" x="50" y="20" width="140" height="82" rx="3" fill="none" stroke="#ef5b5b" stroke-width="5"/>
+    <text class="s-cap" x="120" y="130" text-anchor="middle">One service is down: the frame turns red</text>
+   </svg></div>
+   <div class="txt"><h3>Status boards <span class="soon">Coming</span></h3><p>Your services, red while one is down.</p></div></article>
 
-        <div class="way-panel" role="tabpanel" id="panel-qr" aria-labelledby="tab-qr" tabindex="0">
-          <div class="way-split">
-            <div>
-              <p class="lead"><strong>Muralis owns the tablet</strong> and holds the screen on your page. Android grants that only during setup, which is why the tablet has to be reset first.</p>
-              <ol class="steps">
-                <li>Back up anything on the tablet.</li>
-                <li>Factory reset, and stop at the welcome screen.</li>
-                <li>Tap the screen six times, then join a network when it asks.</li>
-                <li>Scan the code.</li>
-              </ol>
-              <p class="note">A tablet that cannot verify the code&#8217;s signing fingerprint refuses to go on. What the code encodes, and how to check it, is on the <a href="download/">download page</a>.</p>
-            </div>
-            <div class="qrcard big">
-              <img src="download/provisioning-qr.svg" alt="Provisioning QR code for Muralis" width="280" height="280">
-            </div>
-          </div>
-        </div>
+  <article class="tile" style="--i:2"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <g class="file gone"><rect x="26" y="40" width="40" height="48" rx="5" fill="#e4e6f6"/><text x="33" y="70" font-family="ui-monospace,monospace" font-size="14" font-weight="700" fill="#1c39bb">{ }</text></g>
+    <rect class="s-frame" x="100" y="16" width="124" height="92" rx="10"/><rect class="s-glass" x="107" y="23" width="110" height="78" rx="4"/>
+    <rect class="s-block" x="114" y="30" width="46" height="30" rx="3"/><rect class="s-block" x="114" y="66" width="96" height="28" rx="3"/>
+    <g class="newb"><rect x="164" y="30" width="46" height="30" rx="3" fill="#e0a93b"/><text x="187" y="49" text-anchor="middle" font-family="Atkinson,sans-serif" font-weight="700" font-size="9" fill="#3b2a00">Orders: 12</text></g>
+    <text class="s-cap" x="120" y="130" text-anchor="middle">Add one file: your data on the screen</text>
+   </svg></div>
+   <div class="txt"><h3>Your own systems <span class="soon">Coming</span></h3><p>Your software, in one simple file.</p></div></article>
 
-        <div class="way-panel" role="tabpanel" id="panel-play" aria-labelledby="tab-play" tabindex="0">
-          <p class="lead"><strong>The app only.</strong> No lockdown, nothing is wiped: Android grants ownership during setup and never after. Good for seeing what it does before you reset a tablet.</p>
-          <p class="note">In closed testing: the link opens only for accounts on the tester list.</p>
-          <p class="playbadge"><a href="https://play.google.com/store/apps/details?id=org.spazio17.muralis"><img src="assets/img/google-play-badge.png" alt="Get it on Google Play" width="646" height="250"></a></p>
-        </div>
-      </div>
+  <article class="tile" style="--i:3"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <rect class="s-frame" x="20" y="14" width="150" height="92" rx="8"/><rect class="s-glass" x="27" y="21" width="136" height="78" rx="3"/><path class="s-line" d="M80 114h30"/>
+    <g class="no gone"><circle cx="40" cy="88" r="11" fill="none" stroke="#ef5b5b" stroke-width="2"/><path d="M35 83l10 10M45 83l-10 10" stroke="#ef5b5b" stroke-width="2"/></g>
+    <g class="lock gone"><path class="shackle" d="M88 50v-8a7 7 0 0 1 14 0v8" fill="none" stroke="#b9c3ff" stroke-width="2.5"/><rect x="84" y="50" width="22" height="18" rx="3" fill="#b9c3ff"/></g>
+    <g class="rows"><rect x="35" y="29" width="44" height="62" rx="3" fill="#1f2132"/><rect x="39" y="34" width="36" height="9" rx="2" fill="#33395f"/><rect x="39" y="47" width="36" height="9" rx="2" fill="#252839"/><rect x="39" y="60" width="36" height="9" rx="2" fill="#252839"/><rect x="39" y="76" width="36" height="10" rx="2" fill="#3f5bd9"/><rect x="85" y="29" width="70" height="62" rx="3" fill="#1a1c2b"/><rect x="91" y="38" width="40" height="5" rx="2" fill="#474c68"/><rect x="91" y="50" width="58" height="12" rx="2" fill="none" stroke="#5b6080"/></g>
+    <rect x="198" y="40" width="26" height="48" rx="7" fill="#1b1d2b" stroke="#474c68" stroke-width="1.5"/><circle cx="211" cy="54" r="4" fill="#b9c3ff"/>
+    <path class="rbeam gone" d="M196 58H112" stroke="#b9c3ff" stroke-width="2" fill="none"/>
+    <text class="s-cap" x="120" y="132" text-anchor="middle">A tap is refused; the remote opens it</text>
+   </svg></div>
+   <div class="txt"><h3>Locked for good <span class="soon">Coming</span></h3><p>Opened only from afar, for TVs too.</p></div></article>
 
-      <aside class="callout">
-        <p><strong>Nothing hidden.</strong> The APK, its checksum and its signing certificate are published.</p>
-        <a class="button secondary" href="download/">Open the download page</a>
-      </aside>
-    </div>
-  </section>
+  <article class="tile" style="--i:4"><div class="scene">
+   <svg viewBox="0 0 240 140" aria-hidden="true">
+    <rect class="s-frame" x="40" y="10" width="160" height="102" rx="10"/><rect class="s-glass" x="48" y="18" width="144" height="86" rx="4"/>
+    <g class="pg"><rect class="s-block b" x="56" y="26" width="60" height="32" rx="3"/><rect class="s-block" x="122" y="26" width="62" height="32" rx="3"/><rect class="s-block" x="56" y="64" width="128" height="32" rx="3"/></g>
+    <g class="frz gone"><rect x="48" y="18" width="144" height="86" rx="4" fill="#12131d"/><rect x="104" y="30" width="32" height="22" rx="3" fill="none" stroke="#b4b8d2" stroke-width="1.6"/><path d="M110 46l20-10" stroke="#ef5b5b" stroke-width="2"/><text class="s-text" x="120" y="70" text-anchor="middle">Cannot reach</text><text class="s-sub" x="120" y="83" text-anchor="middle">booking.local</text><text class="s-sub" x="120" y="96" text-anchor="middle">Trying again</text></g>
+    <g class="rel gone"><circle cx="120" cy="61" r="20" fill="#12131d"/><path class="s-stroke" d="M131 55a12 12 0 1 0 1 9M132 48v8h-8"/></g>
+    <text class="s-cap cap0 gone" x="120" y="130" text-anchor="middle">The page</text>
+    <text class="s-cap cap1 gone" x="120" y="130" text-anchor="middle" fill="#e0a93b">The network drops: it keeps trying</text>
+    <text class="s-cap cap2" x="120" y="130" text-anchor="middle">Back on the page, nobody called</text>
+   </svg></div>
+   <div class="txt"><h3>Nobody calls IT</h3><p>Unreachable pages are retried until they answer.</p></div></article>
 
-  <section id="requirements">
-    <div class="wrap">
-      <p class="eyebrow">Requirements</p>
-      <h2>What it needs</h2>
-      <div class="table-scroll">
-        <table class="spec">
-          <tbody>
-            <tr>
-              <th scope="row">Android</th>
-              <td>8.0 (API 26) or newer.</td>
-            </tr>
-            <tr>
-              <th scope="row">Install</th>
-              <td>An ordinary APK. No root, no platform signature.</td>
-            </tr>
-            <tr>
-              <th scope="row">Full kiosk</th>
-              <td>Needs device owner, over adb or by QR at setup.</td>
-            </tr>
-            <tr>
-              <th scope="row">Without it</th>
-              <td>Still runs and recovers. System UI stays reachable, reboot and real screen-off unavailable.</td>
-            </tr>
-            <tr>
-              <th scope="row">Battery settings</th>
-              <td>Two switches Android keeps for you. <a href="setup/">How to set them</a>.</td>
-            </tr>
-            <tr>
-              <th scope="row">Google account</th>
-              <td>Only to buy Pro.</td>
-            </tr>
-            <tr>
-              <th scope="row">The page</th>
-              <td>Any web page, on the internet or on your own network.</td>
-            </tr>
-            <tr>
-              <th scope="row">Broker</th>
-              <td>Only for MQTT. Unencrypted, so trusted networks only.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
+  <article class="tile wide" style="--i:5"><div class="scene">
+   <svg viewBox="0 0 480 150" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+    <rect x="30" y="24" width="250" height="102" rx="10" fill="#0a0b12" stroke="#343850" stroke-width="1.5"/>
+    <path d="M48 46v-5a6 6 0 0 1 12 0v5" fill="none" stroke="#3fbf7f" stroke-width="2"/><rect x="45" y="46" width="18" height="13" rx="2" fill="#3fbf7f"/><text class="s-sub" x="72" y="56">https://reception.local:8080</text>
+    <text class="s-mono type" x="46" y="86">POST /api/command</text>
+    <text class="s-mono type t2" x="46" y="104">{"cmnd":"screen.on"}</text>
+    <rect class="s-frame" x="320" y="30" width="130" height="86" rx="10"/><rect x="328" y="38" width="114" height="70" rx="4" fill="#000"/>
+    <g class="scr"><rect class="s-glass" x="328" y="38" width="114" height="70" rx="4"/><rect class="s-block b" x="334" y="44" width="50" height="26" rx="3"/><rect class="s-block" x="388" y="44" width="48" height="26" rx="3"/><rect class="s-block" x="334" y="74" width="102" height="28" rx="3"/></g>
+    <g class="ans"><rect x="350" y="122" width="70" height="20" rx="10" fill="#1b1d2b" stroke="#3fbf7f" stroke-width="1.5"/><path d="M360 132l4 4 8-8" fill="none" stroke="#3fbf7f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><text class="s-text" x="378" y="136">"ok"</text></g>
+   </svg></div>
+   <div class="txt"><h3>HTTPS, API and MQTT</h3><p>Every setting and command, for your tools.</p></div></article>
 
-  <section id="status">
-    <div class="wrap">
-      <p class="eyebrow">Availability</p>
-      <h2>Where it stands</h2>
-      <p class="intro">Runs on real panels every day. On Google Play in closed testing, and published in full on the download page.</p>
-      <div class="notice">
-        <p><strong>Closed testing.</strong> The Play link opens only for accounts on the tester list. The <a href="download/">download page</a> has the same APK, signed by Google, together with its checksum, its signing certificate and the provisioning QR, for anyone who wants to check it or make a panel with it today.</p>
-      </div>
-    </div>
-  </section>
+  <a class="cta" href="features/" style="--i:6"><strong>See every feature<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></strong><span>What Business will add, and what each screen needs.</span></a>
+ </div>
+</div></section>
 
+<section class="more" id="more"><div class="in">
+ <h2 class="big">…and more!</h2>
+ <p class="intro">Integrations will bring other services’ data onto the panel, one block at a time. Each one will be free, and show what it may do before you add it.</p>
+ <div class="bricks" data-for="home pro"><div class="brick a" style="--w:5" tabindex="0"><h3>Immich photos</h3><p>Your albums on the screen when nobody is looking.</p><p class="may"><b>It may</b> read your albums, show pictures</p></div><div class="brick b" style="--w:4" tabindex="0"><h3>Weather</h3><p>From your own station or the service you pick.</p><p class="may"><b>It may</b> read the forecast you pick, show it</p></div><div class="brick c" style="--w:3" tabindex="0"><h3>Network folders</h3><p>Pictures straight from your NAS.</p><p class="may"><b>It may</b> read one folder you choose, show its pictures</p></div><div class="brick b" style="--w:3" tabindex="0"><h3>Uptime Kuma</h3><p>See at a glance if your services are up.</p><p class="may"><b>It may</b> read your status page, turn the light red</p></div><div class="brick c" style="--w:4" tabindex="0"><h3>Family calendar</h3><p>The next event, over the photos.</p><p class="may"><b>It may</b> read one calendar, show the next event</p></div><div class="brick a" style="--w:5" tabindex="0"><h3>Your own</h3><p>Anyone can write one, in a simple file.</p><p class="may">You decide what it may read and do</p></div></div><div class="bricks" data-for="business"><div class="brick a" style="--w:5" tabindex="0"><h3>Meeting rooms</h3><p>A room's bookings from Microsoft 365 or CalDAV.</p><p class="may"><b>It may</b> read one room’s bookings, show free or busy</p></div><div class="brick b" style="--w:4" tabindex="0"><h3>Status boards</h3><p>Uptime Kuma and your own systems, on the wall.</p><p class="may"><b>It may</b> read your status pages, turn the light red</p></div><div class="brick c" style="--w:3" tabindex="0"><h3>Weather</h3><p>For the reception screen.</p><p class="may"><b>It may</b> read the forecast you pick, show it</p></div><div class="brick b" style="--w:3" tabindex="0"><h3>Company calendar</h3><p>Today's events in the lobby.</p><p class="may"><b>It may</b> read one calendar, show today’s events</p></div><div class="brick c" style="--w:4" tabindex="0"><h3>Network folders</h3><p>Signage pictures from your file server.</p><p class="may"><b>It may</b> read one folder you choose, show its pictures</p></div><div class="brick a" style="--w:5" tabindex="0"><h3>Your own</h3><p>Connect your own software.</p><p class="may">You decide what it may read and do</p></div></div>
+</div></section>
+
+<section class="fleet dark" id="fleet"><div class="in">
+ <div data-for="home">
+  <h2 class="big">No cloud. Each panel on its own.</h2>
+  <p>Every panel is complete by itself. It loads your dashboard straight from your own server and talks only to the things in your home.</p>
+  <ul><li>Free on every panel, with no limit</li><li>Any web page, Home Assistant too</li><li>No account, no registration</li><li>Keeps working when the internet is down</li></ul>
+  <a class="btn primary" href="#price">See the price</a>
+ </div>
+ <div data-for="pro">
+  <h2 class="big">Muralis is the server</h2>
+  <p>Up to six panels become one fleet, managed from the web admin of any of them. They trust each other by their own keys: nothing to install, nothing to register, nothing in a cloud.</p>
+  <ul><li>Share the page, MQTT, the web admin, the display, Ambient and the alerts, with all or with a group</li><li>One address for all: <code>{panel.name}</code> gives each panel its own page</li><li>Alerts when a panel goes offline or its page fails</li><li>A new panel joins by its camera, or by typing a code</li></ul>
+  <a class="btn primary" href="#price">See the price</a>
+ </div>
+ <div data-for="business">
+  <h2 class="big">Every location, one page</h2>
+  <p>Coming after Pro: many screens in many places, each place its own fleet, all on one page. The logs and the numbers go to your own servers.</p>
+  <ul><li>Up to 99 screens, in as many places as you have</li><li>A dashboard builder for your rooms and receptions</li><li>Logs and metrics to your own servers</li><li>Still no cloud and no account</li></ul>
+  <a class="btn primary" href="#price">See the price</a>
+ </div>
+ <svg class="net" data-for="home" viewBox="0 0 600 340" role="img" aria-label="Three panels at home, each complete on its own, with no cloud"><g class="nocloud"><path d="M250 46 a26 26 0 0 1 50-10 a20 20 0 0 1 38 8 a18 18 0 0 1-4 36 h-80 a18 18 0 0 1-4-34z"/><path d="M240 30 L350 92"/></g><path class="panel" d="M32 176 H158 A12 12 0 0 1 170 188 V260 A12 12 0 0 1 158 272 H32 A12 12 0 0 1 20 260 V188 A12 12 0 0 1 32 176 Z"/><rect class="scr" x="29" y="185" width="132" height="78" rx="5"/><rect class="tile" x="38" y="192" width="52" height="30" rx="3" fill="#b9c3ff"/><rect class="tile" x="98" y="192" width="54" height="30" rx="3" fill="#8b9dff"/><rect class="tile" x="38" y="230" width="34" height="26" rx="3" fill="#e0a93b"/><rect class="tile" x="80" y="230" width="72" height="26" rx="3" fill="#474c68"/><text x="95" y="306" text-anchor="middle">Kitchen</text><circle class="orbit o1" r="5" style="offset-path:path('M32 176 H158 A12 12 0 0 1 170 188 V260 A12 12 0 0 1 158 272 H32 A12 12 0 0 1 20 260 V188 A12 12 0 0 1 32 176 Z')"/><path class="panel" d="M237 176 H363 A12 12 0 0 1 375 188 V260 A12 12 0 0 1 363 272 H237 A12 12 0 0 1 225 260 V188 A12 12 0 0 1 237 176 Z"/><rect class="scr" x="234" y="185" width="132" height="78" rx="5"/><rect class="tile" x="243" y="192" width="52" height="30" rx="3" fill="#b9c3ff"/><rect class="tile" x="303" y="192" width="54" height="30" rx="3" fill="#8b9dff"/><rect class="tile" x="243" y="230" width="34" height="26" rx="3" fill="#e0a93b"/><rect class="tile" x="285" y="230" width="72" height="26" rx="3" fill="#474c68"/><text x="300" y="306" text-anchor="middle">Hallway</text><circle class="orbit o2" r="5" style="offset-path:path('M237 176 H363 A12 12 0 0 1 375 188 V260 A12 12 0 0 1 363 272 H237 A12 12 0 0 1 225 260 V188 A12 12 0 0 1 237 176 Z')"/><path class="panel" d="M442 176 H568 A12 12 0 0 1 580 188 V260 A12 12 0 0 1 568 272 H442 A12 12 0 0 1 430 260 V188 A12 12 0 0 1 442 176 Z"/><rect class="scr" x="439" y="185" width="132" height="78" rx="5"/><rect class="tile" x="448" y="192" width="52" height="30" rx="3" fill="#b9c3ff"/><rect class="tile" x="508" y="192" width="54" height="30" rx="3" fill="#8b9dff"/><rect class="tile" x="448" y="230" width="34" height="26" rx="3" fill="#e0a93b"/><rect class="tile" x="490" y="230" width="72" height="26" rx="3" fill="#474c68"/><text x="505" y="306" text-anchor="middle">Bedroom</text><circle class="orbit o3" r="5" style="offset-path:path('M442 176 H568 A12 12 0 0 1 580 188 V260 A12 12 0 0 1 568 272 H442 A12 12 0 0 1 430 260 V188 A12 12 0 0 1 442 176 Z')"/></svg><svg class="net" data-for="pro" viewBox="0 0 600 400" role="img" aria-label="One place with six panels, any of them the manager, with no cloud"><g class="nocloud"><path d="M250 46 a26 26 0 0 1 50-10 a20 20 0 0 1 38 8 a18 18 0 0 1-4 36 h-80 a18 18 0 0 1-4-34z"/><path d="M240 30 L350 92"/></g><path class="place" d="M40 130 L300 76 L560 130 V350 H40 Z"/><path class="ray" d="M300 205 L95 150"/><path class="ray" d="M300 205 L95 245"/><path class="ray" d="M300 205 L505 150"/><path class="ray" d="M300 205 L505 245"/><path class="ray" d="M300 205 L300 318"/><rect class="mgr" x="254" y="176" width="92" height="58" rx="10"/><g fill="var(--sky)"><rect x="266" y="188" width="30" height="14" rx="3"/><rect x="302" y="188" width="32" height="14" rx="3"/><rect x="266" y="208" width="68" height="14" rx="3" opacity=".5"/></g><g class="pop" style="animation-delay:0.20s"><rect class="scrn" x="63" y="129" width="64" height="42" rx="7"/><rect class="scrn-in" x="69" y="135" width="52" height="30" rx="3"/></g><g class="pop" style="animation-delay:0.32s"><rect class="scrn" x="63" y="224" width="64" height="42" rx="7"/><rect class="scrn-in" x="69" y="230" width="52" height="30" rx="3"/></g><g class="pop" style="animation-delay:0.44s"><rect class="scrn" x="473" y="129" width="64" height="42" rx="7"/><rect class="scrn-in" x="479" y="135" width="52" height="30" rx="3"/></g><g class="pop" style="animation-delay:0.56s"><rect class="scrn" x="473" y="224" width="64" height="42" rx="7"/><rect class="scrn-in" x="479" y="230" width="52" height="30" rx="3"/></g><g class="pop" style="animation-delay:0.68s"><rect class="scrn" x="268" y="297" width="64" height="42" rx="7"/><rect class="scrn-in" x="274" y="303" width="52" height="30" rx="3"/></g><circle class="beam" r="5" style="offset-path:path('M300 205 L95 150');animation-delay:0.00s"/><circle class="beam" r="5" style="offset-path:path('M300 205 L95 245');animation-delay:0.35s"/><circle class="beam" r="5" style="offset-path:path('M300 205 L505 150');animation-delay:0.70s"/><circle class="beam" r="5" style="offset-path:path('M300 205 L505 245');animation-delay:1.05s"/><circle class="beam" r="5" style="offset-path:path('M300 205 L300 318');animation-delay:1.40s"/><rect class="slot" x="234" y="372" width="16" height="16" rx="4" style="animation-delay:1.20s"/><rect class="slot" x="258" y="372" width="16" height="16" rx="4" style="animation-delay:1.30s"/><rect class="slot" x="282" y="372" width="16" height="16" rx="4" style="animation-delay:1.40s"/><rect class="slot" x="306" y="372" width="16" height="16" rx="4" style="animation-delay:1.50s"/><rect class="slot" x="330" y="372" width="16" height="16" rx="4" style="animation-delay:1.60s"/><rect class="slot" x="354" y="372" width="16" height="16" rx="4" style="animation-delay:1.70s"/></svg><svg class="net" data-for="business" viewBox="0 0 620 400" role="img" aria-label="Three locations with their screens, planned for Business, all on one page, the logs going to your own server, with no cloud"><g class="nocloud"><path d="M250 46 a26 26 0 0 1 50-10 a20 20 0 0 1 38 8 a18 18 0 0 1-4 36 h-80 a18 18 0 0 1-4-34z"/><path d="M240 30 L350 92"/></g><path class="ray" d="M300 216 L90 270"/><path class="ray" d="M300 216 L270 270"/><path class="ray" d="M300 216 L450 270"/><rect class="page" x="210" y="120" width="180" height="96" rx="10"/><path d="M210 140 H390" stroke="var(--sky)" stroke-width="1.5"/><g fill="var(--sky)"><circle cx="224" cy="130" r="3"/><circle cx="236" cy="130" r="3"/><circle cx="248" cy="130" r="3"/><rect x="226" y="154" width="40" height="22" rx="3" opacity=".8"/><rect x="274" y="154" width="40" height="22" rx="3" opacity=".6"/><rect x="322" y="154" width="52" height="22" rx="3" opacity=".8"/><rect x="226" y="184" width="88" height="20" rx="3" opacity=".4"/><rect x="322" y="184" width="52" height="20" rx="3" opacity=".6"/></g><g class="pop" style="animation-delay:0.20s"><path class="site" d="M30 300 L90 270 L150 300 V372 H30 Z"/><rect class="scrn" x="40" y="316" width="28" height="18" rx="3"/><rect class="scrn" x="76" y="338" width="28" height="18" rx="3"/><rect class="scrn" x="112" y="316" width="28" height="18" rx="3"/></g><g class="pop" style="animation-delay:0.40s"><path class="site" d="M210 300 L270 270 L330 300 V372 H210 Z"/><rect class="scrn" x="220" y="316" width="28" height="18" rx="3"/><rect class="scrn" x="256" y="338" width="28" height="18" rx="3"/><rect class="scrn" x="292" y="316" width="28" height="18" rx="3"/></g><g class="pop" style="animation-delay:0.60s"><path class="site" d="M390 300 L450 270 L510 300 V372 H390 Z"/><rect class="scrn" x="400" y="316" width="28" height="18" rx="3"/><rect class="scrn" x="436" y="338" width="28" height="18" rx="3"/><rect class="scrn" x="472" y="316" width="28" height="18" rx="3"/></g><circle class="beam" r="5" style="offset-path:path('M300 216 L90 270');animation-delay:0.00s"/><circle class="beam" r="5" style="offset-path:path('M300 216 L270 270');animation-delay:0.50s"/><circle class="beam" r="5" style="offset-path:path('M300 216 L450 270');animation-delay:1.00s"/><path class="log" d="M90 372 V388 H568 V340"/><path class="log" d="M270 372 V388 H568 V340"/><path class="log" d="M450 372 V388 H568 V340"/><g><ellipse class="db" cx="568" cy="276" rx="26" ry="9"/><path class="db" d="M542 276 V330 A26 9 0 0 0 594 330 V276"/><path d="M542 294 A26 9 0 0 0 594 294 M542 312 A26 9 0 0 0 594 312" fill="none" stroke="var(--gold)" stroke-width="1.5"/></g></svg>
+</div></section>
+
+<section class="talk" id="talk"><div class="in">
+ <h2 class="big">Your other systems can talk to it</h2>
+ <p class="intro">A doorbell, a sensor, a monitor or a calendar sends a command, and the panel shows it. Try it: you are the other system.</p>
+ <div class="talkdemo">
+  <div class="scenes" role="group" aria-label="Pick a situation"><button type="button" data-scene="door" data-for="home">Doorbell</button><button type="button" data-scene="wash" data-for="home">Washing done</button><button type="button" data-scene="nas" data-for="home">Server down</button><button type="button" data-scene="late" data-for="pro">Running late</button><button type="button" data-scene="closed" data-for="pro">Closing time</button><button type="button" data-scene="fridge" data-for="pro">Fridge too warm</button><button type="button" data-scene="room" data-for="business">Room booked</button><button type="button" data-scene="incident" data-for="business">IT incident</button><button type="button" data-scene="air" data-for="business">Stale air</button></div>
+  <div class="rig">
+   <div class="svc"><p class="svc-kind"></p><div class="svc-body" aria-live="polite"></div><div class="svc-acts"><button type="button" class="btn primary svc-act"></button><button type="button" class="btn quiet svc-undo" hidden></button></div></div>
+   <div class="wire"><span class="cmds"></span><span class="line" aria-hidden="true"></span><span class="route"></span></div>
+   <div class="tablet"><div class="glass"><img class="base" src="assets/img/home/mirror.svg" alt="" width="1280" height="800" loading="lazy"><div class="page" hidden></div><span class="frame" aria-hidden="true"></span><div class="pop" hidden></div><p class="say" hidden></p><div class="dark" aria-hidden="true"></div></div></div>
+  </div>
+  <p class="status" aria-live="polite"></p>
+ </div>
+ <div class="talk-ha">
+  <div class="ha-card" role="region" aria-label="The panel as Home Assistant shows it, following the scenes above" aria-live="polite">
+   <p class="ha-head"><span data-for="home">Muralis hallway-panel</span><span data-for="pro">Muralis waiting-room</span><span data-for="business">Muralis danube</span><small>MQTT</small></p>
+   <p class="ha-cap">Controls</p>
+   <ul>
+    <li data-ha="light"><span class="ha-ic"></span><span class="ha-name">Status light</span><span class="ha-val"><i class="ha-sw" role="img" aria-label="off"></i></span></li>
+    <li data-ha="popup"><span class="ha-ic"></span><span class="ha-name">Pop-up</span><span class="ha-val ha-text">Send a message</span></li>
+    <li data-ha="ambient"><span class="ha-ic"></span><span class="ha-name">Ambient</span><span class="ha-val"><i class="ha-sw" role="img" aria-label="off"></i></span></li>
+    <li data-ha="playlist"><span class="ha-ic"></span><span class="ha-name">Ambient playlist</span><span class="ha-val ha-text">Family</span></li>
+    <li data-ha="reload"><span class="ha-ic"></span><span class="ha-name">Reload dashboard</span><span class="ha-val ha-btn">Press</span></li>
+   </ul>
+  </div>
+  <div><h3>Already use Home Assistant?</h3><p>Muralis is perfect for it. The panel shows up there by itself: its sensors, its screen, its status light, and buttons to reload or restart. Play a scene above and watch its row change.</p><p class="small">No other system? The panel’s own automations do much of this. Every command also works over HTTP and MQTT: <a href="api/">API reference</a>.</p></div>
+ </div>
+</div></section>
+
+<section class="price" id="price"><div class="in">
+ <h2 class="big" data-for="home">Free for every panel at home.</h2>
+ <h2 class="big" data-for="pro">One purchase for your whole place.</h2>
+ <h2 class="big" data-for="business">One plan for the whole company.</h2>
+ <p class="intro">Free and Pro are never a subscription. Business will be a yearly plan, for companies.</p>
+ <div class="tiers">
+  <div class="tier" data-tier="free"><svg class="tier-pic" viewBox="0 0 120 56" aria-hidden="true"><rect x="34" y="6" width="52" height="36" rx="6"/><path class="c" d="M60 42c0 6-4 7-2 12"/></svg><h3>Muralis</h3><p class="amount">Free</p><p class="note">Every panel you own. No limit, no trial, no account.</p>
+   <ul><li>Your page or one app, locked</li><li>Fixes itself, sleeps at night, shows your pictures</li><li>Web admin, API, MQTT, Home Assistant</li><li>Sensors, cameras, automations, pop-ups</li></ul></div>
+  <div class="tier" data-tier="pro"><svg class="tier-pic" viewBox="0 0 120 56" aria-hidden="true"><path class="d" d="M38 13.5h12M72 13.5h12M38 39.5h12M72 39.5h12M27 21v11M61 21v11M95 21v11"/><rect x="16" y="6" width="22" height="15" rx="3"/><rect x="50" y="6" width="22" height="15" rx="3"/><rect x="84" y="6" width="22" height="15" rx="3"/><rect x="16" y="32" width="22" height="15" rx="3"/><rect x="50" y="32" width="22" height="15" rx="3"/><rect x="84" y="32" width="22" height="15" rx="3"/></svg><h3>Muralis Pro</h3><p class="amount">Paid once</p><p class="note">Up to 6 panels as one fleet. Google Play shows the price.</p>
+   <ul><li>Everything in Muralis</li><li>All panels on one page</li><li>Add a panel by its camera or its code</li><li>Shared settings, groups, alerts</li><li>Bought once, every panel gets it</li></ul></div>
+  <div class="tier" data-tier="business"><svg class="tier-pic" viewBox="0 0 120 56" aria-hidden="true"><rect x="4" y="4" width="16" height="11" rx="3"/><rect x="26" y="4" width="16" height="11" rx="3"/><rect x="48" y="4" width="16" height="11" rx="3"/><rect x="70" y="4" width="16" height="11" rx="3"/><rect x="4" y="21" width="16" height="11" rx="3"/><rect x="26" y="21" width="16" height="11" rx="3"/><rect x="48" y="21" width="16" height="11" rx="3"/><rect x="70" y="21" width="16" height="11" rx="3"/><rect x="4" y="38" width="16" height="11" rx="3"/><rect x="26" y="38" width="16" height="11" rx="3"/><rect x="48" y="38" width="16" height="11" rx="3"/><rect x="70" y="38" width="16" height="11" rx="3"/><path class="pin" d="M106 30c-6 0-10-4.5-10-10a10 10 0 0 1 20 0c0 5.5-4 10-10 10zm0 0v14"/><circle class="pin" cx="106" cy="20" r="3.5"/></svg><h3>Muralis Business</h3><p class="amount">Coming soon</p><p class="note">A yearly plan in three sizes.</p>
+   <ul class="sizes"><li><span>Small, up to 15 screens</span></li><li><span>Medium, up to 30 screens</span></li><li><span>Large, up to 99 screens</span></li></ul>
+   <ul><li>Everything in Pro</li><li>Every location on one page</li><li>The dashboard builder</li><li>Logs and metrics to your own servers</li></ul></div>
+ </div>
+ <p class="small">Sold through Google Play, which handles the payment, the tax, refunds and the receipt; a company gets Google’s invoice. A free panel is never nagged and never stops working.</p>
+</div></section>
+
+<section class="install" id="install"><div class="in">
+ <h2 class="big">Two ways onto a tablet</h2>
+ <p class="intro">Only the QR makes a locked panel. Google Play is for trying it.</p>
+ <div class="ways">
+  <div class="way">
+   <svg class="way-pic" viewBox="0 0 160 100" aria-hidden="true"><rect x="10" y="8" width="140" height="88" rx="10" class="t"/><rect x="20" y="17" width="120" height="70" rx="4" class="g"/><g class="q"><rect x="58" y="26" width="16" height="16"/><rect x="86" y="26" width="16" height="16"/><rect x="58" y="54" width="16" height="16"/><rect x="88" y="56" width="5" height="5"/><rect x="97" y="56" width="5" height="5"/><rect x="88" y="65" width="5" height="5"/><rect x="97" y="65" width="5" height="5"/><rect x="78" y="46" width="5" height="5"/></g><circle cx="138" cy="20" r="13" class="lock"/><path class="k" d="M133 21v-4a5 5 0 0 1 10 0v4M131 21h14v8h-14z"/></svg>
+   <h3>By QR, the full panel</h3>
+   <p>Muralis owns the tablet and keeps it on your page. A reset tablet, six taps on its welcome screen, one scan: thirty seconds.</p>
+   <p class="way-act"><a class="btn primary" href="download/">See it step by step</a></p>
+  </div>
+  <div class="way">
+   <svg class="way-pic" viewBox="0 0 160 100" aria-hidden="true"><rect x="10" y="8" width="140" height="88" rx="10" class="t"/><rect x="20" y="17" width="120" height="70" rx="4" class="g"/><g class="a"><rect x="34" y="30" width="18" height="18" rx="5"/><rect x="62" y="30" width="18" height="18" rx="5"/><rect x="90" y="30" width="18" height="18" rx="5" class="m"/><rect x="34" y="58" width="18" height="18" rx="5"/><rect x="62" y="58" width="18" height="18" rx="5"/></g></svg>
+   <h3>From Google Play, to try it</h3>
+   <p>Just the app: nothing is wiped, nothing is locked. Good for a first look before you reset a tablet.</p>
+   <p>Nothing hidden: the APK, its checksum and its signing certificate are published on the download page.</p>
+   <p class="way-act"><a class="play" href="https://play.google.com/store/apps/details?id=org.spazio17.muralis"><img src="assets/img/google-play-badge.png" alt="Get it on Google Play" width="194" height="75"></a></p>
+  </div>
+ </div>
+ <p class="needs-line">Before you start: Android 8 or newer, 2 GB of memory recommended, and two battery settings: <a href="setup/">Setup</a> shows how.</p>
+</div></section>
 </main>
 
-<footer>
-  <div class="wrap">
-    <span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project. Made in Vienna, Austria.</span>
-    <nav>
-      <a href="privacy/">Privacy</a>
-      <a href="terms/">Terms</a>
-      <a href="imprint/">Imprint</a>
-      <a href="https://github.com/spazio17/muralis">Source</a>
-    </nav>
-  </div>
-</footer>
+<footer class="end dark"><div class="in">
+ <div class="tablet end-tablet" aria-hidden="true"><div class="glass"><img data-for="home" src="assets/img/home/mirror.svg" alt="" loading="lazy"><img data-for="pro" src="assets/img/home/waiting.svg" alt="" loading="lazy"><img data-for="business" src="assets/img/home/room.svg" alt="" loading="lazy"></div></div>
+ <h2 data-for="home">Put a tablet on the wall tonight.</h2>
+ <h2 data-for="pro">Put every screen on one page.</h2>
+ <h2 data-for="business">Put a screen beside every door.</h2>
+ <a class="btn primary" href="#install">Get Muralis</a>
+ <p class="source">Source available <a href="https://github.com/spazio17/muralis">on GitHub</a> under the PolyForm Shield License 1.0.0. Read it, learn from it, change it for yourself, contribute.</p>
+ <div class="small"><span>Muralis, a <a href="https://spazio17.org/">Spazio17</a> project. Made in Vienna, Austria.</span>
+  <nav aria-label="Pages"><a href="features/">Features</a><a href="setup/">Setup</a><a href="api/">API</a><a href="download/">Download</a><a href="privacy/">Privacy</a><a href="terms/">Terms</a><a href="imprint/">Imprint</a></nav></div>
+</div></footer>
 
-<dialog class="lightbox" id="lightbox" aria-label="Screenshot">
-  <div class="sheet">
-    <img id="lightbox-img" src="" alt="">
-    <div class="bar">
-      <p id="lightbox-caption"></p>
-      <button type="button" id="lightbox-close">Close</button>
-    </div>
-  </div>
-</dialog>
-
-<dialog class="lightbox blueprint" id="blueprint" aria-labelledby="blueprint-title">
-  <div class="sheet">
-    <div class="code-scroll" tabindex="0" role="region" aria-label="The blueprint, as YAML"><pre><code class="yaml" id="blueprint-code"></code></pre></div>
-    <div class="bar">
-      <strong id="blueprint-title"></strong>
-      <p id="blueprint-file"></p>
-      <button type="button" class="copy-yaml" id="blueprint-copy" aria-live="polite">Copy the YAML</button>
-      <button type="button" id="blueprint-close">Close</button>
-    </div>
-  </div>
-</dialog>
-
-<script src="assets/js/menu.js?v=1"></script>
-<script src="assets/js/theme.js?v=6"></script>
-<script src="assets/js/lightbox.js?v=4"></script>
-<script src="assets/js/recipes.js?v=2"></script>
-<script src="assets/js/clips.js?v=7"></script>
-<script src="assets/js/waydeck.js?v=1"></script>
-<script src="assets/js/copy.js?v=1"></script>
+<script src="assets/js/home.js?v=16"></script>
+<script src="assets/js/talk.js?v=6"></script>
+<script src="assets/js/demo.js?v=6"></script>
 </body>
 </html>

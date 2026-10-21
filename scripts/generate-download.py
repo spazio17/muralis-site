@@ -108,10 +108,12 @@ def qr_svg(payload):
     import io
     import segno
     # Compact separators: every byte saved is one less module, and a denser code is
-    # harder for an older front-facing camera to read off a screen. Error correction M
-    # is the usual compromise; this is read off a screen, not off a dusty crate.
+    # harder for an older front-facing camera to read off a screen.
     text = json.dumps(payload, separators=(",", ":"), sort_keys=True)
-    code = segno.make(text, error="m")
+    # Error correction H, the strongest, because the app's icon covers the centre: it reads
+    # through about 30 percent of the code lost, and the icon takes about a fifth of its width.
+    # Read by the Lenovo's camera, the weakest of the test tablets, off a phone's screen.
+    code = segno.make(text, error="h")
     buffer = io.BytesIO()
     # Black on white in both themes, deliberately, rather than following the page's
     # palette. A light-on-dark code is inverted, and while most scanners cope, the one
@@ -121,11 +123,35 @@ def qr_svg(payload):
     # intrinsic size, and an <img> of one inside a shrink-to-fit box asks its parent for a
     # width while the parent asks it back: Chrome breaks the tie with the HTML attributes,
     # Firefox resolves it to zero and the code vanishes. Reported on the page 2026-09-02.
-    # scale=4 makes that intrinsic size 372px, a sensible natural size for a QR; the CSS
+    # scale=4 makes that intrinsic size 468px for today's payload at H; the CSS
     # scales it from there and it stays sharp because it is still vector.
     code.save(buffer, kind="svg", scale=4, border=2, dark="#000000", light="#ffffff",
               xmldecl=False, svgns=True)
-    return buffer.getvalue().decode()
+    return buffer.getvalue().decode().replace("</svg>", icon_svg(code.symbol_size(scale=1,
+                                                                                    border=0)[0],
+                                                                 scale=4, border=2) + "</svg>")
+
+
+def icon_svg(modules, scale, border):
+    """The app's icon over the centre of the code, as the app's own Join QR draws it
+    (QrCodes.java): a white square of about a fifth of the code, the dark tile, and the
+    launcher icon's glyph from res/drawable/ic_launcher_foreground.xml, drawn larger."""
+    side = max(7, round(modules * 0.22))
+    side += side % 2 == 0
+    start = border + (modules - side) / 2
+    unit = (side - 1) / 108
+    glyph = 41 / 28
+    panes = "".join(
+        f'<rect x="{x0}" y="{y0}" width="{x1 - x0}" height="{y1 - y0}" rx="2" fill="{fill}"/>'
+        for x0, y0, x1, y1, fill in ((33, 40, 57, 52, "#B9C3FF"), (61, 40, 75, 52, "#6F86FF"),
+                                     (33, 56, 47, 68, "#6F86FF"), (51, 56, 75, 68, "#B9C3FF")))
+    return (f'<g transform="scale({scale})"><rect x="{start}" y="{start}" width="{side}" '
+            f'height="{side}" fill="#ffffff"/><g transform="translate({start + 0.5} {start + 0.5}) '
+            f'scale({unit})"><rect width="108" height="108" rx="24" fill="#12131D"/>'
+            f'<g transform="translate(54 54) scale({glyph}) translate(-54 -54)">'
+            f'<rect x="26" y="30" width="56" height="48" rx="6" fill="none" stroke="#B9C3FF" '
+            f'stroke-width="4"/><circle cx="54" cy="30" r="1.25" fill="#12131D"/>{panes}'
+            f'</g></g></g>')
 
 
 def write(path, text):
@@ -186,7 +212,7 @@ def index_page(found):
 <meta name="description" content="The Play-signed Muralis APK, its checksum, the signing fingerprint, and the provisioning QR, published so anyone can check them.">
 <link rel="canonical" href="https://muralis.spazio17.org/download/">
 <link rel="icon" href="../assets/img/icon-512.png" type="image/png">
-<link rel="stylesheet" href="../assets/css/site.css?v=34">
+<link rel="stylesheet" href="../assets/css/site.css?v=50">
 <script>
   /* The same bootstrap every page carries: a theme chosen anywhere on the site holds
      here too, applied before first paint so an explicit choice never flashes the other
@@ -207,9 +233,10 @@ def index_page(found):
     </a>
     <nav class="pagenav" aria-label="Pages">
       <a href="../">Overview</a>
-      <a href="../api/">API</a>
-      <a href="../setup/">Setup</a>
+      <a href="../features/">Features</a>
       <a href="../download/" aria-current="page">Download</a>
+      <a href="../setup/">Setup</a>
+      <a href="../api/">API</a>
     </nav>
     <button class="menubtn" type="button" aria-expanded="false" aria-controls="sitemenu">
       <span class="bars" aria-hidden="true"></span>
@@ -221,9 +248,10 @@ def index_page(found):
       <nav class="menugroup" aria-label="Pages">
         <p class="menuhead">Pages</p>
         <a href="../">Overview</a>
-        <a href="../api/">API</a>
-        <a href="../setup/">Setup</a>
+        <a href="../features/">Features</a>
         <a href="../download/" aria-current="page">Download</a>
+        <a href="../setup/">Setup</a>
+        <a href="../api/">API</a>
       </nav>
       <div class="menugroup">
         <p class="menuhead">Appearance</p>
@@ -246,18 +274,27 @@ def index_page(found):
     <p class="clip-note">Thirty seconds, from the welcome screen of a wiped tablet to the panel on the wall. Drawn rather than filmed, so no real tablet and no real home is in it.</p>
   </figure>
 
+  <h2>The steps</h2>
+  <div class="steps-qr">
+    <div>
+      <p>Muralis owns the tablet and holds the screen on your page. Android grants that only during setup, which is why the tablet has to be reset first.</p>
+      <ol class="steps-list"><li>Back up anything on the tablet.</li><li>Factory reset, and stop at the welcome screen.</li><li>Tap the screen six times, then join a network when it asks.</li><li>Scan this code with the tablet. A tablet that cannot verify the code&#8217;s signing fingerprint refuses to go on.</li></ol>
+    </div>
+    <p class="qr"><img src="provisioning-qr.svg" alt="The provisioning QR code" width="340" height="340"></p>
+  </div>
+
   <dl class="filelist">
 {chr(10).join(row(*item) for item in rows)}
   </dl>
 
   <h2>Authenticity</h2>
-  <p>SHA-256 of the APK:</p>
-  <div class="code-scroll" tabindex="0" role="region" aria-label="The APK checksum"><pre><code>{found['apk_sha256']}</code></pre></div>
-  <p>SHA-256 of the certificate it is signed with, which is Google&#8217;s app signing key for
-  Muralis and does not change between releases:</p>
-  <div class="code-scroll" tabindex="0" role="region" aria-label="The signing certificate fingerprint"><pre><code>{found['certificate_sha256']}</code></pre></div>
+  <p>Two different fingerprints, for two different questions.</p>
+  <p><b>The file checksum</b>, the SHA-256 of the APK, proves that your download is exactly the file published here. It will not match an app installed from Google Play, because Play builds its own APK for each device.</p>
+  <div class="code-scroll" role="region" aria-label="The APK checksum"><pre tabindex="0"><code>{found['apk_sha256']}</code></pre></div>
+  <p><b>The certificate fingerprint</b>, the SHA-256 of the certificate the app is signed with, proves who made it. It is Google&#8217;s app signing key for Muralis, the same for this file and for every install from Google Play, and it does not change between releases:</p>
+  <div class="code-scroll" role="region" aria-label="The signing certificate fingerprint"><pre tabindex="0"><code>{found['certificate_sha256']}</code></pre></div>
   <p>Read it back off the file yourself:</p>
-  <div class="code-scroll" tabindex="0" role="region" aria-label="The command that prints the certificate"><pre><code>apksigner verify --print-certs muralis-latest.apk</code></pre></div>
+  <div class="code-scroll" role="region" aria-label="The command that prints the certificate"><pre tabindex="0"><code>apksigner verify --print-certs muralis-latest.apk</code></pre></div>
   <p class="note">Generated from the APK in this directory by <code>scripts/generate-download.py</code>.</p>
 </main>
 
