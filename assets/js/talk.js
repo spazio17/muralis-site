@@ -84,6 +84,8 @@
   // The Home Assistant card under the scenes: the rows a command changes there, lit once. A
   // command with no row of its own (a camera's event, a page to open) leaves the card as it is.
   var ha = document.querySelector('.ha-card');
+  // The playlist the card shows before any command, one per edition.
+  var PLAYLIST = { home: 'Family', pro: 'Studio', business: 'News' };
   function row(name) { return ha.querySelector('[data-ha="' + name + '"]'); }
   function hit(name) { var r = row(name); r.classList.remove('hit'); void r.offsetWidth; r.classList.add('hit'); }
   function toggle(name, on) { var r = row(name), sw = r.querySelector('.ha-sw'); r.classList.toggle('on', on); sw.classList.toggle('on', on); sw.setAttribute('aria-label', on ? 'on' : 'off'); }
@@ -91,7 +93,7 @@
     if (!ha) return;
     toggle('light', false); toggle('ambient', false); row('light').style.removeProperty('--led');
     row('popup').querySelector('.ha-val').textContent = 'Send a message';
-    row('playlist').querySelector('.ha-val').textContent = 'Family';
+    row('playlist').querySelector('.ha-val').textContent = PLAYLIST[html.dataset.mode] || PLAYLIST.home;
     ha.querySelectorAll('.hit').forEach(function (r) { r.classList.remove('hit'); });
   }
   function haShow(list) {
@@ -184,6 +186,8 @@
   undo.addEventListener('click', function () { fire(true); });
   // A touch on the pop-up closes it, as on the panel.
   pop.addEventListener('click', function () { st.pop = null; pop.hidden = true; });
-  new MutationObserver(firstOfMode).observe(html, { attributes: true, attributeFilter: ['data-mode'] });
+  // A scene both editions share stays picked on a switch; its card still takes the new edition's
+  // playlist while nothing has been sent.
+  new MutationObserver(function () { firstOfMode(); if (!st.sent) haReset(); }).observe(html, { attributes: true, attributeFilter: ['data-mode'] });
   firstOfMode();
 })();
