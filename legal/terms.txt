@@ -10,7 +10,7 @@ Required Notice: Copyright 2026 Juri Calleri (spazio17) (https://github.com/spaz
 
 MURALIS PRO
 
-Everything above is free and stays free, on every panel you own, with no limit on how many: the kiosk, MQTT including Home Assistant discovery, the local web administration, the sensors and the automations. Each free panel stands on its own.
+Everything above is free and stays free, on every panel you own, with no limit on how many: the kiosk, MQTT including discovery for smart-home systems, the local web administration, the sensors and the automations. Each free panel stands on its own.
 
 Muralis Pro is a one time purchase for the fleet: up to six panels managed together from any of them, with no cloud and no server of ours. It belongs to the Google account that bought it, not to a device. Panels without a Google account take part through the panel or phone that holds the account: each time that device confirms the purchase, Pro stays on the other panels for thirty days, so it must be reachable on your network at least once a month. It does not expire and there is nothing to renew. It cannot be transferred, resold, or shared with another account.
 
