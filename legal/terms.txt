@@ -1,16 +1,22 @@
-Terms for Muralis, a kiosk launcher that shows a web page or an app on hardware you own.
+Terms for Muralis, a kiosk app that shows what you choose on hardware you own.
 
-WHAT YOU MAY DO
+USING THE APP
 
 Install and run Muralis on as many devices as you like, whether you own them or administer them for somebody else, for private or commercial purposes. You do not need an account, you do not need to register, and this does not expire.
 
-Muralis's source code is available under the PolyForm Shield License 1.0.0 (https://polyformproject.org/licenses/shield/1.0.0), published with the code: you may read it, learn from it, change it, use parts of it in your own projects and be paid to install and set up Muralis for others. You may not use it, or any part of it, for a product that competes with Muralis or with Muralis Pro and Business, even a free one. You may not remove or work around the Pro or Business lock, or pass Muralis off as your own work. The licence gives no right to use the name Muralis or its icon for another product. The copyright stays with the developer.
+THE SOURCE CODE
 
-Required Notice: Copyright 2026 Juri Calleri (spazio17) (https://github.com/spazio17/muralis)
+Muralis's source code is published under the PolyForm Shield License 1.0.0 (https://polyformproject.org/licenses/shield/1.0.0). In short: you may read it, learn from it, change it and use parts of it in your own projects, for any purpose except a product that competes with Muralis or with its paid editions, even a free one. The licence gives no right to use the name Muralis or its icon for another product. This summary is a help; the licence file published with the code is what decides.
+
+These terms add two rules of their own: you may not remove or work around the lock of a paid edition, and you may not pass Muralis off as your own work. Being paid to install and set up Muralis for others is welcome.
+
+Juri Calleri holds the copyright to Muralis. Contributors keep the copyright of their contributions and license them to him, as the contribution guide published with the code says. Parts that come from other projects keep their own licences, listed with the code.
+
+Required Notice: Copyright 2026 Juri Calleri (spazio17) and the Muralis contributors (https://github.com/spazio17/muralis)
 
 MURALIS PRO
 
-Everything above is free and stays free, on every panel you own, with no limit on how many: the kiosk, MQTT including discovery for smart-home systems, the local web administration, the sensors and the automations. Each free panel stands on its own.
+Everything one panel does is free and stays free, on every panel you own, with no limit on how many. Each free panel stands on its own.
 
 Muralis Pro is a one time purchase for the fleet: up to six panels managed together from any of them, with no cloud and no server of ours. It belongs to the Google account that bought it, not to a device. Panels without a Google account take part through the panel or phone that holds the account: each time that device confirms the purchase, Pro stays on the other panels for thirty days, so it must be reachable on your network at least once a month. It does not expire and there is nothing to renew. It cannot be transferred, resold, or shared with another account.
 
@@ -18,13 +24,13 @@ A panel without Pro is not nagged, not watermarked, and not degraded: it does ev
 
 WHAT THE APP DOES TO THE DEVICE
 
-Muralis is designed to take over a device. When granted device-owner status it will: become the home application, hold the screen on a single task so other applications cannot be reached, disable the notification shade and status bar, disable the lock screen, keep the display awake while charging, make the back gesture inert, block starting the device in safe mode, allow only the system's accessibility services and the system's keyboards plus the one in use, and grant itself the permissions its features use (the camera, the microphone, location for the Bluetooth beacons, the photos and notifications), each feature still staying off until you switch it on.
+Muralis is designed to take over a device. When granted device-owner status it becomes the home app, keeps the screen on its own task so other apps cannot be reached, turns off the system's ways around the kiosk (such as the notification shade, the lock screen and starting in safe mode), allows only the system's own keyboards and accessibility services besides the keyboard in use, keeps the screen on while charging, and grants itself the permissions its features use. Each feature still stays off until you switch it on.
 
 This is the intended behaviour of a kiosk, and you should understand it before provisioning a device you rely on for anything else.
 
 GETTING BACK OUT
 
-There is always an escape route, and it does not require a cable: a series of corner taps that you record at the first start releases the kiosk and returns the system launcher. The combinations are shown in the settings, under Way out. Change them if you like, and remember what you changed them to.
+There is always an escape route, and it does not require a cable: a series of corner taps that you record at the first start releases the kiosk and returns the system launcher. The combinations are shown in the app's settings. Change them if you like, and remember what you changed them to.
 
 REMOVING DEVICE-OWNER STATUS
 
@@ -38,15 +44,23 @@ The dashboard it displays is not part of Muralis. Its availability, correctness 
 
 REMOTE CONTROL
 
-The local web administration is authenticated by the password you set, and by nothing else: there is no username. An address that keeps sending wrong passwords is locked out for a growing while, and the lockout is reported in the status snapshot. It is served over HTTPS with a certificate the panel makes for itself, or with one you upload; with the panel's own your browser will warn about it once, and the panel shows the fingerprint of the certificate in use so you can check that you are talking to your panel. MQTT is authenticated by your broker, using whatever credentials it requires, which may be none: Muralis itself does not authenticate individual commands, so anyone who can publish to your broker can control the panel. MQTT is UNENCRYPTED unless you switch on Encrypted (TLS) for a broker that offers it. Without it, your broker username and password travel in clear text, so do not reuse a password you use anywhere else. Run these surfaces only on a network you trust, and reach them over a VPN rather than exposing a port. If you set a weak password, or expose these surfaces to the internet, anyone who reaches them can change what the device displays and restart it.
+Muralis can be controlled from your network: through its web administration, protected by the password you set, and through the other channels you switch on, such as MQTT, protected by your broker. Anyone who passes these checks can change what the panel shows and restart it, so choose a strong password, keep your broker's access tight, and do not reuse a password you use anywhere else. The web administration uses an encrypted connection (HTTPS) and never takes the password over an unencrypted one: while it cannot use its certificate, for example after a restart until the device is first unlocked, it stays closed. MQTT is unencrypted unless you switch on encryption (TLS) for a broker that offers it. Use these channels only on a network you trust, and reach them over a VPN rather than by opening a port to the internet.
 
 PICTURES
 
-Ambient, the screen a panel shows while nobody uses it, can show pictures from the device and pictures you upload. What a panel shows is your responsibility: make sure you have the right to display it where the panel is. Muralis grants no rights to any picture.
+What a panel shows, pictures and pages included, is your responsibility: make sure you have the right to show it where the panel is. Muralis grants no rights to anything it shows.
+
+PEOPLE IN THE ROOM
+
+If you switch on a feature that observes the room or the people in it, such as a camera, a microphone or a scan for nearby devices, you must tell the people there, and follow the law that applies where the panel is.
+
+OTHER SERVICES
+
+An integration uses your own account and key with the service it calls, under that service's terms. Muralis is not part of those services and is not responsible for them, for what they answer or for whether they keep working. The integrations themselves are part of the app and come under these terms and its licence.
 
 BUYING, AND GETTING YOUR MONEY BACK
 
-Muralis Pro is sold by Google, not by the developer. Google takes the payment, issues the receipt, handles the tax, and handles refunds under Google Play's own refund policy and under whatever consumer law applies where you live. Ask Google, not the developer, about a payment or a refund. The developer never sees your payment details.
+Muralis Pro is sold by Google, not by the developer. Google takes the payment, issues the receipt, handles the tax, and handles refunds under Google Play's refund policy and the consumer law where you live. You may also write to the developer, who can refund a purchase through Google Play. The developer never sees your payment details.
 
 LIABILITY
 
@@ -61,6 +75,8 @@ If you are in the European Union, you keep the rights the law gives you whatever
 CHANGES
 
 These terms may change with new versions of the app. The version they apply to is shown on the About screen.
+
+These terms were last updated on 23 October 2026.
 
 GOVERNING LAW
 
