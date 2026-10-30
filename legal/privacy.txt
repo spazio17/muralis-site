@@ -25,7 +25,7 @@ WHAT LEAVES THE PANEL, ONLY WHEN YOU SET IT UP
 
 Nothing leaves the panel until you set up where it goes. When you do, the panel sends data only to the places you chose:
 
-- to your own systems on your network, such as your MQTT broker, your browser through the web admin, and your other Muralis panels: the panel's state and settings, its network address, the address of the page it shows, the readings of the sensors you switched on, the address of a device locked out of the web admin, and pictures of the screen or the camera when you ask for them or switch that on;
+- to your own systems on your network, such as your MQTT broker, your browser through the web admin, and your other Muralis panels: the panel's state and settings, its network address, the address of the page it shows, the readings of the sensors you switched on, the address of a device locked out of the web admin, pictures of the screen or the camera when you ask for them or switch that on, and, from the panel that bought Muralis Pro, Google's receipt for the purchase, which the other panels of that fleet keep encrypted to check the fleet's Pro;
 - to the pages, cameras and other addresses you enter, which receive the requests the panel makes to them, as from a browser;
 - to devices on your network that you let control the panel, for example to play a sound.
 
@@ -71,4 +71,4 @@ Juri Calleri, Vienna, Austria. spazio17@protonmail.com.
 
 A postal address is published on the imprint at muralis.spazio17.org, as Austrian law requires. It is kept in that one place so that changing it does not need a new release of the app.
 
-This policy was last updated on 23 October 2026.
+This policy was last updated on 30 October 2026.
