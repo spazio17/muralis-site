@@ -45,9 +45,9 @@
       draw: function () { return '<h3>Reception</h3><p>Dr Berger: ' + (st.late ? 'about 20 minutes late' : 'on time') + '</p>'; },
       send: function () { st.late = true; st.pop = '<b>Dr Berger</b>Running about 20 minutes late. Thank you for waiting.'; return ['panel.notify']; } },
     closed: { kind: 'An alarm system', base: 'shop.svg', act: 'Arm for the night', route: MQTT,
-      note: TODAY + 'No web page needed: the Closed picture sits in a playlist you fill once in the web admin, with Ambient set to Pictures. A fixed closing time needs no other system: the panel’s own automation can do it.',
+      note: TODAY + 'No web page needed: the Closed picture sits in an album you fill once in the Gallery, with Ambient set to Pictures. A fixed closing time needs no other system: the panel’s own automation can do it.',
       draw: function () { return '<h3>Shop alarm</h3><p class="svc-big">' + (st.armed ? 'Armed' : 'Off') + '</p><p>' + (st.armed ? 'For the night' : 'Open for business') + '</p>'; },
-      send: function () { st.armed = true; st.page = ['closed', '<p class="pg-title">We are closed</p><p class="pg-sub">Open again tomorrow at 8:00</p>']; return ['ambient.playlist Closed', 'ambient.start']; },
+      send: function () { st.armed = true; st.page = ['closed', '<p class="pg-title">We are closed</p><p class="pg-sub">Open again tomorrow at 8:00</p>']; return ['ambient.album Closed', 'ambient.start']; },
       back: function () { st.armed = false; st.page = null; return ['ambient.stop']; }, undo: 'Disarm in the morning' },
     // On the staff's screen in the back office, the waiting area's cameras as its main view:
     // where an alarm belongs, not on the patients' screen.
@@ -84,8 +84,8 @@
   // The Home Assistant card under the scenes: the rows a command changes there, lit once. A
   // command with no row of its own (a camera's event, a page to open) leaves the card as it is.
   var ha = document.querySelector('.ha-card');
-  // The playlist the card shows before any command, one per edition.
-  var PLAYLIST = { home: 'Family', pro: 'Studio', business: 'News' };
+  // The album the card shows before any command, one per edition.
+  var ALBUM = { home: 'Family', pro: 'Studio', business: 'News' };
   function row(name) { return ha.querySelector('[data-ha="' + name + '"]'); }
   function hit(name) { var r = row(name); r.classList.remove('hit'); void r.offsetWidth; r.classList.add('hit'); }
   function toggle(name, on) { var r = row(name), sw = r.querySelector('.ha-sw'); r.classList.toggle('on', on); sw.classList.toggle('on', on); sw.setAttribute('aria-label', on ? 'on' : 'off'); }
@@ -93,7 +93,7 @@
     if (!ha) return;
     toggle('light', false); toggle('ambient', false); row('light').style.removeProperty('--led');
     row('popup').querySelector('.ha-val').textContent = 'Send a message';
-    row('playlist').querySelector('.ha-val').textContent = PLAYLIST[html.dataset.mode] || PLAYLIST.home;
+    row('album').querySelector('.ha-val').textContent = ALBUM[html.dataset.mode] || ALBUM.home;
     ha.querySelectorAll('.hit').forEach(function (r) { r.classList.remove('hit'); });
   }
   function haShow(list) {
@@ -104,7 +104,7 @@
       else if (word === 'light.off') { toggle('light', false); hit('light'); }
       else if (word === 'panel.notify') { var t = document.createElement('div'); t.innerHTML = (st.pop || '').replace(/<b>.*?<\/b>|<svg.*<\/svg>/g, ''); row('popup').querySelector('.ha-val').textContent = t.textContent || 'Send a message'; hit('popup'); }
       else if (word === 'ambient.start' || word === 'ambient.stop') { toggle('ambient', word === 'ambient.start'); hit('ambient'); }
-      else if (word === 'ambient.playlist') { row('playlist').querySelector('.ha-val').textContent = rest; hit('playlist'); }
+      else if (word === 'ambient.album') { row('album').querySelector('.ha-val').textContent = rest; hit('album'); }
     });
   }
 
@@ -187,7 +187,7 @@
   // A touch on the pop-up closes it, as on the panel.
   pop.addEventListener('click', function () { st.pop = null; pop.hidden = true; });
   // A scene both editions share stays picked on a switch; its card still takes the new edition's
-  // playlist while nothing has been sent.
+  // album while nothing has been sent.
   new MutationObserver(function () { firstOfMode(); if (!st.sent) haReset(); }).observe(html, { attributes: true, attributeFilter: ['data-mode'] });
   firstOfMode();
 })();

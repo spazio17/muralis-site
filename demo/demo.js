@@ -5,7 +5,7 @@
    page around them: a change on one surface shows on the other at once. Only the parts the demo
    offers are live; the rest is drawn and greyed, and says so when touched. */
 (function () {
-  var KEY = 'muralis-demo-v2';
+  var KEY = 'muralis-demo-v3';
   var PANEL = SURFACE === 'panel';
   var SAMPLES = {
     'home.sample': { title: 'Home', src: '../assets/img/home/mirror.svg', upright: '../assets/img/home/mirror-portrait.svg' },
@@ -20,16 +20,16 @@
   ];
   // The sensors a demo panel has (Sensors.ALL, alphabetical, as the app lists them); Light is live.
   var SENSORS = [
-    ['audio', 'Audio', 'Idle'], ['battery', 'Battery', '83 %'], ['bluetooth', 'Bluetooth beacons', 'None in reach'],
-    ['camera', 'Camera', 'Clear'], ['display', 'Display', 'On'], ['light', 'Light', ''], ['memory', 'Memory', '41 %'],
-    ['microphone', 'Microphone', '12 %'], ['movement', 'Movement', 'Still'], ['network', 'Network', 'Wi-Fi'],
-    ['nfc', 'NFC', 'No tag yet'], ['power', 'Power', 'Charging'], ['processor', 'Processor', '12 %'],
-    ['proximity', 'Proximity', 'Far'], ['ambient', 'Ambient', 'Not running']
+    ['ambient', 'Ambient', 'Not running'], ['battery', 'Battery', '83 %'], ['bluetooth', 'Bluetooth beacons', 'None in reach'],
+    ['camera', 'Camera motion', 'Clear'], ['movement', 'Device movement', 'Still'], ['display', 'Display', 'On'],
+    ['light', 'Illuminance', ''], ['audio', 'Media playing', 'Idle'], ['memory', 'Memory', '41 %'], ['network', 'Network', 'Wi-Fi'],
+    ['nfc', 'NFC tag', 'No tag yet'], ['power', 'Power', 'Charging'], ['processor', 'Processor', '12 %'],
+    ['proximity', 'Proximity', 'Nothing near'], ['microphone', 'Sound level', '12 %']
   ];
   var START = {
     name: 'hallway-panel', url: 'http://home.sample/', settings: 'BL,BL,BL', launcher: 'BR,BR,BR',
     sensors: { battery: true, display: true, memory: true, network: true, power: true, processor: true, proximity: true },
-    rules: [], ambient: 'off', playlists: [], stats: false, lux: 320, seq: 0
+    rules: [], ambient: 'off', albums: [], stats: false, lux: 320, seq: 0
   };
   var state = load();
   // Per surface and never shared, as in the app: the panel's own setting and this browser's choice.
@@ -102,7 +102,8 @@
   // ---- the summaries ----
   function sensorsOn() { var on = 0; SENSORS.forEach(function (s) { if (state.sensors[s[0]]) on++; }); return on + ' of ' + SENSORS.length + ' on'; }
   function rulesOn() { var on = state.rules.filter(function (r) { return r.enabled; }).length; return state.rules.length ? on + ' of ' + state.rules.length + ' on' : 'None yet'; }
-  function ambientName(mode) { return { off: 'Off', dim: 'Dimmed page', film: 'Black film', url: 'Web page', pictures: 'Pictures' }[mode] || 'Off'; }
+  function ambientName(mode) { return { off: 'Off', dim: 'Dimmed page', film: 'Black screen', url: 'Web page', pictures: 'Pictures' }[mode] || 'Off'; }
+  function gallerySummary() { var n = state.albums.length; return PICTURES.length + ' pictures · ' + n + (n === 1 ? ' album' : ' albums'); }
   function ambientSummary() { return state.ambient === 'off' ? 'Off' : ambientName(state.ambient) + ' · after 2 min'; }
   function zone(z) { return { TL: 'top-left', TR: 'top-right', BL: 'bottom-left', BR: 'bottom-right' }[z] || z; }
   function describe(seq) {
@@ -122,30 +123,29 @@
   // ---- what the automation editor offers (Automations.EVENTS and ACTIONS) ----
   var EVENTS = {
     light: [{ id: 'darker', label: 'Darker than', unit: 'lx', holds: true }, { id: 'brighter', label: 'Brighter than', unit: 'lx' }],
-    proximity: [{ id: 'near', label: 'Near' }, { id: 'far', label: 'Far' }],
+    proximity: [{ id: 'near', label: 'Something near' }, { id: 'far', label: 'Nothing near' }],
     battery: [{ id: 'below', label: 'Battery below', unit: '%' }, { id: 'above', label: 'Battery above', unit: '%' }, { id: 'plugged', label: 'Charger plugged in' }, { id: 'unplugged', label: 'Charger unplugged' }],
     time: [{ id: 'at', label: 'At', unit: 'time' }]
   };
-  var SENSOR_MENU = [['light', 'Light'], ['proximity', 'Proximity'], ['battery', 'Battery'], ['movement', 'Movement', 1], ['camera', 'Camera', 1], ['microphone', 'Microphone', 1], ['network', 'Network', 1], ['time', 'Time of day']];
-  var ACTIONS = [['display_on', 'Display on'], ['display_off', 'Display off'], ['dashboard', 'Show the dashboard'], ['ambient', 'Start Ambient'],
-    ['play_sound', 'Play a sound', 1], ['say', 'Say a sentence', 1], ['reload', 'Reload the page', 1], ['light_on', 'Status light on'], ['light_off', 'Status light off'],
+  var SENSOR_MENU = [['light', 'Illuminance'], ['proximity', 'Proximity'], ['battery', 'Battery'], ['movement', 'Device movement', 1], ['camera', 'Camera motion', 1], ['microphone', 'Sound level', 1], ['network', 'Network', 1], ['time', 'Time of day']];
+  var ACTIONS = [['display_on', 'Display on'], ['display_off', 'Display off'], ['dashboard', 'Open dashboard'], ['ambient', 'Start Ambient'],
+    ['play_sound', 'Play a sound', 1], ['say', 'Say a sentence', 1], ['reload', 'Reload dashboard', 1], ['light_on', 'Status light on'], ['light_off', 'Status light off'],
     ['open_page', 'Open a page', 1], ['brightness', 'Set brightness', 1], ['ambient_mode', 'Ambient mode', 1], ['mqtt_publish', 'Publish an MQTT message', 1],
-    ['call_url', 'Call an address', 1], ['popup', 'Show a pop-up', 1]];
+    ['call_url', 'Call an address', 1], ['alert', 'Send an alert', 1], ['popup', 'Show a pop-up', 1], ['camera', 'Show a camera', 1], ['wait', 'Wait', 1]];
   function eventOf(sensor, id) { return (EVENTS[sensor] || []).filter(function (e) { return e.id === id; })[0]; }
   function actionOf(id) { var a = ACTIONS.filter(function (x) { return x[0] === id; })[0]; return a ? { id: a[0], label: a[1] } : null; }
 
   // ---- the settings page: the sections, as each surface draws them ----
   function dashboardBody() {
-    return '<p class="label" id="opt-shows-label">The panel shows</p>' +
-      '<div class="segmented" role="group" aria-labelledby="opt-shows-label"><button type="button" aria-pressed="true">' + glyph('check') + 'A web page</button>' +
-      '<a href="#" role="button" aria-pressed="false" class="demo-dimbtn" aria-disabled="true">An app</a>' +
-      // Shown in the demo as it is once a camera exists, greyed as the rest it does not play.
-      '<a href="#" role="button" aria-pressed="false" class="demo-dimbtn" aria-disabled="true">Cameras</a></div>' +
+    return '<div class="segmented" role="group" aria-label="Shows"><button type="button" aria-pressed="true">' + glyph('check') + 'Web page</button>' +
+      '<a href="#" role="button" aria-pressed="false" class="demo-dimbtn" aria-disabled="true">App</a>' +
+      '<a href="#" role="button" aria-pressed="false" class="demo-dimbtn" aria-disabled="true">Integration</a></div>' +
       '<form data-demo="dashboard">' + field('f-dashboard_url', 'Dashboard URL', state.url, ' inputmode="url" list="demo-samples"') +
       '<datalist id="demo-samples"><option value="http://home.sample/"><option value="http://shop.sample/"><option value="http://meeting.sample/"></datalist>' +
       '<p class="demo-aside"><span>Demo</span> Try home.sample, shop.sample or meeting.sample.</p>' +
       // The panel saves with Open dashboard at the foot of its settings; the web page with Save.
       '<div class="actions">' + (PANEL ? '' : '<button class="primary" type="submit">Save</button>') + '<button type="button" class="tonal" data-demo="open-once">Open once</button></div></form>' +
+      '<p class="hint">Open once shows the address now, until the next restart; a saved address stays the dashboard.</p>' +
       (PANEL ? '<div class="actions"><button type="button" class="btn text demo-dimbtn" aria-disabled="true">Page options' + glyph('next') + '</button></div>'
         : '<div class="actions"><a class="onward demo-dimbtn" href="#" aria-disabled="true">Page options</a></div>');
   }
@@ -166,15 +166,37 @@
       select('d-colour', 'Status light colour', option('blue', 'Blue', 'blue')));
   }
   function ambientBody() {
-    var modes = option('off', 'Off', state.ambient) + option('dim', 'Dimmed page', state.ambient, 1) + option('film', 'Black film', state.ambient, 1) +
+    var modes = option('off', 'Off', state.ambient) + option('dim', 'Dimmed page', state.ambient, 1) + option('film', 'Black screen', state.ambient, 1) +
       option('url', 'Web page', state.ambient, 1) + option('pictures', 'Pictures', state.ambient);
-    var note = state.ambient === 'off' ? 'Ambient off.' : 'Pictures after 2 min without a touch, the display stays on.';
+    var note = state.ambient === 'off' ? 'Ambient off.' : 'Pictures after 2 min, the display stays on.';
     return select('ambient-mode', 'Mode', modes, ' data-demo="ambient-mode"') + '<p class="hint" id="ambient-note">' + note + '</p>' +
       '<div class="actions"><button type="button" class="tonal" data-demo="preview"' + (state.ambient === 'off' ? ' disabled title="Choose a mode first"' : '') + '>Preview</button>' +
       (state.ambient === 'off' ? '' : '<a class="btn text" href="#" data-go="ambient">More Ambient settings' + glyph('next') + '</a>') + '</div>';
   }
   // Cameras as the app has them with none yet: the More camera settings button, not part of the demo.
   function camerasBody() { return '<div class="actions top0"><a class="btn text demo-dimbtn" href="#" aria-disabled="true">More camera settings' + glyph('next') + '</a></div>'; }
+  // The Gallery, as the app has it: the albums, one row each, and the way to the pictures.
+  function albumRows() {
+    return state.albums.map(function (p) {
+      var n = p.items.length;
+      return linkRow('album:' + p.id, 'saver', p.name, n + (n === 1 ? ' picture' : ' pictures') + (p.active ? ' · Ambient plays this album' : ''), glyph('next'));
+    }).join('');
+  }
+  function galleryBody() {
+    return (state.albums.length ? '<ul class="list">' + albumRows() + '</ul>' : '<p class="hint">No albums yet.</p>') +
+      '<div class="actions"><a class="btn tonal demo-dimbtn" href="#" aria-disabled="true">' + glyph('plus') + 'Add pictures</a>' +
+      '<a class="btn text" href="#" data-go="gallery">Open Gallery' + glyph('next') + '</a></div>';
+  }
+  function soundBody() {
+    return off('<div class="switches">' + switchRow('s-speaker', 'Network speaker', false) + switchRow('v-buttons', 'Disable volume buttons', false) + '</div>' +
+      '<p class="hint">While the speaker is on, anyone on your network can play sound here.</p>');
+  }
+  function backupBody() {
+    return '<ul class="list">' + linkRow(null, 'folder', 'Settings file', 'Export, import, a setup QR for a new tablet', glyph('next'), true) +
+      linkRow('stats', 'stats', 'System stats and log', state.stats ? 'Overlay on' : 'Overlay off', glyph('next')) +
+      (PANEL ? '' : linkRow(null, 'display', 'Screenshot', 'The screen now', '', true) +
+        linkRow(null, 'info', 'Download diagnostics', 'https://192.0.2.42:8080/api/diagnostics', '', true)) + '</ul>';
+  }
   function sensorsBody() {
     var rows = SENSORS.filter(function (s) { return state.sensors[s[0]]; }).map(function (s) {
       var live = s[0] === 'light';
@@ -193,7 +215,7 @@
     return (rows ? '<ul class="list seg">' + rows + '</ul>' : '') +
       '<div class="actions' + (rows ? '' : ' top0') + '"><a class="btn text" href="#" data-go="automations">More automation settings' + glyph('next') + '</a></div>';
   }
-  function integrationsBody() { return '<div class="empty"><p class="h">No integrations yet</p><p class="s">Muralis will show and act on data from other services. The first integrations come in an update.</p></div>'; }
+  function integrationsBody() { return '<div class="empty"><p class="h">No integrations yet</p><p class="s">The weather, your monitors, a calendar, a value from a web address or the Bitcoin clock, for the automations and MQTT.</p></div>' + '<div class="actions"><a class="btn text demo-dimbtn" href="#" aria-disabled="true">More integration settings' + glyph('next') + '</a></div>'; }
   function mqttBody() {
     return off(field('m-host', 'Broker host', '', ' readonly') + field('m-port', 'Broker port', '1883', ' readonly') + field('m-user', 'Username', '', ' readonly') +
       field('m-pass', 'Password', '', ' type="password" readonly', 'Blank keeps the current one.') + '<div class="switches">' + switchRow('m-tls', 'Encrypted (TLS)', false) + '</div>' +
@@ -211,50 +233,45 @@
   function sequencesBody() {
     if (PANEL) {
       return '<p class="demo-escape">Settings: ' + esc(describe(state.settings)) + '<br>Home screen: ' + esc(describe(state.launcher)) + '<br>PIN: not set</p>' +
-        '<div class="actions"><button type="button" class="text demo-dimbtn" aria-disabled="true">Change the combinations</button></div>' +
-        off('<div class="switches">' + switchRow('v-buttons', 'Disable volume buttons', false) + '</div>');
+        '<div class="actions"><button type="button" class="text demo-dimbtn" aria-disabled="true">Change the combinations</button></div>';
     }
     return off('<p class="hint">Corner taps in order: TL, TR, BL, BR, separated by commas. Between 3 and 12 taps. Recording them on the tablet is easier than typing them here.</p>' +
       field('f-settings_sequence', 'Open Muralis settings', state.settings, ' readonly') + field('f-launcher_sequence', 'Leave Muralis for the home screen', state.launcher, ' readonly') +
       '<p class="hint">Optional PIN, asked after either combination: 4 to 8 digits. A combination can be watched and repeated; a PIN has to be known. None is set.</p>' +
-      field('f-pin', 'PIN', '', ' type="password" readonly', 'Blank keeps the current one.') + '<div class="actions"><button class="primary" type="button">Save</button></div>' +
-      '<div class="switches">' + switchRow('v-buttons', 'Disable volume buttons', false) + '</div>');
+      field('f-pin', 'PIN', '', ' type="password" readonly', 'Blank keeps the current one.') + '<div class="actions"><button class="primary" type="button">Save</button></div>');
   }
   function aboutBody() {
     var name = '<form data-demo="name">' + field('f-device_id', 'Name', state.name, ' data-demo-name="1"') + '<p class="hint bad" id="name-problem" hidden></p></form>';
-    var stats = linkRow('stats', 'stats', 'System stats and log', state.stats ? 'Overlay on' : 'Overlay off', glyph('next'));
     if (PANEL) {
-      return name + '<ul class="list gap">' + stats + '</ul>' +
-        '<p class="hint">Muralis 0.7.0 (build 412)</p><p class="label">Muralis Pro</p>' +
+      return name + '<p class="hint">Muralis 0.7.2 (build 520)</p><p class="label">Muralis Pro</p>' +
         '<p class="hint">The fleet: up to 6 panels managed from any of them, sharing their settings, with alerts and history. One panel has everything without it.</p>' +
         '<p>Free</p>' + off('<div class="actions"><button type="button" class="primary">Buy Muralis Pro</button></div>') +
         '<ul class="list">' + linkRow('legal:privacy', 'next', 'Privacy policy', null, glyph('next')) + linkRow('legal:terms', 'next', 'Terms and conditions', null, glyph('next')) +
         linkRow('version', 'next', 'Version and device details', null, glyph('next')) + '</ul>';
     }
-    return name + '<ul class="list gap">' + stats +
-      linkRow(null, 'open', 'Screenshot', 'https://192.0.2.42:8080/api/screenshot', '', true) +
-      linkRow(null, 'download', 'Settings file', 'Export, import, a setup QR for a new tablet', glyph('next'), true) +
-      linkRow(null, 'download', 'Download diagnostics', 'https://192.0.2.42:8080/api/diagnostics', '', true) +
-      linkRow('repo', 'info', 'Muralis 0.7.0', 'github.com/spazio17/muralis', glyph('open')) +
+    return name + '<ul class="list gap">' + linkRow('repo', 'info', 'Muralis 0.7.2', 'github.com/spazio17/muralis', glyph('open')) +
       linkRow('legal:privacy', 'open', 'Privacy policy', null, glyph('next')) + linkRow('legal:terms', 'open', 'Terms and conditions', null, glyph('next')) + '</ul>';
   }
   function sections() {
     return [
-      ['dashboard', 'dash', 'Dashboard', host(state.url) || 'No dashboard yet', dashboardBody, 'What the panel shows'],
-      ['display', 'disp', 'Display', 'Landscape · automatic', displayBody, 'Screen'],
-      ['ambient', 'saver', 'Ambient', ambientSummary(), ambientBody, 'Screen'],
-      ['cameras', 'cameras', 'Cameras', 'None yet', camerasBody, 'Screen'],
+      ['dashboard', 'dash', 'Dashboard', host(state.url) || 'No dashboard yet', dashboardBody, 'Panel'],
+      ['ambient', 'saver', 'Ambient', ambientSummary(), ambientBody, 'Panel'],
+      ['cameras', 'cameras', 'Cameras', 'None yet', camerasBody, 'Panel'],
+      ['gallery', 'folder', 'Gallery', gallerySummary(), galleryBody, 'Panel'],
+      ['display', 'disp', 'Display', 'Landscape · auto brightness', displayBody, 'Screen and sound'],
+      ['speaker', 'audio', 'Sound', 'Speaker off · buttons on', soundBody, 'Screen and sound'],
       ['sensors', 'sensors', 'Sensors', sensorsOn(), sensorsBody, 'Automation'],
       ['automations', 'automations', 'Automations', rulesOn(), automationsBody, 'Automation'],
-      ['integrations', 'integrations', 'Integrations', 'Coming soon', integrationsBody, 'Automation'],
+      ['integrations', 'integrations', 'Integrations', 'None yet', integrationsBody, 'Automation'],
       ['mqtt', 'mqtt', 'MQTT', 'Not configured', mqttBody, 'Connections'],
       ['webadmin', 'web', 'Web admin', 'Port 8080 · HTTPS', webBody, 'Connections'],
-      ['fleet', 'fleet', 'Fleet', 'Port 8081', fleetBody, 'Connections'],
-      ['sequences', 'esc', 'Way out', state.settings + ' · ' + state.launcher, sequencesBody, 'Security'],
-      ['panel', 'panel', 'About this panel', state.name, aboutBody, '']
+      ['fleet', 'fleet', 'All panels', 'Not in a fleet', fleetBody, 'Connections'],
+      ['sequences', 'esc', 'Way out', '2 combinations · no PIN', sequencesBody, 'Security'],
+      ['backup', 'storage', 'Backup and diagnostics', state.stats ? 'Stats overlay on' : 'Stats overlay off', backupBody, 'System'],
+      ['panel', 'panel', 'About this panel', state.name, aboutBody, 'System']
     ];
   }
-  var DIM = { display: 1, cameras: 1, integrations: 1, mqtt: 1, webadmin: 1, fleet: 1 };
+  var DIM = { display: 1, cameras: 1, speaker: 1, integrations: 1, mqtt: 1, webadmin: 1, fleet: 1 };
 
   function settingsPage() {
     var nav = '<nav class="sections" aria-label="Sections">', boxes = '<div class="boxes">', group = null;
@@ -303,7 +320,7 @@
     }).join('');
     var nav = '<section class="card nav"><div class="cardhead"><h2>Automations</h2><span class="count">' + esc(rulesOn()) + '</span></div>' +
       (rows ? '<ul class="list seg">' + rows + '</ul>' : '<p class="hint">No automations yet.</p>') +
-      '<div class="actions"><a class="btn tonal" href="#" data-go="automation:new" data-demo-target="add">' + glyph('plus') + 'Add</a></div></section>';
+      '<div class="actions"><a class="btn tonal" href="#" data-go="automation:new" data-demo-target="add">' + glyph('plus') + 'Add an automation</a></div></section>';
     var detailPage = editing != null;
     var rule = editing === 'new' || editing == null ? null : state.rules.filter(function (r) { return r.id === editing; })[0];
     var title = !detailPage ? 'Automations' : rule ? 'Edit automation' : 'New automation';
@@ -321,41 +338,51 @@
     var actions = ACTIONS.map(function (a) { return option(a[0], a[1], r.action, a[2]); }).join('');
     return '<form class="automation" data-demo="rule" data-id="' + esc(r.id) + '">' +
       '<section class="card">' + field('a-name', 'Name', r.name, ' data-words="1"') + '</section>' +
-      '<section class="card gap"><h2>When</h2>' + select('a-sensor', 'Sensor', sensors, ' data-demo="rule-sensor"') + events +
+      '<section class="card when"><div class="cardhead"><h2>' + glyph('bolt') + 'When</h2></div>' + select('a-sensor', 'Sensor', sensors, ' data-demo="rule-sensor"') + events +
       field('a-level', 'Level', r.sensor === 'time' ? '' : r.level, ' type="number" step="any" min="0"') +
       field('a-at', 'At', r.sensor === 'time' ? r.level : '07:00', ' type="time"') +
       field('a-minutes', 'For (minutes)', r.minutes, ' type="number" min="0" max="1440"') + '</section>' +
-      '<section class="card"><h2>Then</h2>' + select('a-action', 'Action', actions) + '</section>' +
-      '<section class="card">' + off('<h2>Only</h2>' + switchRow('a-only', 'Between these times', false) +
-        '<div class="two">' + field('a-from', 'From', '07:00', ' readonly') + field('a-to', 'To', '22:00', ' readonly') + '</div>') + '</section>' +
+      // Then in a card of its own under its When, and If in its own, as the app draws them.
+      '<section class="card gap"><h2 class="part">' + glyph('then') + 'Then</h2><div class="step">' + select('a-action', 'Action', actions) + '</div>' +
+      off('<div class="actions tight"><button type="button" class="text">' + glyph('plus') + 'Add an action</button></div>') + '</section>' +
+      off('<div class="or more">or<button type="button" class="text">' + glyph('plus') + 'Add a When</button></div>') +
+      '<section class="card gap"><h2 class="part">' + glyph('if') + 'If</h2>' +
+      off('<div class="actions tight"><button type="button" class="text">' + glyph('plus') + 'Add a condition</button></div>') + '</section>' +
       '<p class="hint bad" id="rule-problem" hidden></p>' +
-      '<div class="actions editor"><button type="submit" class="primary">' + (rule ? 'Save' : 'Add') + '</button><a class="btn text" href="#" data-go="automations">Cancel</a>' +
-      (rule ? '<button type="button" class="danger" data-demo="rule-delete" data-id="' + r.id + '">Delete</button>' : '') + '</div></form>';
+      '<div class="actions editor"><button type="submit" class="primary">Save</button>' +
+      (rule ? '<button type="button" class="danger" data-demo="rule-delete" data-id="' + r.id + '">Remove</button>' : '') + '</div></form>';
   }
+  // Ambient's page: the mode's options, and which album it plays (the albums are the Gallery's).
   function ambientPage() {
-    var list = state.playlists.length ? '<ul class="list seg">' + state.playlists.map(function (p) {
-      var n = p.items.length;
-      return '<li class="two"><a class="rowlink plain" href="#" data-go="playlist:' + p.id + '"><span class="lead">' + glyph('saver') + '</span><span class="text"><span class="h">' + esc(p.name) +
-        '</span><span class="s">' + n + (n === 1 ? ' picture' : ' pictures') + (p.active ? ' · <span class="inuse">in use</span>' : '') + '</span></span></a><span class="trail">' +
-        '<input type="radio" name="active" data-demo="playlist-use" data-id="' + p.id + '"' + (p.active ? ' checked' : '') + ' aria-label="Use ' + esc(p.name) + '"></span></li>';
-    }).join('') + '</ul>' : '<p class="hint">No playlists yet. Create one, then open it and pick its pictures.</p>';
-    return appbar('Ambient', null, 'home:ambient') + '<div class="two">' +
-      '<section class="card"><h2>Playlists</h2>' + list +
-      '<form class="beside newplaylist" data-demo="playlist-new">' + field('new-playlist-name', 'New playlist name', '', ' maxlength="40" data-words="1"') + '<button class="primary" type="submit">Create</button></form></section>' +
-      '<section class="card">' + off('<h2>When it starts</h2>' + field('am-idle', 'After (minutes without a touch)', '2', ' readonly') + field('am-off', 'Display off after (minutes)', '0', ' readonly') +
-        '<p class="label">Pictures</p>' + select('am-fit', 'Fit', option('cover', 'Fill the screen', 'cover')) + select('am-change', 'Change every', option('10', '10 seconds', '10')) + switchRow('am-credit', 'Show the credit', true)) +
-        '<div class="actions"><button type="button" class="tonal" data-demo="preview">Preview</button></div></section></div>';
+    var albums = option('', 'No album', (state.albums.filter(function (p) { return p.active; })[0] || {}).id || '') +
+      state.albums.map(function (p) { return option(p.id, p.name, p.active ? p.id : null); }).join('');
+    return appbar('Ambient', null, 'home:ambient') + '<div class="two"><section class="card"><h2>Picture options</h2>' +
+      off(field('am-idle', 'Start after (seconds, 0 = never)', '120', ' readonly') + field('am-off', 'Display off after (seconds of Ambient, 0 = never)', '0', ' readonly')) +
+      select('am-album', 'Ambient plays', albums, ' data-demo="album-use"') +
+      (state.albums.length ? '' : '<p class="hint">No albums yet: make one in the <a href="#" data-go="gallery">Gallery</a>.</p>') +
+      off(select('am-fit', 'Fit', option('fit', 'Fit', 'fit')) + field('am-change', 'Picture duration (seconds)', '20', ' readonly') + switchRow('am-credit', 'Credit line', true)) +
+      '<div class="actions"><button type="button" class="tonal" data-demo="preview">Preview</button></div></section></div>';
   }
-  function playlistPage(id) {
-    var p = state.playlists.filter(function (x) { return x.id === id; })[0];
-    if (!p) return ambientPage();
+  // The Gallery: the pictures in one place and the albums made from them.
+  function galleryPage() {
+    var grid = PICTURES.map(function (pic) {
+      return '<figure class="demo-pick"><img src="pictures/' + pic.id + '.svg" alt="' + esc(pic.name) + '"><span>' + esc(pic.name) + '</span></figure>';
+    }).join('');
+    return appbar('Gallery', null, 'home:gallery') + '<div class="two">' +
+      '<section class="card"><h2>Albums</h2>' + (state.albums.length ? '<ul class="list seg">' + albumRows() + '</ul>' : '<p class="hint">No albums yet. Create one, then open it and pick its pictures.</p>') +
+      '<form class="beside newalbum" data-demo="album-new">' + field('new-album-name', 'New album name', '', ' maxlength="40" data-words="1"') + '<button class="primary" type="submit">Create</button></form></section>' +
+      '<section class="card"><h2>Pictures</h2><div class="demo-picks">' + grid + '</div>' +
+      off('<div class="actions"><button type="button" class="tonal">' + glyph('upload') + 'Upload</button></div>') + '</section></div>';
+  }
+  function albumPage(id) {
+    var p = state.albums.filter(function (x) { return x.id === id; })[0];
+    if (!p) return galleryPage();
     var grid = PICTURES.map(function (pic) {
       var on = p.items.indexOf(pic.id) >= 0;
       return '<label class="demo-pick"><input type="checkbox" value="' + pic.id + '"' + (on ? ' checked' : '') + '><img src="pictures/' + pic.id + '.svg" alt="' + esc(pic.name) + '"><span>' + esc(pic.name) + '</span></label>';
     }).join('');
-    return appbar(p.name, null, 'ambient') + '<form data-demo="playlist-save" data-id="' + p.id + '"><section class="card"><h2>Pictures</h2>' +
-      '<p class="hint">' + (p.items.length ? 'Pick the pictures this playlist shows.' : 'Name it, then pick its pictures') + '</p><div class="demo-picks">' + grid + '</div>' +
-      off('<div class="actions"><button type="button" class="tonal">' + glyph('upload') + 'Upload</button></div>') +
+    return appbar(p.name, null, 'gallery') + '<form data-demo="album-save" data-id="' + p.id + '"><section class="card"><h2>Pictures</h2>' +
+      '<p class="hint">' + (p.items.length ? 'Change which pictures the album shows.' : 'Name the album, then pick the pictures') + '</p><div class="demo-picks">' + grid + '</div>' +
       '<div class="actions"><button type="submit" class="primary">Save</button><button type="button" class="tonal" data-demo="preview">Preview</button></div></section></form>';
   }
   function statsText() {
@@ -365,15 +392,15 @@
   }
   var BOOT = Date.now();
   function statsPage() {
-    return appbar('System stats and log', null, 'home:panel') + '<div class="two"><section class="card"><h2>System stats</h2><pre class="mono" id="stats-readout">' + esc(statsText()) + '</pre>' +
+    return appbar('System stats and log', null, 'home:backup') + '<div class="two"><section class="card"><h2>System stats</h2><pre class="mono" id="stats-readout">' + esc(statsText()) + '</pre>' +
       '<div class="switches">' + switchRow('stats-overlay', 'Show system stats on the dashboard', state.stats, ' data-demo="stats"') + '</div></section>' +
       '<section class="card"><h2>Log</h2>' + off('<div class="actions tight"><button type="button" class="text">' + glyph('pause') + 'Pause</button><button type="button" class="text">' + glyph('copy') + 'Copy</button><button type="button" class="text">' + glyph('download') + 'Download</button></div>') +
       '<pre class="mono">' + esc(new Date().toTimeString().slice(0, 8) + ' I Muralis: Dashboard loaded: ' + host(state.url) + '\n' + new Date().toTimeString().slice(0, 8) + ' I Muralis: Web admin listening on port 8080\n' + new Date().toTimeString().slice(0, 8) + ' I Muralis: Sensors: light every 30 s') + '</pre></section></div>';
   }
   function versionPage() {
     function row(k, v) { return '<li class="two"><span class="text"><span class="h">' + esc(k) + '</span><span class="s">' + esc(v) + '</span></span></li>'; }
-    return appbar('About', null, 'home:panel').replace('</h1>', '</h1><p class="sub">Muralis 0.7.0 (build 412)</p>') + '<div class="two">' +
-      '<section class="card"><h2>Muralis</h2><ul class="list">' + row('Version', '0.7.0') + row('Build', '412') + row('Package', 'org.spazio17.muralis') + '</ul></section>' +
+    return appbar('About', null, 'home:panel').replace('</h1>', '</h1><p class="sub">Muralis 0.7.2 (build 520)</p>') + '<div class="two">' +
+      '<section class="card"><h2>Muralis</h2><ul class="list">' + row('Version', '0.7.2') + row('Build', '520') + row('Package', 'org.spazio17.muralis') + '</ul></section>' +
       '<section class="card"><h2>This tablet</h2><ul class="list">' + row('Model', 'Demo Tablet 10') + row('Android', '14 (API 34)') + row('Rendering engine', 'com.google.android.webview 138.0.7204.181') + row('Device owner', 'yes') + '</ul></section>' +
       '<section class="card"><h2>Credits</h2><ul class="list">' + row('Eclipse Paho', 'MQTT client (EPL/EDL)') + row('ZXing', 'QR codes (Apache 2.0)') + row('Icons', 'After Material Symbols by Google (Apache 2.0)') + '</ul></section></div>';
   }
@@ -396,7 +423,8 @@
     else if (page === 'automations') html = automationsPage(null);
     else if (page === 'automation') html = automationsPage(arg);
     else if (page === 'ambient') html = ambientPage();
-    else if (page === 'playlist') html = playlistPage(arg);
+    else if (page === 'gallery') html = galleryPage();
+    else if (page === 'album') html = albumPage(arg);
     else if (page === 'stats') html = statsPage();
     else if (page === 'version') html = versionPage();
     else html = settingsPage();
@@ -456,7 +484,7 @@
     wall.innerHTML = html;
   }
   function activePictures() {
-    var p = state.playlists.filter(function (x) { return x.active; })[0];
+    var p = state.albums.filter(function (x) { return x.active; })[0];
     return p && p.items.length ? p.items : PICTURES.map(function (x) { return x.id; });
   }
   function showWall(view) {
@@ -606,18 +634,18 @@
       save('automations', 'saved:rule:' + rule.sensor + ':' + rule.event + ':' + rule.action);
       go('automations');
       snack('Saved: ' + sentence(rule) + '.');
-    } else if (kind === 'playlist-new') {
+    } else if (kind === 'album-new') {
       var pname = form.querySelector('input').value.trim();
       if (!pname) { snack('Not created: give it a name.'); return; }
-      var p = { id: 'p' + Date.now().toString(36), name: pname, items: [], active: state.playlists.length === 0 };
-      state.playlists.push(p); save('ambient', 'created:playlist');
-      go('playlist:' + p.id);
-    } else if (kind === 'playlist-save') {
-      var pl = state.playlists.filter(function (x) { return x.id === form.dataset.id; })[0];
+      var p = { id: 'p' + Date.now().toString(36), name: pname, items: [], active: state.albums.length === 0 };
+      state.albums.push(p); save('gallery', 'created:album');
+      go('album:' + p.id);
+    } else if (kind === 'album-save') {
+      var pl = state.albums.filter(function (x) { return x.id === form.dataset.id; })[0];
       pl.items = [].slice.call(form.querySelectorAll('input[type=checkbox]:checked')).map(function (i) { return i.value; });
-      save('ambient', 'saved:playlist:' + pl.items.length);
+      save('gallery', 'saved:album:' + pl.items.length);
       snack('Saved. ' + pl.items.length + (pl.items.length === 1 ? ' picture.' : ' pictures.'));
-      go('ambient');
+      go('gallery');
     }
   });
   function storeName(input) {
@@ -640,7 +668,7 @@
       if (t.value !== 'off' && t.value !== 'pictures') { t.value = state.ambient; snack('Not in this demo. It works on your panel.'); return; }
       state.ambient = t.value; save('ambient', 'ambient:' + t.value); refresh();
     }
-    else if (t.dataset.demo === 'playlist-use') { state.playlists.forEach(function (p) { p.active = p.id === t.dataset.id; }); save('ambient'); refresh(); }
+    else if (t.dataset.demo === 'album-use') { var use = t.tagName === 'SELECT' ? t.value : t.dataset.id; state.albums.forEach(function (p) { p.active = p.id === use; }); save('ambient', 'album:' + (use ? 'used' : 'none')); refresh(); }
     else if (t.id === 'a-sensor' || (t.name && t.name.indexOf('event_') === 0)) syncEditor();
     else if (t.id === 'a-action' && t.selectedOptions[0] && t.selectedOptions[0].disabled) snack('Not in this demo. It works on your panel.');
   });

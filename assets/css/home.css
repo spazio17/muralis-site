@@ -480,6 +480,8 @@ html.js #does.seen .bento .tile,html.js #does.seen .bento .cta{opacity:1;animati
 .brick .may::before{content:'';position:absolute;left:22px;top:-12px;width:2px;height:12px;background:#8a8270}
 .brick .may b{display:block;font-size:.78rem;color:var(--sub)}
 .brick.up .may{opacity:1;transform:none}
+/* A planned integration: "Coming soon" pressed into the plastic, a shade darker than the brick with a lit lower edge, so it reads as moulded rather than printed. */
+.brick .stamp{display:block;margin-top:14px;text-align:right;font:800 1.45rem/1 'Atkinson',sans-serif;letter-spacing:.01em;color:color-mix(in srgb,var(--c),#12131d 16%);text-shadow:0 1px 0 rgba(255,255,255,.5),0 -1px 0 rgba(18,19,29,.28)}
 
 /* no cloud: a picture per edition */
 .fleet{background:var(--night);color:var(--on-night)}
