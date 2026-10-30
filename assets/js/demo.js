@@ -4,7 +4,7 @@
 (function () {
   var section = document.getElementById('look');
   if (!section) return;
-  var KEY = 'muralis-demo-v2', GUIDE = 'muralis-demo-guide';
+  var KEY = 'muralis-demo-v3', GUIDE = 'muralis-demo-guide';
   var demo = section.querySelector('.demo'), guide = section.querySelector('.demo-guide');
   var count = guide.querySelector('.demo-count'), text = guide.querySelector('.demo-text');
   var next = guide.querySelector('.demo-next'), skip = guide.querySelector('.demo-skip'), show = section.querySelector('.demo-show');
@@ -30,27 +30,28 @@
     { id: 'sensors', name: 'Sensors', steps: [
       { t: 'Sensors are what the tablet feels: light, movement, battery. On the phone, open Sensors.', on: 'web', at: '#box-sensors > summary', until: 'section:sensors', home: true },
       { t: 'Press More sensor settings.', on: 'web', at: '[data-go="sensors"]', until: 'page:sensors' },
-      { t: 'Turn on Light.', on: 'web', at: '[data-demo="sensor"]', until: 'sensor:light:on' }
+      { t: 'Turn on Illuminance, the light in the room.', on: 'web', at: '[data-demo="sensor"]', until: 'sensor:light:on' }
     ] },
     { id: 'rule', name: 'Your first automation', steps: [
-      { t: 'An automation needs its sensor on. On the phone, open Sensors, then More sensor settings, and turn on Light.', on: 'web', at: '#box-sensors > summary, [data-go="sensors"], [data-demo="sensor"]', until: 'sensor:light:on', home: true, skip: 'lightOn' },
+      { t: 'An automation needs its sensor on. On the phone, open Sensors, then More sensor settings, and turn on Illuminance.', on: 'web', at: '#box-sensors > summary, [data-go="sensors"], [data-demo="sensor"]', until: 'sensor:light:on', home: true, skip: 'lightOn' },
       { t: 'An automation does something by itself. On the phone, open Automations.', on: 'web', at: '#box-automations > summary', until: 'section:automations', home: true },
-      { t: 'Press More automation settings, then Add.', on: 'web', at: '[data-go="automations"], [data-demo-target="add"]', until: 'page:automation' },
-      { t: 'Type a name. Under When, choose Light and Darker than, and type 100 in Level.', on: 'web', at: '#a-name', until: 'never', next: true },
-      { t: 'Under Then, choose Display off. Press Add.', on: 'web', at: '#a-action', until: 'saved:rule' },
+      { t: 'Press More automation settings, then Add an automation.', on: 'web', at: '[data-go="automations"], [data-demo-target="add"]', until: 'page:automation' },
+      { t: 'Type a name. Under When, choose Illuminance and Darker than, and type 100 in Level.', on: 'web', at: '#a-name', until: 'never', next: true },
+      { t: 'Under Then, choose Display off. Press Save.', on: 'web', at: '#a-action', until: 'saved:rule' },
       { t: 'Now make the room dark: move Light in the room to the left.', on: 'page', at: '.demo-lux', until: 'rule-fired' },
       { t: 'The screen turned off by itself. Tap the tablet to wake it.', on: 'panel', until: 'woken' }
     ] },
     { id: 'ambient', name: 'Pictures when nobody is there', steps: [
-      { t: 'Ambient shows pictures when nobody uses the panel. On the phone, open Ambient and choose Pictures.', on: 'web', at: '#ambient-mode', until: 'ambient:pictures', home: true },
-      { t: 'Press More Ambient settings.', on: 'web', at: '[data-go="ambient"]', until: 'page:ambient' },
-      { t: 'Type a name for a playlist. Press Create.', on: 'web', at: '#new-playlist-name', until: 'created:playlist' },
-      { t: 'Pick a few pictures. Press Save.', on: 'web', at: '.demo-picks', until: 'saved:playlist' },
+      { t: 'Your pictures live in the Gallery. On the phone, open Gallery, then Open Gallery.', on: 'web', at: '#box-gallery > summary, [data-go="gallery"]', until: 'page:gallery', home: true },
+      { t: 'Type a name for an album. Press Create.', on: 'web', at: '#new-album-name', until: 'created:album' },
+      { t: 'Pick a few pictures. Press Save.', on: 'web', at: '.demo-picks', until: 'saved:album' },
+      { t: 'Ambient shows them when nobody uses the panel. Go back, open Ambient and choose Pictures.', on: 'web', at: '#ambient-mode', until: 'ambient:pictures', home: true },
+      { t: 'Press More Ambient settings, and check that Ambient plays your album.', on: 'web', at: '[data-go="ambient"], #am-album', until: 'page:ambient' },
       { t: 'Press Preview. The tablet shows your pictures.', on: 'web', at: '[data-demo="preview"]', until: 'preview' }
     ] },
     { id: 'about', name: 'About this panel', steps: [
       { t: 'On the phone, open About this panel and give the panel a new name.', on: 'web', at: '#f-device_id', until: 'saved:name', home: true },
-      { t: 'The tablet has the new name too: its settings show it. Now, on the phone, open System stats and log.', on: 'web', at: '[data-go="stats"]', until: 'page:stats' },
+      { t: 'The tablet has the new name too: its settings show it. Now, on the phone, open Backup and diagnostics, then System stats and log.', on: 'web', at: '#box-backup > summary, [data-go="stats"]', until: 'page:stats', home: true },
       { t: 'Turn on Show system stats on the dashboard. The panel shows them over its page.', on: 'web', at: '#stats-overlay', until: 'stats:on' }
     ] }
   ];
@@ -70,7 +71,7 @@
     else {
       count.textContent = 'Step ' + (g.step + 1) + ' of ' + tour.steps.length + '.';
       var t = step.t;
-      if (tour.id === 'rule' && step.until === 'rule-fired') { var st = readState(); if (st && !st.sensors.light) t = 'The Light sensor is off, so nothing happens. Turn on Light in Sensors, then move Light in the room to the left.'; }
+      if (tour.id === 'rule' && step.until === 'rule-fired') { var st = readState(); if (st && !st.sensors.light) t = 'The Illuminance sensor is off, so nothing happens. Turn on Illuminance in Sensors, then move Light in the room to the left.'; }
       // A step that starts from the phone's settings page, while the phone shows another page.
       if (step.home && webPage !== 'home') t = 'On the phone, go back with the arrow first. ' + t.replace(/On the phone, (\w)/g, function (m, c) { return c.toUpperCase(); });
       text.textContent = t;
